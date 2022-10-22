@@ -1,6 +1,6 @@
 ---
 title: "GroupD_HW1"
-author: "?. Marsich, ?. Vicari, M. Polo, ?. Malcapi"
+author: "G. Marsich, M. Vicari, M. Polo, E. Malcapi"
 date: "2022-10-20"
 output:
   html_document:
