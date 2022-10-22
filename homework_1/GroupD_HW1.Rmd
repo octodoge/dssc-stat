@@ -1,0 +1,53 @@
+---
+title: "GroupD_HW1"
+author: "?. Marsich, ?. Vicari, M. Polo, ?. Malcapi"
+date: "2022-10-20"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## FSDS - Chapter X 
+
+### Ex X.x
+
+*Here the text of the first exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+```{r cars, echo=T}
+summary(cars)
+```
+
+### Ex X.x
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+$$ Y \sim N(0,1)$$
+
+## CS - Chapter X 
+
+### Ex X.x
+
+*Here the text of the first exercise from Wood's textbook.*
+
+**Solution**
+
+Add comments to the solution.
+
+$$ X \sim N(0,1)$$
