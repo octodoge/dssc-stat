@@ -7,7 +7,7 @@
 * exercises
   * [ ] FSDS     1.45
   * [ ] FSDS     1.47
-  * [ ] FSDS      2.1
+  * [ ] FSDS      2.10
   * [ ] FSDS     2.43
   * [ ] FSDS     2.69
   * [ ] CS      1.6
@@ -33,7 +33,7 @@
   * [ ] FSDS     2.27
   * [ ] FSDS     2.71
   * [ ] CS      1.2
-  * [ ] CS      3.3 (hint: use system.time() function)
+  * [ ] CS      3.3 (hint: use `system.time()` function)
 
 ## E. Malcapi
 
