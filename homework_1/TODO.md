@@ -33,7 +33,7 @@
   * [ ] FSDS     2.27
   * [ ] FSDS     2.71
   * [ ] CS      1.2
-  * [ ] CS      3.3
+  * [ ] CS      3.3 (hint: use system.time() function)
 
 ## E. Malcapi
 
