@@ -1,5 +1,5 @@
 FSDS_exs = as.character(c(1.41, 1.43, 1.44, 1.45, 1.47, 1.48,
-             2.3, 2.5, 2.7, 2.10, 2.16, 2.19, 2.21,
+             2.3, 2.5, 2.7, "2.10", 2.16, 2.19, 2.21, #quotes to avoid stripping trailing zero
              2.27, 2.43, 2.52, 2.53, 2.67, 2.69, 2.71))
 CS_exs = as.character(c(1.1, 1.2, 1.6, 1.8, 3.3, 3.5, 3.6))
 books = c(rep("FSDS", length(FSDS_exs)), rep("CS", length(CS_exs)))
