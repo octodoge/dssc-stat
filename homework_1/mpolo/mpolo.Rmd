@@ -1,0 +1,63 @@
+---
+title: "GroupD_HW1"
+author: "G. Marsich, M. Vicari, M. Polo, E. Malcapi"
+date: "2022-10-20"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## FSDS - Chapter 1
+
+### Ex X.x
+
+*Here the text of the first exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+```{r cars, echo=T}
+summary(cars)
+```
+
+### Ex X.x
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+$$ Y \sim N(0,1)$$
+
+### Ex 1.44
+
+### Ex 1.48
+
+## FSDS - Chapter 2
+
+### Ex 2.16
+
+### Ex 2.27
+
+### Ex 2.71
+
+## CS - Chapter 1
+
+### Ex 1.2
+
+## CS - Chapter 3
+
+### Ex 3.3
+
+hint: use system.time() function
