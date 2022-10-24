@@ -13,13 +13,13 @@ mean_y
 mean_x
 
 
-# punto a -> puoi dimostrare
+# punto a -> dimostri come su foglio carta
 # punto b -> solo r
 # punto c dimostra a partire da punto a
 
 #----------------------------
 #1.48
-#boh
+#https://it.wikipedia.org/wiki/Mediana_(statistica)#Propriet%C3%A0
 #--------------
 y <- rbinom(10000000,3,0.50) # simulate 10000000 times the no. of successes in 3 trials
 head(y, 10) # the first 10 of the 10 million observations generated
