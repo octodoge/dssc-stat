@@ -56,8 +56,64 @@ $$ Y \sim N(0,1)$$
 
 ### Ex 1.2
 
+*Evaluate* $Pr(X < 0.5, Y < 0.5)$ *if* $X$ *and* $Y$ *have the following joint p.d.f.*
+$$
+f(x,y) = \begin{cases}
+  x+3y^2/2 & 0<x<1 \ \&\  0<y<1 \\
+  0 & \text{otherwise}.
+\end{cases}
+$$
+
+**Solution**
+
+Add comments to the solution.
+
 ## CS - Chapter 3
 
 ### Ex 3.3
 
-hint: use system.time() function
+*Rewrite the following, replacing the loop with efficient code:*
+```
+n <- 100000; z <- rnorm(n)
+zneg <- 0; j <- 1
+
+for (i in 1:n) {
+  if (z[i]<0) {
+    zneg[j] <- z[i]
+    j <- j + 1
+  }
+}
+```
+*Confirm that your rewrite is faster but gives the same result.*
+
+**Let's time the original code:**
+
+```{r, echo=T}
+n <- 100000; z <- rnorm(n)
+zneg <- 0; j <- 1
+
+system.time( #time the original code
+  for (i in 1:n) {
+    if (z[i]<0) {
+      zneg[j] <- z[i]
+      j <- j + 1
+    }
+  }
+)
+```
+
+**Let's time the rewritten code:**
+
+```{r, echo=T}
+system.time(
+  opt_zneg <- z[z<0] #rewritten code
+)
+```
+
+**Let's ensure both codes give the same result:**
+
+```{r, echo=T}
+all(zneg == opt_zneg)
+```
+
+**The rewrite is faster and gives the same result.**
