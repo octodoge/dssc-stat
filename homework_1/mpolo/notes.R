@@ -34,3 +34,6 @@ mean(y); sd(y)
 #-----
 
 #2.27 -> forse marginal means sono le mean mu = (mu1, mu2), e correlation trovi da covarianza (vedi matrici)
+
+#-----
+
