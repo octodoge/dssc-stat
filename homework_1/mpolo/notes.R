@@ -19,7 +19,8 @@ mean_x
 
 #----------------------------
 #1.48
-#https://it.wikipedia.org/wiki/Mediana_(statistica)#Propriet%C3%A0
+#volendo: https://it.wikipedia.org/wiki/Mediana_(statistica)#Propriet%C3%A0
+#ma vedi foglio che l'ho fatta più easy
 #--------------
 y <- rbinom(10000000,3,0.50) # simulate 10000000 times the no. of successes in 3 trials
 head(y, 10) # the first 10 of the 10 million observations generated
