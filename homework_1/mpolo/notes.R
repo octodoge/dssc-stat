@@ -17,10 +17,6 @@ mean_x
 # punto b -> solo r
 # punto c dimostra a partire da punto a
 
-#----------------------------
-#1.48
-#volendo: https://it.wikipedia.org/wiki/Mediana_(statistica)#Propriet%C3%A0
-#ma vedi foglio che l'ho fatta più easy
 #--------------
 y <- rbinom(10000000,3,0.50) # simulate 10000000 times the no. of successes in 3 trials
 head(y, 10) # the first 10 of the 10 million observations generated
@@ -36,5 +32,7 @@ mean(y); sd(y)
 
 #2.27 -> forse marginal means sono le mean mu = (mu1, mu2), e correlation trovi da covarianza (vedi matrici)
 
-#-----
+#---
+#2.71
+#vedi soluzioni pag 431
 

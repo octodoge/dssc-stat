@@ -44,6 +44,24 @@ $$ Y \sim N(0,1)$$
 
 ### Ex 1.48
 
+*For a sample* $\{y_i\}$ *of size* $n$*,* $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ *is minimized at* $c$ *= median. Explain why this property holds. (Hint: Starting at* $c$ *= median, what happens to* $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ *as you move away from it in either direction?)*
+
+**Solution**
+
+Let the observations be ordered, let $c$ = median, let $a = c+\Delta$ and let $m$ be the number of observations smaller than $a$. <br>
+If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$. <br>
+If $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$. <br>
+So:
+
+$$
+\sum_{i=1}^n \left| y_i-a \right| =
+\sum_{i=1}^m ((c+\Delta)-y_i) + \sum_{i=m+1}^n (y_i - (c+\Delta)) = \\
+m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) = \\
+2m\Delta-n\Delta + \sum_{i=1}^n \left| y_i-c \right| \ge \sum_{i=1}^n \left| y_i-c \right|
+$$
+
+So $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ is minimized at $c$ = median.
+
 ## FSDS - Chapter 2
 
 ### Ex 2.16
@@ -64,12 +82,14 @@ f(x,y) = \begin{cases}
 \end{cases}
 $$
 
-**The probability corresponds to the volume under the portion of interest in the graph:**
+**Solution**
+
+The probability corresponds to the volume under the portion of interest in the graph:
 
 $$
-\int_{0}^{1\over2} \int_{0}^{1\over2} x+{3\over2}y^2 \,dx\,dy =
-\int_{0}^{1\over2} \left[ {x^2\over2} + {3\over2}y^2x \right]_0^{1\over2} \,dy =
-\int_{0}^{1\over2} {1\over8}+{3\over4}y^2 \,dy =
+\int_0^{1\over2} \int_0^{1\over2} x+{3\over2}y^2 \,dx\,dy =
+\int_0^{1\over2} \left[ {x^2\over2} + {3\over2}y^2x \right]_0^{1\over2} \,dy =
+\int_0^{1\over2} {1\over8}+{3\over4}y^2 \,dy =
 \left[ {1\over8}y + {1\over4}y^3 \right]_0^{1\over2} = {3\over32}
 $$
 
@@ -91,7 +111,9 @@ for (i in 1:n) {
 ```
 *Confirm that your rewrite is faster but gives the same result.*
 
-**Let's time the original code:**
+**Solution**
+
+Let's time the original code:
 
 ```{r, echo=T}
 n <- 100000; z <- rnorm(n)
@@ -107,7 +129,7 @@ system.time( #time the original code
 )
 ```
 
-**Let's time the rewritten code:**
+Let's time the rewritten code:
 
 ```{r, echo=T}
 system.time(
@@ -115,10 +137,10 @@ system.time(
 )
 ```
 
-**Let's ensure both codes give the same result:**
+Let's ensure both codes give the same result:
 
 ```{r, echo=T}
 all(zneg == opt_zneg)
 ```
 
-**The rewrite is faster and gives the same result.**
+The rewrite is faster and gives the same result.
