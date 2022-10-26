@@ -1,0 +1,210 @@
+---
+title: "exercises 1st wave"
+author: "group D"
+date: "2022-10-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Exercise 1.41 FSDS
+
+```{r ex 1.41, echo=TRUE}
+randomSample <- 10000
+y1 <- y2 <- rep(NA,randomSample)
+
+for (i in 1:randomSample) {
+  y1[i] <- mean(rnorm(30,100,16))
+  y2[i] <- mean(rnorm(1000,100,16))
+}
+mean(y1);sd(y1);hist(y1)
+mean(y2);sd(y2);hist(y2)
+```
+
+In the second case we can see that we have a smaller standard deviation so data are more clustered to the mean than the first case.
+
+In the last part of the exercise we compare the theoretical formula (sampling from a population with standard deviation 16, the theoretical standard deviation of $$ \overline y$$ values is $$ 16/ \sqrt n$$)
+
+```{r comparison with theoretical sd formula, echo=TRUE}
+16/sqrt(30)
+16/sqrt(1000)
+
+```
+they are the approximate same results of the previous standard deviations found
+
+
+## Exercise 2.5 FSDS
+a) that is because these are indipendent events and 365 is the probability that the first person is born in 1 day of the 365. In the second probability we have 364 because we do not want the second guy to be born the same day of the first guy. Same thinking applied with the third guy. (365)^3 is sample points for the 3 birthdays
+
+b)
+```{r part b ex 2.5, echo=TRUE}
+o <- 365
+pr <- 1/365
+res <- 1
+for (i in 1:23 ) {
+  res = res * pr * o 
+  cat(i, " -- ",o, " -- ",res)
+  print("")
+  o = o - 1
+  
+}
+for (i in 1:50 ) {
+  cat(" - it",i, "with p:",pbirthday(i))}
+```
+}
+Probability that at least 2 out of 23 have the same birthday is 1 − 0.493 = 0.507
+c)
+the following loop create 100000 times a sample of 50 observation of people's birthday attending a party, with unique function duplicates are removed so the variable ind is 1 everytime the sample has duplicates. At the end we divide ind with total number of samples to get the probability
+```{r part c ex 2.5, echo=TRUE}
+ind<-0;iter<- 100000
+for(i in 1:iter){
+  s<-sample(1:365,50,replace=TRUE);d<- unique(s)
+  ind<-ind+as.numeric(length(d)!=length(s)) }
+ind/iter
+```
+## Exercise 2.7 FSDS
+simulate 10000000 times the no. of successes in 3 trials
+```{r ex 2.7, echo=TRUE}
+y <- rbinom(10000000,3,0.50) 
+head(y, 10)
+mean(y)
+sd(y)
+
+rbinom(1,30000000,0.50)/10000000
+```
+theoretical expected value=1.5000
+
+## Exercise 2.21 FSDS
+```{r ex 2.21, echo=TRUE}
+xx <- seq (0,10, l = 1000)
+plot(xx, dgamma(xx, shape = 3, scale = .5), xlab ="x", ylab ="f(x)", type ="l")
+lines(xx, dgamma(xx, shape = 3, scale = 1), col = 2)
+lines(xx, dgamma(xx, shape = 3, scale = 2), col = 3)
+lines(xx,  dgamma(xx, shape = 3, scale = 3), col = 4)
+lines(xx,  dgamma(xx, shape = 3, scale = 4), col = 5)
+lines(xx,  dgamma(xx, shape = 3, scale = 5), col = 6)
+
+```
+
+Looking at the plot we can see that Mean and standard deviation both increase(their values are proportional to 1/λ).
+
+## Exercise 2.67 FSDS
+a)
+```{r ex 2.67 a, echo=TRUE}     
+Y10 <-rnorm(10)
+Y100 <-rnorm(100)
+Y1000 <-rnorm(1000)
+
+qqnorm(Y10,col='blue',main='Y10~ N(0,1)'); abline(0,1)
+qqnorm(Y100,col='blue',main='Y100~ N(0,1)'); abline(0,1)
+qqnorm(Y1000,col='blue',main='Y1000~ N(0,1)'); abline(0,1)
+```
+as n increase points cluster more close to the y = x line
+
+b)
+```{r ex 2.67 b, echo=TRUE}
+yb <- rnorm(1000, 0, 16)
+qqnorm(yb)
+abline(1,16)
+```
+slope of points is about 16
+
+c)
+```{r ex 2.67 c, echo=TRUE}
+ye <- rexp(1000)
+yi <- runif(1000)
+
+qqnorm(ye)
+qqnorm(yi)
+```
+using qqnorm on the uniform distribution we get the cumulative function
+
+d)
+for the uniform(0,1) q_i = i/(n+1)
+
+## Exercise 1.8 CS
+
+The cumulative distribution function of X is,
+
+$$Log(X) \sim N(\mu,\sigma^2) $$
+$$=F_x(X) $$
+$$=Pr[X \leq x] $$
+$$=Pr[logX \leq log x] ; x > 0 $$
+$$=Pr \left[ \frac{logX - \mu}{\sigma} \leq \frac{logx - \mu}{\sigma}\right] ; x > 0 $$
+$$=\Phi \left( \frac{logx - \mu}{\sigma} \right) ; x > 0 $$
+\Phi is the probability of the standard normal distribution
+
+the pdf of X is
+$$= f_x(x) $$
+$$= \frac{d}{dx} F_x(X) $$
+$$= \frac{d}{dx} F_x(X) $$
+
+$$= \phi \left( \frac{ln x - \mu}{\sigma} \right) \frac{1}{x\sigma} ; x > 0 $$
+$$=\frac{1}{x\sigma \sqrt 2\pi}e^{- \frac{1}{2} \left( \frac{log x - \mu}{\sigma}  \right)^2}  ; 0 < x < \infty $$
+X follows log normal distribution
+
+#Exercise 3.6 CS
+
+Define the function as cdf(x), which takes in the set of observed values x.
+ 
+Declare variable x_m denoting set of measured values.
+First sort the elements of x_m using sort().
+ 
+Then using while loop for set of observed values check for how many number of x_m’s is x_m
+ 
+Print cdf of each element of x.
+
+
+defining cdf function
+
+```{r ex 3.6, echo=TRUE}
+cdf <- function(x,plot.cdf){
+  n<- 1000
+  x_m <- rnorm(n,0,n/2)
+  x_m <- sort(x_m)
+  cdf <- c()
+  
+  for (i in 1:length(x)){
+    j <- 1
+    while((x_m[j]<x[i])&& (j-1)<length(x_m)){
+      j <- j+1      
+    }
+    cdf <- c(cdf, ((j-1)/length(x_m)))
+  }
+  
+  print("Corresponding c.d.f.")
+    print(cdf)
+  
+    # 
+    # Add an argument plot.cdf which when TRUE the next process continues to get stepwise plot.
+    # 
+    # Sort elements of x and cdf using sort.
+    # 
+    # Using plot function with type ’s’ plot the step function of c.d.f. with respect to observed values.
+    # 
+    
+    #for plotting cdf in the form of steps
+    if(plot.cdf == TRUE){
+      
+      x<-sort(x)
+      cdf<- sort(cdf)
+      plot(x,cdf,type='s',xlab="Observed values", ylab = "c.d.f.")
+    }
+    
+    
+}
+
+
+n<- 20
+m <- 0
+x<- rnorm(n,m,n)
+print("observed values")
+print(x)
+plot.cdf <- TRUE
+
+cdf(x,plot.cdf)
+
+```
+
+
