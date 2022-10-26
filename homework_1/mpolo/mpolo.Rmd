@@ -59,14 +59,19 @@ $$ Y \sim N(0,1)$$
 *Evaluate* $Pr(X < 0.5, Y < 0.5)$ *if* $X$ *and* $Y$ *have the following joint p.d.f.*
 $$
 f(x,y) = \begin{cases}
-  x+3y^2/2 & 0<x<1 \ \&\  0<y<1 \\
+  x+3y^2/2 & 0<x<1 \;\&\; 0<y<1 \\
   0 & \text{otherwise}.
 \end{cases}
 $$
 
-**Solution**
+**The probability corresponds to the volume under the portion of interest in the graph:**
 
-Add comments to the solution.
+$$
+\int_{0}^{1\over2} \int_{0}^{1\over2} x+{3\over2}y^2 \,dx\,dy =
+\int_{0}^{1\over2} \left[ {x^2\over2} + {3\over2}y^2x \right]_0^{1\over2} \,dy =
+\int_{0}^{1\over2} {1\over8}+{3\over4}y^2 \,dy =
+\left[ {1\over8}y + {1\over4}y^3 \right]_0^{1\over2} = {3\over32}
+$$
 
 ## CS - Chapter 3
 
