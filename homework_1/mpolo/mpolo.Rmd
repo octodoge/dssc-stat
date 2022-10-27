@@ -18,29 +18,19 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## FSDS - Chapter 1
 
-### Ex X.x
-
-*Here the text of the first exercise.*
-
-**Solution**
-
-Add comments to the solution.
-
-```{r cars, echo=T}
-summary(cars)
-```
-
-### Ex X.x
-
-*Here the text of the second exercise.*
-
-**Solution**
-
-Add comments to the solution.
-
-$$ Y \sim N(0,1)$$
-
 ### Ex 1.44
+
+*Suppose the sample data distribution of* $\{y_i\} = \{y_1,...,y_n\}$ *is very highly skewed to the right, and we take logs and analyze* $\{xi = log(yi)\}$*.*
+
+a. *Is* $\bar x = log(\bar y)$*? Why or why not?*
+b. *Is* $median(\{x_i\}) = log[median(\{y_i\})]$? *Why or why not?*
+c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show that* $exp(\bar x) = (\begin{matrix} \prod_i y_i \end{matrix})^{1/n}$*, called the geometric mean of* $\{y_i\}$*.*
+
+**Solution**
+
+a.
+b.
+c.
 
 ### Ex 1.48
 
