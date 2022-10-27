@@ -27,7 +27,7 @@
 ## M. Polo
 
 * exercises
-  * [ ] FSDS     1.44
+  * [x] FSDS     1.44
   * [x] FSDS     1.48
   * [ ] FSDS     2.16
   * [ ] FSDS     2.27
