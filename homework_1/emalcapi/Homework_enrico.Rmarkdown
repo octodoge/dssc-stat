@@ -132,3 +132,20 @@ curve(dnorm(x, mean=0, sd=1), add=TRUE, lty=1, col=2)
 hist(x,freq = F)
 curve(dunif(x), add=TRUE, lty=1, col=2) 
 ```
+
+
+# Core Statistics
+
+
+## Ex 1.1
+Exponential random variable, $X\ge0$, has pdf $f(x)=\lambda e^{-\lambda x}$.
+1. Find the cdf and the quantile function for $X$.
+2. Find $Pr(X<\lambda)$ and the median of $X$.
+3. Find the mean and variance of $X$.
+
+
+**Solution**
+
+1. The cdf is defined as $F(y)=\int_0^yf(x)dx$ and so we obtain $F[y]=\int_0^y\lambda e^{-\lambda x}dx=1-e^{-\lambda y}$. The quantile function is defined as $F^{-1}[y]$ and so we have $Q_y=\frac{-log(1-y)}{\lambda}$.
+2. $Pr(X<\lambda)=F[\lambda]=1-e^{-\lambda^2}$, while the median is $Q_{0.5}=\frac{-log(0.5)}{\lambda}=\frac{0.7}{\lambda}$. 
+3. The mean is $E[x]=\int_0^\infty xf(x)dx=\int_0^\infty x\lambda e^{-\lambda x}dx$ and using integration by parts we obtain $E[X]=\frac{x}{\lambda}e^{-\lambda x}|_\infty^0+\int^0_\infty -\frac{e^{-\lambda x}}{\lambda}dx=\frac{1}{\lambda}$. For the variance we evaluate $var(x)=E[x^2]+E^2[x]$ adn with the same procedure we obtain $var(x)=\frac{2}{\lambda^2}-\frac{1}{\lambda^2}=\frac{1}{\lambda^2}$
