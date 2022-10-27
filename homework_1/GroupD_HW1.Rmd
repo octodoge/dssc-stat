@@ -16,38 +16,101 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## FSDS - Chapter X 
+## FSDS - Chapter 1
 
-### Ex X.x
+### Ex 1.48
 
-*Here the text of the first exercise.*
+*For a sample* $\{y_i\}$ *of size* $n$*,* $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ *is minimized at* $c$ *= median. Explain why this property holds. (Hint: Starting at* $c$ *= median, what happens to* $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ *as you move away from it in either direction?)*
 
 **Solution**
 
-Add comments to the solution.
+Let the observations be ordered, let $c$ = median, let $a = c+\Delta$ and let $m$ be the number of observations smaller than $a$. <br>
+If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$. <br>
+If $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$. <br>
+So:
 
-```{r cars, echo=T}
-summary(cars)
+$$
+\sum_{i=1}^n \left| y_i-a \right| =
+\sum_{i=1}^m ((c+\Delta)-y_i) + \sum_{i=m+1}^n (y_i - (c+\Delta)) = \\
+m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) = \\
+2m\Delta-n\Delta + \sum_{i=1}^n \left| y_i-c \right| \ge \sum_{i=1}^n \left| y_i-c \right|
+$$
+
+So $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ is minimized at $c$ = median.
+
+## FSDS - Chapter 2
+
+## CS - Chapter 1
+
+### Ex 1.2
+
+*Evaluate* $Pr(X < 0.5, Y < 0.5)$ *if* $X$ *and* $Y$ *have the following joint p.d.f.*
+$$
+f(x,y) = \begin{cases}
+  x+3y^2/2 & 0<x<1 \;\&\; 0<y<1 \\
+  0 & \text{otherwise}.
+\end{cases}
+$$
+
+**Solution**
+
+The probability corresponds to the volume under the portion of interest in the graph:
+
+$$
+\int_0^{1\over2} \int_0^{1\over2} x+{3\over2}y^2 \,dx\,dy =
+\int_0^{1\over2} \left[ {x^2\over2} + {3\over2}y^2x \right]_0^{1\over2} \,dy =
+\int_0^{1\over2} {1\over8}+{3\over4}y^2 \,dy =
+\left[ {1\over8}y + {1\over4}y^3 \right]_0^{1\over2} = {3\over32}
+$$
+
+## CS - Chapter 3
+
+### Ex 3.3
+
+*Rewrite the following, replacing the loop with efficient code:*
+```
+n <- 100000; z <- rnorm(n)
+zneg <- 0; j <- 1
+
+for (i in 1:n) {
+  if (z[i]<0) {
+    zneg[j] <- z[i]
+    j <- j + 1
+  }
+}
+```
+*Confirm that your rewrite is faster but gives the same result.*
+
+**Solution**
+
+Let's time the original code:
+
+```{r, echo=T}
+n <- 100000; z <- rnorm(n)
+zneg <- 0; j <- 1
+
+system.time( #time the original code
+  for (i in 1:n) {
+    if (z[i]<0) {
+      zneg[j] <- z[i]
+      j <- j + 1
+    }
+  }
+)
 ```
 
-### Ex X.x
+Let's time the rewritten code:
 
-*Here the text of the second exercise.*
+```{r, echo=T}
+system.time(
+  opt_zneg <- z[z<0] #rewritten code
+)
+```
 
-**Solution**
+Let's ensure both codes give the same result:
 
-Add comments to the solution.
+```{r, echo=T}
+all(zneg == opt_zneg)
+```
 
-$$ Y \sim N(0,1)$$
-
-## CS - Chapter X 
-
-### Ex X.x
-
-*Here the text of the first exercise from Wood's textbook.*
-
-**Solution**
-
-Add comments to the solution.
-
-$$ X \sim N(0,1)$$
+The rewrite is faster and gives the same result.
