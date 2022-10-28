@@ -18,29 +18,41 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## FSDS - Chapter 1
 
-### Ex X.x
+### Ex 1.44
 
-*Here the text of the first exercise.*
+*Suppose the sample data distribution of* $\{y_i\} = \{y_1,...,y_n\}$ *is very highly skewed to the right, and we take logs and analyze* $\{x_i = log(y_i)\}$*.*
+
+a. *Is* $\bar x = log(\bar y)$*? Why or why not?*
+b. *Is* $median(\{x_i\}) = log[median(\{y_i\})]$? *Why or why not?*
+c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show that* $\begin{matrix} exp(\bar x) = (\prod_i y_i)^{1/n} \end{matrix}$*, called the geometric mean of* $\{y_i\}$*.*
 
 **Solution**
 
-Add comments to the solution.
+a. No, because:
 
-```{r cars, echo=T}
-summary(cars)
+$$
+\bar x = \sum_i log(y_i) \ne log(\sum_i y_i) = log(\bar y)
+$$
+
+b. No, because there is at least one counterexample:
+
+```{r, echo=T}
+y = rgamma(n=2, shape=2)
+x = log(y)
+
+median(x)
+log(median(y))
 ```
 
-### Ex X.x
+However, for larger $n$ they tend to be closer, and for odd $n$ they are equal because $log$ is a monotonically increasing function so it preserves the sample order.
 
-*Here the text of the second exercise.*
+c. They are equal:
 
-**Solution**
-
-Add comments to the solution.
-
-$$ Y \sim N(0,1)$$
-
-### Ex 1.44
+$$
+exp(\bar x) = exp \left( {1\over n} \sum_i x_i \right) = exp \left( {1\over n} \sum_i log(y_i) \right) = \\
+exp \left( \sum_i log(y_i^{1/n}) \right) = \prod_i exp(log(y_i^{1/n})) =
+\left( \prod_i y_i \right)^{1/n}
+$$
 
 ### Ex 1.48
 

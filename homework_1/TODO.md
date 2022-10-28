@@ -27,13 +27,13 @@
 ## M. Polo
 
 * exercises
-  * [ ] FSDS     1.44
-  * [ ] FSDS     1.48
+  * [x] FSDS     1.44
+  * [x] FSDS     1.48
   * [ ] FSDS     2.16
   * [ ] FSDS     2.27
   * [ ] FSDS     2.71
-  * [ ] CS      1.2
-  * [ ] CS      3.3 (hint: use `system.time()` function)
+  * [x] CS      1.2
+  * [x] CS      3.3 (hint: use `system.time()` function)
 
 ## E. Malcapi
 
