@@ -1,0 +1,244 @@
+---
+title: "HW1_Marsich"
+author: "Gaia"
+date: "2022-10-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### (FSDS) Ex 1.45
+
+*Find the Chebyshev inequality upper bound for the proportion of observations falling
+at least (**a**) 1, (**b**) 2, (**c**) 3 standard deviations from the mean. Compare this to the
+approximate proportions for a bell-shaped distribution. Why are the differences so large?*
+
+**Solution**
+
+Consider the Chebyshev inequality as seen during the lectures: given a r.v. $X$ such that $E(X^2) < \infty$ and $a$ constant $a > 0$, then $$Pr(|X| ≥ a)≤ \frac{E(X^2)}{a^2}$$.
+Replacing in this formula $X$ with $X-\mu$ and $a$ with $\lambda \sigma$, knowing that by definition $E((X -\mu)^2) = \sigma^2$: $$Pr(|X-\mu| ≥ \lambda \sigma)≤ \frac{1}{\lambda^2}$$.
+To answer the questions proposed by the exercise, one should just replace, respectively, the value of $\lambda$ with $1$, $2$ and $3$.
+
+a. $Pr(|X-\mu| ≥ \sigma)≤ 1$
+  
+   On the other hand, considering a r.v. $Y\sim N(0,1)$ we have that $$Pr(|Y| ≥ 1) = Pr(Y ≥ 1) + Pr(Y ≤ -1) = 1 - Pr(Y ≤ 1) + Pr(Y ≤ -1)$$ that can be computed as:
+   ```{r, echo=T}
+   1 - pnorm(1, 0, 1) + pnorm(-1, 0, 1)
+   ```
+   
+   
+b. $Pr(|X-\mu| ≥ 2 \sigma)≤ \frac{1}{4} = 0.25$
+
+   On the other hand, considering a r.v. $Y\sim N(0,1)$ we have that $$Pr(|Y| ≥ 2) = Pr(Y ≥ 2) + Pr(Y ≤ -2) = 1 - Pr(Y ≤ 2) + Pr(Y ≤ -2)$$ that can be computed as:
+   ```{r, echo=T}
+   1 - pnorm(2, 0, 1) + pnorm(-2, 0, 1)
+   ```
+   
+   
+c. $Pr(|X-\mu| ≥ 3 \sigma)≤ \frac{1}{9} \approx 0.111$
+
+   On the other hand, considering a r.v. $Y\sim N(0,1)$ we have that $$Pr(|Y| ≥ 3) = Pr(Y ≥ 3) + Pr(Y ≤ -3) = 1 - Pr(Y ≤ 3) + Pr(Y ≤ -3)$$ that can be computed as:
+   ```{r, echo=T}
+   1 - pnorm(3, 0, 1) + pnorm(-3, 0, 1)
+   ```
+
+
+I can observe that for all the three cases, the values computed for the stardard normal distribution are much smaller that the bounds given by the Chebyshev inequality. That may happen because the Chebyshev inequality appears as a very general formula.
+
+
+
+### (FSDS) Ex 1.47
+
+*The* least squares *property of the mean states that the data fall closer to $\overline{y}$ than to any other number $c$, in the sense that:* $$\sum_{i} (y_i - \overline{y})^2 < \sum_{i} (y_i - c)^2$$
+
+*Prove this property by treating $f(c) = \sum_{i} (y_i - c)^2$ as a function of $c$ and deriving the value of $c$ that minimizes it.* 
+
+**Solution**
+
+Defininig as suggested: $$f(c) = \sum_{i=1}^n (y_i - c)^2$$ one can observe that this results in a polynomial expression, so all derivatives of the function exist and are continuous. Therefore, to find the value that minimized $c$: $$f'(c) = -2\sum_{i=1}^n (y_i - c)$$ $$f''(c) = 2n >0 $$
+Setting $0 = f'(c) = -2\sum_{i=1}^n (y_i - c)$ we obtain: $$\sum_{i=1}^n y_i = \sum_{i=1}^n c \Longrightarrow \sum_{i=1}^n y_i = nc \Longrightarrow c=\overline{y}$$
+
+Therefore, for $c=\overline{y}$ the function has a minimum, so for every other $c$ the function cannot have lower values than $f(\overline{y})$.
+
+
+
+
+### (FSDS) Ex 2.10
+
+*A method of statistical inference has probability 0.05 of yielding an incorrect result. How many independent times can the method be used until the probability of all the inferences being correct is less than 0.50?*
+
+**Solution**
+
+If there is a probability of 0.05 of yielding an incorrect result, then the probability to get a correct result in a trial is 0.95. Therefore, since the tests are independent, the probability to have had all correct results after the n-th trial is given by the product of the probabilities to get a correct result. Imposing it to be less than 0.50: $$(0.95)^n < 0.50 \Longrightarrow n>\log_{0.95}{0.50}$$ that is:
+
+```{r, echo=T}
+   log(0.50, 0.95)
+```
+So n should be at least 14.
+
+
+
+
+
+
+
+
+### (FSDS) Ex 2.43
+
+*Consider the exponential $pdf \ f(y; λ) = λe^{-λy}$ and $cdf \ F(y; λ) = 1 − e^{-λy}$, for $y≥0$.*
+
+*a. Find the median*
+
+*b. Find the lower quartile and the upper quartile.*
+
+*c. Find $\mu$ by showing that it equals $\frac{1}{λ}$ times the integral of a gamma $pdf$. Explain why $\mu$ is greater than the median.*
+
+*d. Find $σ$ by finding $E(Y^2)$ using a gamma $pdf$ and using expression (2.3).*
+
+**Solution**
+
+a. The median M is defined as the quantile $x_{0.5}$, so: $$M = x_{0.5} = F^{-1}(0.5) = min (x_{0.5}|F(x_{0.5}) ≥ 0.5) \Longrightarrow 0.5 = 1 − e^{-λM} \Longrightarrow M = -\frac{\ln0.5}{\lambda}$$
+   To get an approximate result:
+   ```{r, echo=T}
+   log(0.50)
+   ```
+   So it is, approximately: $M\approx\frac{0.693}{\lambda}$
+
+
+b. To find lower and upper quartile one has to proceed quite similarly to point a.: $$x_{0.25} = F^{-1}(0.25) \Longrightarrow 0.25 = 1 − e^{-λx_{0.25}} \Longrightarrow x_{0.25} = -\frac{\ln0.75}{\lambda}$$
+   To get an approximate result:
+   ```{r, echo=T}
+   log(0.75)
+   ```
+   So it is, approximately: $x_{0.25}\approx\frac{0.288}{\lambda}$
+
+   $$x_{0.75} = F^{-1}(0.75) \Longrightarrow 0.75 = 1 − e^{-λx_{0.75}} \Longrightarrow x_{0.75} = -\frac{\ln0.25}{\lambda}$$
+   To get an approximate result:
+   ```{r, echo=T}
+   log(0.25)
+   ```
+   So it is, approximately: $x_{0.75}\approx\frac{1.386}{\lambda}$
+   
+   
+c. By definition, the expected value $E(Y) = \mu$ is defined as: $$E(Y) = \int_{0}^{+\infty} yλe^{-λy}\, dy \Longrightarrow E(Y)= \frac{1}{\lambda}\int_{0}^{+\infty} ze^{-z}\, dz \Longrightarrow E(Y) = \frac{1}{\lambda}$$
+having changed the variable, with $z=\lambda y$, and used the integration by parts
+
+   By definition, $pdf$ and $cdf$ are related by this formula: $$F_{gamma}(x) = \int_{-\infty}^{x} f_{gamma}(y)\, dy \ , \ \ \lim_{x \to +\infty} F_{gamma}(x) = 1 \Longrightarrow \int_{-\infty}^{+\infty} f_{gamma}(y)\, dy = 1 \Longrightarrow E(X) = \frac{1}{\lambda}\int_{-\infty}^{+\infty} f_{gamma}(y)\, dy$$
+   Having a look at the graph of the $pdf$ of the exponential distribution:
+   ```{r, echo=T}
+   plot(function(y) dexp(y, rate = 3), xlim = c(0, 5), ylab=" f(y) ", xlab="y", main = "Exponential distribution with λ = 3, pdf")
+   ```
+   
+   one observes that the value of the function $f(y; \lambda)$ is relatively high for values close to zero but decreases very quickly until being, on the graph, confountable with the null value for $y ≥ 2$. We can somehow imagine that on the right outliers are described, since the probability of getting one of them is very low, while on the left (let's say from $0$ to $1$) there are the "real values". Since the median is less affected by outliers than the mean, it follows that the mean is greater (more "to the right") than the median.
+  
+
+d. The expression (2.3) states that: $var(Y) = \sigma^2 = E(Y^2) - \mu^2$. By definition: $$E(Y^2) = \int_{0}^{+\infty} y^2\lambda e^{-\lambda y}\, dy $$ Compute the gamma $pdf$ for $\alpha = 3$: $$f_{gamma}(x) = \frac{\lambda^3 y^2 e^{-\lambda y}}{\int_{0}^{+\infty} y^2 e^{-y}\, dy}$$ Using the integration by parts for two times we obtain that the integral to the denominator is equal to 2: $\int_{0}^{+\infty} y^2 e^{-y}\, dy = 2$. Therefore we can rewrite $E(Y^2)$ as: $$E(Y^2) = 2\frac{1}{\lambda^2}\int_{0}^{+\infty} f_{gamma}(x)\, dx$$ Being, as already seen: $\int_{0}^{+\infty} f_{gamma}(x) = \lim_{x \to +\infty} F_{gamma}(x) = 1$, it follows, thanks to expression (2.3): $$\sigma^2 = \frac{2}{\lambda^2} - \left (\frac{1}{\lambda}\right)^2 \Longrightarrow \sigma = \frac{1}{\lambda}$$
+  
+  
+
+
+
+
+### (FSDS) Ex 2.69
+
+*For a sequence of independent, identical binary trials, explain why the probability distribution for $Y =$ the number of successes before failure number $k$ occurs has probability function* $$f(y; k, π) = \binom{y+k-1}{y}π^y(1-π)^k$$ *This distribution, studied further in Section 7.5.2 for analyzing count data, is called the* $negative \ binomial \ distribution$.
+
+**Solution**
+
+The total amount of trials is $y+k$, $y$ being the successes and $k$ being the failures. Note that, by the text of the problem, the last trial must be part of the $k$ failures. The probability that this happens in a specific order (for example, first of all we have all the $y$ successes and the all the $k$ failures) is simply given by: $$π^y(1−π)^k$$ being the trials independent. However, the order is not important, so we have to consider all the possible permutations of failures and successes, having fixed the last trial as a failure. Therefore the number of permutations is: $$\binom{y+k-1}{y}$$ since there are $k-1$ failures that are "all the same" and $y$ successes that are "all the same" as well. The obtain the final formula, we just have to multiply the two results, getting: $$f(y; k, π) = \binom{y+k-1}{y}π^y(1-π)^k$$
+
+
+
+
+### (CS) Ex 1.6
+
+*Let $X$ and $Y$ be non-independent random variables, such that $var(X) = \sigma^2_x$, $var(Y) = \sigma^2_y$ and $cov(X, Y) = \sigma^2_{xy}$. Using the result from Section 1.6.2, find $var(X + Y)$ and $var(X − Y)$.*
+
+**Solution**
+
+The (particular) result mentioned in the text of the problem is: $$a^TZ ∼ N(a^T\mu, a^T\Sigma a)$$
+
+a. Here we have that: $$a^T = \left (\begin{matrix} 1 & 1 \end{matrix} \right) $$ $$Z = \left (\begin{matrix} X \\ Y \end{matrix} \right ) $$ $$\mu = \left (\begin{matrix} \mu_x \\ \mu_y \end{matrix} \right )$$ $$\Sigma = \left (\begin{matrix} \sigma^2_{x} & \sigma^2_{xy} \\ \sigma^2_{xy} & \sigma^2_{y} \end{matrix} \right )$$
+
+   Therefore, from the formula previously indicated: $$var(X+Y) = a^T\Sigma a = \left (\begin{matrix} 1 & 1 \end{matrix} \right) \left (\begin{matrix} \sigma^2_{x} & \sigma^2_{xy} \\ \sigma^2_{xy} & \sigma^2_{y} \end{matrix} \right )\left (\begin{matrix} 1 \\ 1 \end{matrix} \right ) = \sigma^2_{x} + 2\sigma^2_{xy}+ \sigma^2_{y}$$
+   
+
+b. Here we have that: $$a^T = \left (\begin{matrix} 1 & -1 \end{matrix} \right)$$ $$Z = \left (\begin{matrix} X \\ Y \end{matrix} \right )$$ $$\mu = \left (\begin{matrix} \mu_x \\ \mu_y \end{matrix} \right )$$ $$\Sigma = \left (\begin{matrix} \sigma^2_{x} & \sigma^2_{xy} \\ \sigma^2_{xy} & \sigma^2_{y} \end{matrix} \right )$$
+
+   Therefore, from the formula previously indicated: $$var(X-Y) = a^T\Sigma a = \left (\begin{matrix} 1 & -1 \end{matrix} \right) \left (\begin{matrix} \sigma^2_{x} & \sigma^2_{xy} \\ \sigma^2_{xy} & \sigma^2_{y} \end{matrix} \right )\left (\begin{matrix} 1 \\ -1 \end{matrix} \right ) = \sigma^2_{x} - 2\sigma^2_{xy}+ \sigma^2_{y}$$
+
+
+
+
+
+
+
+
+
+### (CS) Ex 3.5
+
+*Consider solving the matrix equation $Ax = y$ for $x$, where $y$ is a known $n$ vector and $A$ is a known $n×n$ matrix. The formal solution to the problem is $x = A^{−1}y$, but it is possible to solve the equation directly, without actually forming $A^{-1}$. This question explores this direct solution. Read the help file for `solve` before trying it.*
+
+a. *First create an $A$, $x$ and $y$ satisfying $Ax = y.$*
+   ```{r, eval=FALSE}
+   set.seed(0); n <- 1000
+   A <- matrix(runif(n*n),n,n); x.true <- runif(n)
+   y <- A%*%x.true
+   ```
+   
+   The idea is to experiment with solving $Ax = y$ for $x$, but with a known truth to compare the answer to.
+
+
+b. *Using `solve`, form the matrix $A^{−1}$ explicitly and then form $x_1 = A^{−1}y$. Note how long this takes. Also assess the mean absolute difference between `x1` and `x.true` (the approximate mean absolute ‘error’ in the solution).*
+
+c. *Now use `solve` to directly solve for $x$ without forming $A^{−1}$. Note how long this takes and assess the mean absolute error of the result.*
+
+d. *What do you conclude?*
+
+**Solution**
+
+Following the instructions given by the text of the problem:
+
+a.
+   ```{r, echo=T}
+   set.seed(0); n <- 1000
+   A <- matrix(runif(n*n),n,n); x.true <- runif(n)
+   y <- A%*%x.true
+   ```
+
+b.
+   ```{r, echo=T}
+   now1 <- Sys.time() 
+   I = diag(n)
+   A1 = solve(A, I) #inverse matrix of A, using the definition of it
+   x1 = A1%*%y #x found with 1° method
+   e1 <- abs(x1 - x.true)
+   sum1 <- sum(e1)
+   MAE1 <- sum1/n
+   print(Sys.time() - now1)
+   print(MAE1)
+   ```
+
+
+c.
+   ```{r, echo=T}
+   now2 <- Sys.time()
+   x2 = solve(A, y) #x found with 2° method
+   e2 <- abs(x2 - x.true)
+   sum2 <- sum(e2)
+   MAE2 <- sum2/n
+   print(Sys.time() - now2)
+   print(MAE2)
+   ```
+
+d. We printed for both the two methods the time required to do the computation of $x$ and the mean absolute difference. One can observe that the method in point c. is better since both the time to compute the result and the error are less than those in point b. We imagine that in particular the value of the error is due to the fact that in point b. there are a higher amout of computations to be done. Regarding the time, in point b. operations are, overall, heavier than the ones in point c.
+
+
+
+
+
+
+
+
