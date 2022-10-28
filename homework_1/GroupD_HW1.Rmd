@@ -18,6 +18,45 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## FSDS - Chapter 1
 
+
+### Ex 1.43
+*For a sample with mean $\bar y$, show that adding a constant $c$ to each observation changes the mean to $\bar y + c$, and the standard deviation s is unchanged. Show that multiplying each observation by $c$ changes the mean to $c \bar y$ and the standard deviation to $|c|s$.*
+
+
+**Solution**
+
+
+```{r, echo=T}
+#Create a sample with pdf N(4,3)
+b <- rnorm(n=1000,4,3)
+#Evaluate the mean and variance 
+mean=mean(b)
+var=var(b)
+#Adds c=2 to each element of the sample 
+c=2
+b1=b+c
+#Compare the mean and variance (since the standard deviation is the square of the variance) 
+mean1=mean(b1)
+var1=var(b1)
+mean+c==mean1
+var==var
+par(mfrow=c(1,2))
+hist(b1,freq = F)
+hist(b,freq = F)
+
+#multiply the valuse by c=2
+b1=c*b
+#Compare the mean and variance  
+mean1=mean(b1)
+var1=var(b1)
+mean1==mean*c
+var1==c**2*var
+par(mfrow=c(1,2))
+hist(b1,freq = F)
+hist(b,freq = F)
+```
+
+
 ### Ex 1.44
 
 *Suppose the sample data distribution of* $\{y_i\} = \{y_1,...,y_n\}$ *is very highly skewed to the right, and we take logs and analyze* $\{x_i = log(y_i)\}$*.*
@@ -76,7 +115,110 @@ So $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ is minimized at $c$
 
 ## FSDS - Chapter 2
 
+### Ex 2.3
+*According to recent data at the FBI website, of all Blacks slain in the U.S., $85%$ are slain by Blacks, and of all Whites slain, $93%$ are slain by Whites. Let $Y = victim’s race$ and $X = offender’s race$.*
+
+1. *Which conditional distribution do these probabilities refer to, $Y$ given $X$, or $X$ given $Y$ ?*
+2. *Given that a murderer was White, what other probability do you need to estimate the conditional probability that the victim was White? To illustrate, fix a value of $0.60$ for that other probability and find the conditional probability.*
+
+
+**Solution**
+
+
+1. The conditional distribution we are referring is $P(X|Y)$ since we are considering the probability that $X=white\: or\: black$ *among the all population* of white or black victim $(Y)$
+2. For the Bayes theorem we have that:
+$$
+P(Y=white|X=white)=\frac{P(Y=white)P(X=white|Y=white)}{P(X=white)}
+$$
+But from $\frac{P(X\cap Y_i)}{P(Y_i)}=P(X|Y_i)$ it follows that $P(X)=\sum_iP(Y_i)P(X|Y_i)$, so we can obtain: 
+$$
+P(Y=white|X=white)=\frac{P(Y=white)P(X=white|Y=white)}{P(Y=white)P(X=white|Y=white)+P(Y=blacck)P(X=white|Y=black)}
+$$
+Having the value of $P(Y=white)=0.6$ we obtain $P(Y=white|X=white)=0.90$
+
+
+### Ex 2.19
+*Lake Wobegon Junior College admits students only if they score above 400 on a standardized achievement test. Applicants from group A have a mean of 500 and a standard deviation of 100 on this test, and applicants from group B have a mean of 450 and a standard deviation of 100. Both distributions are approximately normal, and both groups have the same size.*
+1. *Find the proportion not admitted for each group.*
+2. *Of the students who are not admitted, what proportion are from group B?*
+3. *A state legislator proposes that the college lower the cutoff point for admission to 300, thinking that the proportion of not-admitted students who are from group B would decrease. If this policy is implemented, determine the effect on the answer to (2)*
+
+
+**Solution**
+```{r, echo=T}
+#Evaluating the proportion of not admitted students using the comulative distribution function 
+A_not_admitted=pnorm(400,mean=500,sd=100)
+B_not_admitted=pnorm(400,mean=450,sd=100)
+#This are the value of the proportion in % of the not admetted students 
+A_not_admitted
+B_not_admitted
+#-------------------------------------------
+#Since the total namber of student in each group it's the same we can evaluate the 
+#propotion of not admitted student of group B among all the non admetted student like this: 
+B_not_admitted/(A_not_admitted+B_not_admitted)
+#-----------------------------------------------------
+#Here we show that decreasing the threshold of the exam 
+#the proportion of non admetted student coming from group B increase 
+A_not_admitted=pnorm(300,mean=500,sd=100)
+B_not_admitted=pnorm(300,mean=450,sd=100)
+B_not_admitted/(A_not_admitted+B_not_admitted)
+
+```
+
+
+### Ex 2.52
+*The pdf $f$ of a $N(\mu,\sigma)$ distribution can be derived from the standard normal pdf $\phi(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}\: whit\:z\in(-\infty,\infty)$.*
+1. *Show that the normal cdf $F$ relates to the standard normal cdf $\Phi$ by $F[y]=\Phi[\frac{y-\mu}{\sigma}]$.*
+1. *From (1), show that $f(y)=\frac{1}{\sigma}\phi(\frac{y-\mu}{\sigma})$, and show that $f(y;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}e^{\frac{(y-\mu)^2}{2\sigma}}$.*
+
+
+**Solution**
+
+
+Abbiamo che $F(y)=\int^y_{-\infty}f(z)dz$ while $\Phi(y)=\int^y_{-\infty}\phi(z)dz$ so $\Phi[\frac{y-\mu}{\sigma}]=\int^{\frac{y-\mu}{\sigma}}_{-\infty}\phi(z) dz$ and  making a change of variable from $z$ to $z'=z\sigma+\mu$ we obtain
+$$
+\int^{\frac{y-\mu}{\sigma}}_{-\infty}\phi(z) dz=\int^y_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z'-\mu)^2}{2\sigma^2}} dz'
+$$
+That is exactly $F[y]$. Furthermore from $F[y]=\int^y_{-\infty}f(z)dz=\Phi[\frac{y-\mu}{\sigma}]=\int^y_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z'-\mu)^2}{2\sigma^2}} dz'=\int^y_{-\infty}\frac{1}{\sigma}\phi(\frac{(z-\mu)^2}{\sigma}) dz'\: \forall y$ we can affirm that $f(y)=\frac{1}{\sigma}\phi(\frac{(z-\mu)^2}{\sigma})$.
+
+
+### Ex 2.53
+
+*If $Y$ is a standard normal random variable, with cdf $\Phi$, what is the probability distribution of $X=\Phi(Y)$? Illustrate by randomly generating a million standard normal random variables, applying the cdf function $\Phi$ to each, and plotting histograms of the (a) $y$ values, (b) $x$ values.*
+
+**Solution**
+
+
+I'll suppose that the random variable $\Phi(Y)$, with $\Phi$ the cdf of the standard normal distribution, will have a distribution function that is the uniform distribution function since the cdf of a random variable has the property to give a uniform distributed random variable if evaluated on the random variable itself.
+```{r, echo=T}
+#Generating a sample of one million of variable with standard normal distribution 
+y=rnorm(1000000,mean=0,sd=1)
+#Generating the sample of one million of random variable x that correspond to the cdf evaluated on y 
+x=pnorm(y,mean=0,sd=1)
+#Comparign the histogram of the two samples
+par(mfrow=c(1,2))
+hist(y,freq = F)
+curve(dnorm(x, mean=0, sd=1), add=TRUE, lty=1, col=2) 
+hist(x,freq = F)
+curve(dunif(x), add=TRUE, lty=1, col=2) 
+```
+
+
 ## CS - Chapter 1
+
+### Ex 1.1
+*Exponential random variable, $X\ge0$, has pdf $f(x)=\lambda e^{-\lambda x}$.*
+1. *Find the cdf and the quantile function for $X$.*
+2. *Find $Pr(X<\lambda)$ and the median of $X$.*
+3. *Find the mean and variance of $X$.*
+
+
+**Solution**
+
+1. The cdf is defined as $F(y)=\int_0^yf(x)dx$ and so we obtain $F[y]=\int_0^y\lambda e^{-\lambda x}dx=1-e^{-\lambda y}$. The quantile function is defined as $F^{-1}[y]$ and so we have $Q_y=\frac{-log(1-y)}{\lambda}$.
+2. $Pr(X<\lambda)=F[\lambda]=1-e^{-\lambda^2}$, while the median is $Q_{0.5}=\frac{-log(0.5)}{\lambda}=\frac{0.7}{\lambda}$. 
+3. The mean is $E[x]=\int_0^\infty xf(x)dx=\int_0^\infty x\lambda e^{-\lambda x}dx$ and using integration by parts we obtain $E[X]=\frac{x}{\lambda}e^{-\lambda x}|_\infty^0+\int^0_\infty -\frac{e^{-\lambda x}}{\lambda}dx=\frac{1}{\lambda}$. For the variance we evaluate $var(x)=E[x^2]+E^2[x]$ adn with the same procedure we obtain $var(x)=\frac{2}{\lambda^2}-\frac{1}{\lambda^2}=\frac{1}{\lambda^2}$
+
 
 ### Ex 1.2
 
