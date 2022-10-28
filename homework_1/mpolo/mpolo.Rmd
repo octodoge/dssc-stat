@@ -101,8 +101,8 @@ b. **TBD**
 Let's simulate and plot 1000 observations:
 
 ```{r, echo=T}
-x = rnorm(1000, 162, 7)
-y = rnorm(1000, 3+0.4*x, 8)
+x = rnorm(n=1000, mean=162, sd=7)
+y = rnorm(n=1000, mean=3+0.4*x, sd=8)
 plot(x, y)
 ```
 
