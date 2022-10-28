@@ -100,7 +100,26 @@ b. **TBD**
 
 **Solution**
 
-TBD
+Let's simulate and plot 1000 observations:
+
+```{r, echo=T}
+x = rnorm(1000, 162, 7)
+y = rnorm(1000, 3+0.4*x, 8)
+plot(x, y)
+```
+
+Let's approximate the marginal means and standard deviations:
+
+```{r, echo=T}
+mean(x); mean(y); sd(x); sd(y)
+```
+
+Let's approximate the correlation:
+
+```{r, echo=T}
+cor(x, y)
+```
+$X$ and $Y$ are slightly positively correlated, so when $X$ > mean(x) then typically $Y$ > mean(y), and when $X$ < mean(x) then typically $Y$ < mean(y).
 
 ### Ex 2.71
 
