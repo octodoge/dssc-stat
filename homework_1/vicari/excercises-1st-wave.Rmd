@@ -1,0 +1,342 @@
+---
+title: "exercises 1st wave"
+author: "group D"
+date: "2022-10-25"
+output: html_document
+---
+
+### Ex 1.41
+
+*To investigate how y¯ can vary from sample to sample of size n, for the simulation from  a bell-shaped population shown at the end of Section 1.5.3, take (a) 10,000 random  samples of size n = 30 each; (b) 10,000 random samples of size n = 1000 each. In  each case, form a histogram of the 10,000 y¯ values and find their standard deviation.  Compare results and explain what this simulation reveals about the impact of sample  size on how study results can vary. (Chapter 3 shows that in sampling from a population  with standard deviation 16, the theoretical standard deviation of y¯ values is 16/ √ n.) *
+
+
+
+
+**Solution**
+```{r ex 1.41, echo=TRUE}
+randomSample <- 10000
+y1 <- y2 <- rep(NA,randomSample)
+
+for (i in 1:randomSample) {
+  y1[i] <- mean(rnorm(30,100,16))
+  y2[i] <- mean(rnorm(1000,100,16))
+}
+mean(y1);sd(y1);hist(y1)
+mean(y2);sd(y2);hist(y2)
+```
+
+In the second case we can see that we have a smaller standard deviation so data are more clustered to the mean than the first case.
+
+In the last part of the exercise we compare the theoretical formula (sampling from a population with standard deviation 16, the theoretical standard deviation of y¯ values is 16/ √ n)
+
+```{r comparison with theoretical sd formula, echo=TRUE}
+16/sqrt(30)
+16/sqrt(1000)
+
+```
+they are the approximate same results of the previous standard deviations found
+
+
+### Ex 2.5
+
+*Suppose that a person is equally likely to be born on any of 365 days of the year.*  
+
+*(a) For three people selected randomly, explain why the probability that they all have different  birthdays is [(365)(364)(363)]/3653.*  
+
+*(b) Show that if at least 23 people attend a social party, the probability exceeds 0.50 that at  least two people have the same birthday. State any further assumptions needed for your  solution. (The R function pbirthday(n) gives the probability that at least 2 of n people  have the same birthday.)* 
+
+*(c) Use a simulation to show that if 50 people attend the party, the probability is 0.97 of at  least one common birthday. (If results seem counterintuitive, notice how the number of  pairs of attendees increases as the number of attendees n increases.)  *
+
+**Solution**
+
+a) that is because these are indipendent events and 365 is the probability that the first person is born in 1 day of the 365. In the second probability we have 364 because we do not want the second person to be born the same day of the first person. Same thinking applied with the third person. (365)^3 is total sample points for the 3 birthdays
+
+b)
+following code shows the probability increasing the number of people
+
+```{r part b ex 2.5, echo=TRUE}
+o <- 365
+pr <- 1/365
+res <- 1
+for (i in 1:23 ) {
+  res = res * pr * o 
+  cat(i, " -- ",res)
+  print(' ')
+  o = o - 1
+  
+}
+#same result with pbirthday function
+#for (i in 1:50 ) {
+#  cat(" - it",i, "with p:",1 - pbirthday(i))}
+```
+
+
+Probability that at least 2 out of 23 have the same birthday is 1 − 0.493 = 0.507
+
+c)
+
+the following loop create 100000 times a sample of 50 observation of people's birthday attending a party( with the unique() function duplicates are removed so the variable ind is 1 everytime the sample has duplicates). At the end we divide ind with total number of samples to get the probability
+```{r part c ex 2.5, echo=TRUE}
+ind<-0;iter<- 100000
+for(i in 1:iter){
+  s<-sample(1:365,50,replace=TRUE);d<- unique(s)
+  ind<-ind+as.numeric(length(d)!=length(s)) }
+ind/iter
+```
+### Ex 2.7 
+
+*For the simulation at the end of Section 2.3.1, explain why you could also simulate the mean  with a single binomial experiment of 30 million observations and probability 0.50 of a head for  each, dividing by 10,000,000. Do this and compare the result to the theoretical expected value.  *
+
+**Solution**
+
+simulate 10000000 times the no. of successes in 3 trials
+last rbinom() simulate what the exercise is asking to do.
+```{r ex 2.7, echo=TRUE}
+y <- rbinom(10000000,3,0.50) 
+head(y, 10)
+mean(y)
+sd(y)
+
+rbinom(1,30000000,0.50)/10000000
+```
+theoretical expected value=1.5000 (that is p * n = 0.5 * 3).
+Let's see for example this (very simplified example)
+yx <- rbinom(10,3,0.50) 
+with result:
+1 2 1 2 0 1 2 2 1 3
+so the mean is 
+(0+ 4 * 1 + 4 * 2 + 1 * 3)/10 
+with 10 number of samples
+
+that is the same if we take a single sample of 10 trials that
+give us 15 success and then we divide by 10
+15/10
+
+
+
+### Ex 2.21
+
+*Plot the gamma distribution by fixing the shape parameter k = 3 and setting the scale parameter  = 0.5, 1, 2, 3, 4, 5. What is the effect of increasing the scale parameter? (See also Exercise 2.48.)*
+
+**Solution**
+
+```{r ex 2.21, echo=TRUE}
+xx <- seq (0,10, l = 1000)
+plot(xx, dgamma(xx, shape = 3, scale = .5), xlab ="x", ylab ="f(x)", type ="l")
+lines(xx, dgamma(xx, shape = 3, scale = 1), col = 2)
+lines(xx, dgamma(xx, shape = 3, scale = 2), col = 3)
+lines(xx,  dgamma(xx, shape = 3, scale = 3), col = 4)
+lines(xx,  dgamma(xx, shape = 3, scale = 4), col = 5)
+lines(xx,  dgamma(xx, shape = 3, scale = 5), col = 6)
+
+```
+
+Looking at the plot we can see that Mean and standard deviation both increase(their values are proportional to 1/λ).
+
+### Ex 2.67
+
+*For n observations {yi}, let y(1) ≤ y(2) ≤ ⋯ ≤ y(n) denote their ordered values, called order statistics. Let qi be the i/(n + 1) quantile of the standard normal distribution, for  i = 1...., n. When {yi} are a random sample from a normal distribution, the plot of the points  (q1, y(1)),..., (qn, y(n)) should approximately follow a straight line, more closely so when n is  large. This normal quantile plot is a special case of a quantile-quantile (Q-Q) plot. The  R appendix of this book presents details.*                                                                  
+*(a) Randomly generate (i) n = 10, (ii) n = 100, (iii) n = 1000 observations from a N(0, 1)  distribution and construct the normal quantile plot each time, using software such as the  R functions rnorm and qqnorm. Note that as n increases the points cluster more tightly  along the line y = x, which you can add to the plot with command abline(0, 1).*                                                              
+*(b) Randomly generate 1000 observations from a N(100, 162) distribution of IQ’s and construct the normal quantile plot. What is the slope of the line approximating these points?  *                                                                          
+*(c) Randomly generate 1000 observations from the (i) exponential distribution (2.2), (ii) uniform distribution over (0, 1), using software such as the R functions rexp and runif. Construct the normal quantile plot in each case. Explain how they reveal the non-normality  of the data. *
+
+*(d) For case (ii) in (c), find appropriate uniform quantiles for which the Q-Q plot would be  approximately linear. Construct the plot.*
+
+**Solution**
+
+a)
+```{r ex 2.67 a, echo=TRUE}     
+Y10 <-rnorm(10)
+Y100 <-rnorm(100)
+Y1000 <-rnorm(1000)
+
+qqnorm(Y10,col='blue',main='Y10~ N(0,1)'); abline(0,1)
+qqnorm(Y100,col='blue',main='Y100~ N(0,1)'); abline(0,1)
+qqnorm(Y1000,col='blue',main='Y1000~ N(0,1)'); abline(0,1)
+```
+
+as n increase points cluster more close to the y = x line
+
+b)
+```{r ex 2.67 b, echo=TRUE}
+yb <- rnorm(1000, 0, 16)
+qqnorm(yb)
+abline(0,16)
+```
+we change the values of abline() function and we find out that the slope of points is about 16
+
+c)
+the plot for the exponential distribution shows that, since the distribution is right skewed, there are some quite large observations but no very small observations, reflecting its lower boundary of 0 for possible values.
+
+```{r ex 2.67 c part a, echo=TRUE}
+ye <- rexp(1000)
+
+qqnorm(ye,col='blue', main='Y3 ~ exp(1)') 
+```
+
+the plot for the uniform distribution shows that there are fewer observations in the tails than expected with normal distribution.
+
+```{r ex 2.67 c part b, echo=TRUE}
+yu <- runif(1000)
+
+qqnorm(yu, col='blue', main='Y4 ~ uniform(0,1)')  
+```
+
+d) 
+
+qunif gives the quantile function for the uniform distribution;
+c(1:n)/(n+1) is the vector evaluated as in the text of the exercise 
+"Let qi be the i~(n + 1) quantile of the standard normal distribution ,for
+i = 1. ...,n."
+we sort the vector of values generated from runif()
+we build the plot that compares sorted values of yu with quantiles found before
+
+```{r ex 2.67 d, echo=TRUE}
+yu <- runif(1000)
+n=1000
+q=qunif(c(1:n)/(n+1))
+yu=sort(yu)
+plot(q,yu)
+
+```
+so for the uniform(0,1) the appropriate quantiles are q_i = i/(n+1)
+
+### Ex 1.8 
+
+*If log(X) ∼ N(μ, σ2), find the p.d.f. of X.*
+
+**Solution**
+
+Given that log(X) ∼ N(μ, σ2)
+
+The cumulative distribution function of X is,
+
+$$=F_x(X) $$
+$$=Pr[X \leq x] $$
+
+applying logarithm and operations that preserve inequality direction
+
+$$=Pr[logX \leq log x] ; x > 0 $$
+$$=Pr \left[ \frac{logX - \mu}{\sigma} \leq \frac{logx - \mu}{\sigma}\right] ; x > 0 $$
+$$=\Phi \left( \frac{logx - \mu}{\sigma} \right) ; x > 0 $$
+that is the probability of the cumulative function of the normal standard distribution
+
+the pdf of X is
+$$= f_x(x) $$
+$$= \frac{d}{dx} F_x(X) $$
+
+$$= \phi \left( \frac{log x - \mu}{\sigma} \right) \frac{1}{x\sigma} ; x > 0 $$
+$$=\frac{1}{x\sigma \sqrt 2\pi}e^{- \frac{1}{2} \left( \frac{log x - \mu}{\sigma}  \right)^2}  ; 0 < x < \infty $$
+X follows log normal distribution
+
+### Ex 3.6 
+
+*The empirical cumulative distribution function for a set of measurements {xi : i = 1, . . . n} is*
+$$\hat{F}(x) = \frac{\#{x_i < x}}{n}$$
+*where #{xi < x} denotes ‘number of xi values less than x’. When answering the following, try to ensure that your code is commented, clearly structured, and tested. To test your code, generate random samples using rnorm, runif, etc.*
+
+*a. Write an R function that takes an unordered vector of observations x and returns the values of the empirical c.d.f. for each value, in the order corresponding to the original x vector. See ?sort.int.*
+
+*b. Modify your function to take an extra argument plot.cdf, that when TRUE will cause the empirical c.d.f. to be plotted as a step function over a suitable x range.*
+
+**Solution**
+
+a) 
+
+the function is cdf(x) and takes in the set of observed values x.
+
+Declare variable x_m denoting set of measured values.
+
+First sort the elements of x_m using sort().
+ 
+Then using while loop for set of observed values check for how many number of x_m’s is x_m
+ 
+Print cdf of each element of x.
+
+
+```{r ex 3.6 a, echo=TRUE}
+cdf <- function(x){
+  n<- 1000 # number of samples
+  x_m <- rnorm(n,0,n/2) #generate set of measurements
+  x_m <- sort(x_m) #sort measurements
+  cdf <- c() #initialize vector for cdf
+  
+  for (i in 1:length(x)){
+    j <- 1
+    while((x_m[j]<x[i])&& (j-1)<length(x_m)){
+      j <- j+1      
+    }
+    cdf <- c(cdf, ((j-1)/length(x_m)))
+  }
+  
+  #print cdf of each corresponding x
+  print("Corresponding c.d.f.")
+  print(cdf)
+    
+}
+
+#generate observations
+n<- 20
+m <- 0
+x<- rnorm(n,m,n)
+print("observed values")
+print(x)
+
+#calling the function
+cdf(x)
+
+```
+
+b)
+
+Add an argument plot.cdf which when TRUE the next process continues to get stepwise plot.
+
+Sort elements of x and cdf using sort.
+
+Using plot function with type ’s’ plot the step function of c.d.f. with respect to observed values.
+
+```{r ex 3.6 b, echo=TRUE}
+cdf <- function(x,plot.cdf){
+  n<- 1000 # number of samples
+  x_m <- rnorm(n,0,n/2) #generate set of measurements
+  x_m <- sort(x_m) #sort measurements
+  cdf <- c() #initialize vector for cdf
+  
+  for (i in 1:length(x)){
+    j <- 1
+    while((x_m[j]<x[i])&& (j-1)<length(x_m)){
+      j <- j+1      
+    }
+    cdf <- c(cdf, ((j-1)/length(x_m)))
+  }
+  
+  #print cdf of each corresponding x
+  print("Corresponding c.d.f.")
+  print(cdf)
+  
+  
+    
+    #for plotting cdf in the form of steps
+    if(plot.cdf == TRUE){
+      
+      x<-sort(x)
+      cdf<- sort(cdf)
+      plot(x,cdf,type='s',xlab="Observed values", ylab = "c.d.f.")
+    }
+    
+    
+}
+
+#generate observations
+n<- 20
+m <- 0
+x<- rnorm(n,m,n)
+print("observed values")
+print(x)
+plot.cdf <- TRUE
+
+#calling the function
+cdf(x,plot.cdf)
+
+```
+
