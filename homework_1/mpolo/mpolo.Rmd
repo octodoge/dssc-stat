@@ -40,8 +40,7 @@ b. No, because there is at least one counterexample:
 y = rgamma(n=2, shape=2)
 x = log(y)
 
-median(x)
-log(median(y))
+median(x); log(median(y))
 ```
 
 However, for larger $n$ they tend to be closer, and for odd $n$ they are equal because $log$ is a monotonically increasing function so it preserves the sample order.
@@ -88,8 +87,7 @@ b. *Would you expect the Poisson distribution to better describe, or more poorly
 a. No, because the Poisson distribution has mean = variance, while our sample has very different values:
 ```{r, echo=T}
 x = c(10, 8, 14, 7, 21, 44, 60)
-mean(x)
-var(x)
+mean(x); var(x)
 ```
 
 b. **TBD**
