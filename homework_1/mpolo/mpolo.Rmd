@@ -78,9 +78,33 @@ So $\begin{matrix} \sum_i \left| y_i-c \right| \end{matrix}$ is minimized at $c$
 
 ### Ex 2.16
 
+*Each day a hospital records the number of people who come to the emergency room for treatment.*
+
+a. *In the first week, the observations from Sunday to Saturday are 10, 8, 14, 7, 21, 44, 60. Do you think that the Poisson distribution might describe the random variability of this phenomenon adequately. Why or why not?*
+b. *Would you expect the Poisson distribution to better describe, or more poorly describe, the number of weekly admissions to the hospital for a rare disease? Why?*
+
+**Solution**
+
+a. No, because the Poisson distribution has mean = variance, while our sample has very different values:
+```{r, echo=T}
+x = c(10, 8, 14, 7, 21, 44, 60)
+mean(x)
+var(x)
+```
+
+b. **TBD**
+
 ### Ex 2.27
 
+*The distribution of* $X$ *= heights (cm) of women in the U.K. is approximately* $N(162,7^2)$*. Conditional on* $X = x$*, suppose* $Y$ *= weight (kg) has a* $N(3.0 + 0.40x, 8^2)$ *distribution. Simulate and plot 1000 observations from this approximate bivariate normal distribution. Approximate the marginal means and standard deviations for* $X$ *and* $Y$*. Approximate and interpret the correlation.*
+
+**Solution**
+
+TBD
+
 ### Ex 2.71
+
+TBD
 
 ## CS - Chapter 1
 
