@@ -136,6 +136,23 @@ P(Y=white|X=white)=\frac{P(Y=white)P(X=white|Y=white)}{P(Y=white)P(X=white|Y=whi
 $$
 Having the value of $P(Y=white)=0.6$ we obtain $P(Y=white|X=white)=0.90$
 
+### Ex 2.16
+
+*Each day a hospital records the number of people who come to the emergency room for treatment.*
+
+a. *In the first week, the observations from Sunday to Saturday are 10, 8, 14, 7, 21, 44, 60. Do you think that the Poisson distribution might describe the random variability of this phenomenon adequately. Why or why not?*
+b. *Would you expect the Poisson distribution to better describe, or more poorly describe, the number of weekly admissions to the hospital for a rare disease? Why?*
+
+**Solution**
+
+a. No, because the Poisson distribution has mean = variance, while our sample has very different values:
+```{r, echo=T}
+x = c(10, 8, 14, 7, 21, 44, 60)
+mean(x)
+var(x)
+```
+
+b. **TBD**
 
 ### Ex 2.19
 *Lake Wobegon Junior College admits students only if they score above 400 on a standardized achievement test. Applicants from group A have a mean of 500 and a standard deviation of 100 on this test, and applicants from group B have a mean of 450 and a standard deviation of 100. Both distributions are approximately normal, and both groups have the same size.*
