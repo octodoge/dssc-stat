@@ -182,6 +182,33 @@ B_not_admitted/(A_not_admitted+B_not_admitted)
 
 ```
 
+### Ex 2.27
+
+*The distribution of* $X$ *= heights (cm) of women in the U.K. is approximately* $N(162,7^2)$*. Conditional on* $X = x$*, suppose* $Y$ *= weight (kg) has a* $N(3.0 + 0.40x, 8^2)$ *distribution. Simulate and plot 1000 observations from this approximate bivariate normal distribution. Approximate the marginal means and standard deviations for* $X$ *and* $Y$*. Approximate and interpret the correlation.*
+
+**Solution**
+
+Let's simulate and plot 1000 observations:
+
+```{r, echo=T}
+x = rnorm(1000, 162, 7)
+y = rnorm(1000, 3+0.4*x, 8)
+plot(x, y)
+```
+
+Let's approximate the marginal means and standard deviations:
+
+```{r, echo=T}
+mean(x); mean(y); sd(x); sd(y)
+```
+
+Let's approximate the correlation:
+
+```{r, echo=T}
+cor(x, y)
+```
+
+$X$ and $Y$ are slightly positively correlated, so when $X$ > mean(x) then typically $Y$ > mean(y), and when $X$ < mean(x) then typically $Y$ < mean(y).
 
 ### Ex 2.52
 *The pdf $f$ of a $N(\mu,\sigma)$ distribution can be derived from the standard normal pdf $\phi(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}\: whit\:z\in(-\infty,\infty)$.*
