@@ -62,7 +62,7 @@ $$
 Let the observations be ordered, let $c$ = median, let $a = c+\Delta$ and let $m$ be the number of observations smaller than $a$. <br>
 If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$. <br>
 If $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$. <br>
-So:
+Let's demonstrate that $\begin{matrix} \sum_i \left| y_i-a \right| \ge \sum_i \left| y_i-c \right| \end{matrix}$:
 
 $$
 \sum_{i=1}^n \left| y_i-a \right| =
