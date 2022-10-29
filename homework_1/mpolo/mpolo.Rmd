@@ -121,7 +121,22 @@ $X$ and $Y$ are slightly positively correlated, so when $X$ > mean(x) then typic
 
 ### Ex 2.71
 
-TBD
+*When* $Y$ *has positively skewed distribution over the positive real line, statistical analyses often treat* $X = log(Y)$ *as having a* $N(\mu, \sigma^2)$ *distribution. Then* $Y$ *is said to have the log-normal distribution.*
+
+a. *Derive an expression for the c.d.f.* $G$ *of* $Y$ *in terms of the c.d.f.* $F$ *of* $X$*, and take the derivative to obtain the p.d.f.* $g$ *of* $Y$*.*
+b. *Use the information given in Exercise 2.66 about the m.g.f. of a normal random variable to show that* $E(Y) = e^{\mu + \sigma^2/2}$ *and* $var(Y) = [e^{\sigma^2} − 1][E(Y)]^2$*. As shown for the gamma distribution in Exercise 2.45, the log-normal has standard deviation proportional to the mean.*
+c. *Explain why the median of the distribution of* $Y$ *is* $e^\mu$*. What do the mean and median suggest about the skewness of the distribution?*
+d. *For independent observations* $y_1,...,y_n$ *from the log-normal, we could summarize the distribution by finding* $\bar x$ *for* $\{x_i =log(y_i)\}$ *and then using* $exp(\bar x)$*. Show that* $\begin{matrix} exp(\bar x) = (\prod_i y_i)^{1/n} \end{matrix}$*, the geometric mean of* $\{y_i\}$*.*
+
+**Solution**
+
+a. **TBD**
+
+b. **TBD**
+
+c. **TBD**
+
+d. **TBD**
 
 ## CS - Chapter 1
 
