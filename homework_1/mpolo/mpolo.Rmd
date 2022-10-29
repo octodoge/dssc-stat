@@ -28,13 +28,13 @@ c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show 
 
 **Solution**
 
-a. No, because:
+**(a)** No, because:
 
 $$
-\bar x = \sum_i log(y_i) \ne log(\sum_i y_i) = log(\bar y)
+\bar x = \sum_i log(y_i) \ne log \left( \sum_i y_i \right) = log(\bar y)
 $$
 
-b. No, because there is at least one counterexample:
+**(b)** No, because there is at least one counterexample:
 
 ```{r, echo=T}
 y = rgamma(n=2, shape=2)
@@ -45,11 +45,11 @@ median(x); log(median(y))
 
 However, for larger $n$ they tend to be closer, and for odd $n$ they are equal because $log$ is a monotonically increasing function so it preserves the sample order.
 
-c. They are equal:
+**(c)** They are equal:
 
 $$
 exp(\bar x) = exp \left( {1\over n} \sum_i x_i \right) = exp \left( {1\over n} \sum_i log(y_i) \right) = \\
-exp \left( \sum_i log(y_i^{1/n}) \right) = \prod_i exp(log(y_i^{1/n})) =
+exp \left( \sum_i log(y_i^{1/n}) \right) = \prod_i exp[log(y_i^{1/n})] =
 \left( \prod_i y_i \right)^{1/n}
 $$
 
@@ -66,7 +66,7 @@ Let's demonstrate that $\begin{matrix} \sum_i \left| y_i-a \right| \ge \sum_i \l
 
 $$
 \sum_{i=1}^n \left| y_i-a \right| =
-\sum_{i=1}^m ((c+\Delta)-y_i) + \sum_{i=m+1}^n (y_i - (c+\Delta)) = \\
+\sum_{i=1}^m [(c+\Delta)-y_i] + \sum_{i=m+1}^n [y_i - (c+\Delta)] = \\
 m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) = \\
 2m\Delta-n\Delta + \sum_{i=1}^n \left| y_i-c \right| \ge \sum_{i=1}^n \left| y_i-c \right|
 $$
@@ -84,13 +84,13 @@ b. *Would you expect the Poisson distribution to better describe, or more poorly
 
 **Solution**
 
-a. No, because the Poisson distribution has mean = variance, while our sample has very different values:
+**(a)** No, because the Poisson distribution has mean = variance, while our sample has very different values:
 ```{r, echo=T}
 x = c(10, 8, 14, 7, 21, 44, 60)
 mean(x); var(x)
 ```
 
-b. **TBD**
+**(b)** **TBD**
 
 ### Ex 2.27
 
@@ -130,13 +130,29 @@ d. *For independent observations* $y_1,...,y_n$ *from the log-normal, we could s
 
 **Solution**
 
-a. **TBD**
+**(a)** Let's express $G$ in terms of $F$:
 
-b. **TBD**
+$$
+G(y) = Pr(Y \le y) = Pr[log(Y) \le log(y)] = Pr[X \le log(y)] = F[log(y)]
+$$
 
-c. **TBD**
+Let's obtain $g$:
 
-d. **TBD**
+$$
+g(y) = {d \over dy}G(y) = {d \over dy}F[log(y)] \overset{\text{chain rule}} = {1 \over y}f[log(y)]
+$$
+
+Since $f$ is the p.d.f of a normal distribution:
+
+$$
+g(y) = {1 \over y} \left( \frac{1}{\sigma \sqrt{2\pi}} exp \left[-{1 \over 2} \left( \frac{log(y) - \mu}{\sigma} \right)^2 \right] \right)
+$$
+
+**(b)** **TBD**
+
+**(c)** **TBD**
+
+**(c)** **TBD**
 
 ## CS - Chapter 1
 
