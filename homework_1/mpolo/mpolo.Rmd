@@ -184,8 +184,16 @@ $$
 Pr(X \le \mu) = 0.5 \implies Pr(log(Y) \le \mu) = 0.5 \implies Pr(Y \le e^\mu) = 0.5
 $$
 
+The median of the distribution of $Y$ is smaller than its mean and this suggests that the distribution is positively skewed.
+
 **(d)** <br>
-**TBD**
+They are equal:
+
+$$
+exp(\bar x) = exp \left( {1\over n} \sum_i x_i \right) = exp \left( {1\over n} \sum_i log(y_i) \right) = \\
+exp \left( \sum_i log(y_i^{1/n}) \right) = \prod_i exp[log(y_i^{1/n})] =
+\left( \prod_i y_i \right)^{1/n}
+$$
 
 ## CS - Chapter 1
 
