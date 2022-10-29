@@ -70,7 +70,7 @@ c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show 
 a. No, because:
 
 $$
-\bar x = \sum_i log(y_i) \ne log(\sum_i y_i) = log(\bar y)
+\bar x = \sum_i log(y_i) \ne log \left( \sum_i y_i \right) = log(\bar y)
 $$
 
 b. No, because there is at least one counterexample:
@@ -88,7 +88,7 @@ c. They are equal:
 
 $$
 exp(\bar x) = exp \left( {1\over n} \sum_i x_i \right) = exp \left( {1\over n} \sum_i log(y_i) \right) = \\
-exp \left( \sum_i log(y_i^{1/n}) \right) = \prod_i exp(log(y_i^{1/n})) =
+exp \left( \sum_i log(y_i^{1/n}) \right) = \prod_i exp[log(y_i^{1/n})] =
 \left( \prod_i y_i \right)^{1/n}
 $$
 
