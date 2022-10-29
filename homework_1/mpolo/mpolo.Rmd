@@ -28,13 +28,15 @@ c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show 
 
 **Solution**
 
-**(a)** No, because:
+**(a)** <br>
+No, because:
 
 $$
 \bar x = \sum_i log(y_i) \ne log \left( \sum_i y_i \right) = log(\bar y)
 $$
 
-**(b)** No, because there is at least one counterexample:
+**(b)** <br>
+No, because there is at least one counterexample:
 
 ```{r, echo=T}
 y = rgamma(n=2, shape=2)
@@ -45,7 +47,8 @@ median(x); log(median(y))
 
 However, for larger $n$ they tend to be closer, and for odd $n$ they are equal because $log$ is a monotonically increasing function so it preserves the sample order.
 
-**(c)** They are equal:
+**(c)** <br>
+They are equal:
 
 $$
 exp(\bar x) = exp \left( {1\over n} \sum_i x_i \right) = exp \left( {1\over n} \sum_i log(y_i) \right) = \\
@@ -84,13 +87,16 @@ b. *Would you expect the Poisson distribution to better describe, or more poorly
 
 **Solution**
 
-**(a)** No, because the Poisson distribution has mean = variance, while our sample has very different values:
+**(a)** <br>
+No, because the Poisson distribution has mean = variance, while our sample has very different values:
+
 ```{r, echo=T}
 x = c(10, 8, 14, 7, 21, 44, 60)
 mean(x); var(x)
 ```
 
-**(b)** **TBD**
+**(b)** <br>
+**TBD**
 
 ### Ex 2.27
 
@@ -117,6 +123,7 @@ Let's approximate the correlation:
 ```{r, echo=T}
 cor(x, y)
 ```
+
 $X$ and $Y$ are slightly positively correlated, so when $X$ > mean(x) then typically $Y$ > mean(y), and when $X$ < mean(x) then typically $Y$ < mean(y).
 
 ### Ex 2.71
@@ -130,7 +137,8 @@ d. *For independent observations* $y_1,...,y_n$ *from the log-normal, we could s
 
 **Solution**
 
-**(a)** Let's express $G$ in terms of $F$:
+**(a)** <br>
+Let's express $G$ in terms of $F$:
 
 $$
 G(y) = Pr(Y \le y) = Pr[log(Y) \le log(y)] = Pr[X \le log(y)] = F[log(y)]
@@ -148,7 +156,8 @@ $$
 g(y) = {1 \over y} \left( \frac{1}{\sigma \sqrt{2\pi}} exp \left[-{1 \over 2} \left( \frac{log(y) - \mu}{\sigma} \right)^2 \right] \right)
 $$
 
-**(b)** The Exercise 2.66 says that the moment generating function m.g.f. of a normal random variable $X$ is:
+**(b)** <br>
+The Exercise 2.66 says that the moment generating function m.g.f. of a normal random variable $X$ is:
 
 $$
 m(t) := E(e^{tX}) = e^{\mu t + \sigma^2 t^2/2}
@@ -167,9 +176,16 @@ var(Y) := E(Y^2) - E(Y)^2 = E(e^{2X}) - E(Y)^2 \overset{\text{ex 2.66}}= e^{\mu 
 e^{\mu 2 + \sigma^2} e^{\sigma^2} - E(Y)^2 \overset{\text{expr 1}}= E(Y)^2e^{\sigma^2} - E(Y)^2 = E(Y)^2(e^{\sigma^2} − 1)
 $$
 
-**(c)** **TBD**
+**(c)** <br>
+Since $X$ is normally distributed, its median is equal to its mean $\mu$, so $Pr(X \le \mu) = 0.5$. <br>
+Let's show why the median of the distribution of $Y$ is $e^\mu$:
 
-**(c)** **TBD**
+$$
+Pr(X \le \mu) = 0.5 \implies Pr(log(Y) \le \mu) = 0.5 \implies Pr(Y \le e^\mu) = 0.5
+$$
+
+**(d)** <br>
+**TBD**
 
 ## CS - Chapter 1
 
