@@ -67,13 +67,13 @@ c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show 
 
 **Solution**
 
-a. No, because:
+**(a)** No, because:
 
 $$
 \bar x = \sum_i log(y_i) \ne log \left( \sum_i y_i \right) = log(\bar y)
 $$
 
-b. No, because there is at least one counterexample:
+**(b)** No, because there is at least one counterexample:
 
 ```{r, echo=T}
 y = rgamma(n=2, shape=2)
@@ -84,7 +84,7 @@ median(x); log(median(y))
 
 However, for larger $n$ they tend to be closer, and for odd $n$ they are equal because $log$ is a monotonically increasing function so it preserves the sample order.
 
-c. They are equal:
+**(c)** They are equal:
 
 $$
 exp(\bar x) = exp \left( {1\over n} \sum_i x_i \right) = exp \left( {1\over n} \sum_i log(y_i) \right) = \\
@@ -144,13 +144,13 @@ b. *Would you expect the Poisson distribution to better describe, or more poorly
 
 **Solution**
 
-a. No, because the Poisson distribution has mean = variance, while our sample has very different values:
+**(a)** No, because the Poisson distribution has mean = variance, while our sample has very different values:
 ```{r, echo=T}
 x = c(10, 8, 14, 7, 21, 44, 60)
 mean(x); var(x)
 ```
 
-b. **TBD**
+**(b)** **TBD**
 
 ### Ex 2.19
 *Lake Wobegon Junior College admits students only if they score above 400 on a standardized achievement test. Applicants from group A have a mean of 500 and a standard deviation of 100 on this test, and applicants from group B have a mean of 450 and a standard deviation of 100. Both distributions are approximately normal, and both groups have the same size.*
