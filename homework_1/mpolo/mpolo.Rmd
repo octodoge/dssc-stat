@@ -139,7 +139,7 @@ $$
 Let's obtain $g$:
 
 $$
-g(y) = {d \over dy}G(y) = {d \over dy}F[log(y)] \overset{\text{chain rule}} = {1 \over y}f[log(y)]
+g(y) = {d \over dy}G(y) = {d \over dy}F[log(y)] \overset{\text{chain rule}}= {1 \over y}f[log(y)]
 $$
 
 Since $f$ is the p.d.f of a normal distribution:
@@ -148,7 +148,24 @@ $$
 g(y) = {1 \over y} \left( \frac{1}{\sigma \sqrt{2\pi}} exp \left[-{1 \over 2} \left( \frac{log(y) - \mu}{\sigma} \right)^2 \right] \right)
 $$
 
-**(b)** **TBD**
+**(b)** The Exercise 2.66 says that the moment generating function m.g.f. of a normal random variable $X$ is:
+
+$$
+m(t) := E(e^{tX}) = e^{\mu t + \sigma^2 t^2/2}
+$$
+
+Let's show that $E(Y) = e^{\mu + \sigma^2/2}$:
+
+$$
+X = log(Y) \implies Y = e^X \implies E(Y) = E(e^X) \overset{\text{ex 2.66}}= e^{\mu + \sigma^2/2}
+$$
+Note that $E(Y)^2 = e^{\mu 2 + \sigma^2}$ (let's call this expression "expr 1"). <br>
+Let's show that $var(Y) = [e^{\sigma^2} − 1][E(Y)]^2$:
+
+$$
+var(Y) := E(Y^2) - E(Y)^2 = E(e^{2X}) - E(Y)^2 \overset{\text{ex 2.66}}= e^{\mu 2 + \sigma^2 2} - E(Y)^2 = \\
+e^{\mu 2 + \sigma^2} e^{\sigma^2} - E(Y)^2 \overset{\text{expr 1}}= E(Y)^2e^{\sigma^2} - E(Y)^2 = E(Y)^2(e^{\sigma^2} − 1)
+$$
 
 **(c)** **TBD**
 
