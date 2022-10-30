@@ -476,7 +476,9 @@ d. The expression (2.3) states that: $var(Y) = \sigma^2 = E(Y^2) - \mu^2$. By de
 
 ### Ex 2.52
 *The pdf $f$ of a $N(\mu,\sigma)$ distribution can be derived from the standard normal pdf $\phi(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}\: with \:z\in(-\infty,\infty)$.*
+
 1. *Show that the normal cdf $F$ relates to the standard normal cdf $\Phi$ by $F[y]=\Phi[\frac{y-\mu}{\sigma}]$.*
+
 2. *From (1), show that $f(y)=\frac{1}{\sigma}\phi(\frac{y-\mu}{\sigma})$, and show that $f(y;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}e^{\frac{(y-\mu)^2}{2\sigma}}$.*
 
 
@@ -487,7 +489,7 @@ We have that $F(y)=\int^y_{-\infty}f(z)dz$ while $\Phi(y)=\int^y_{-\infty}\phi(z
 $$
 \int^{\frac{y-\mu}{\sigma}}_{-\infty}\phi(z) dz=\int^y_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z'-\mu)^2}{2\sigma^2}} dz'
 $$
-That is exactly $F[y]$. Furthermore from $F[y]=\int^y_{-\infty}f(z)dz=\Phi[\frac{y-\mu}{\sigma}]=\int^y_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z'-\mu)^2}{2\sigma^2}} dz'=\int^y_{-\infty}\frac{1}{\sigma}\phi(\frac{(z-\mu)^2}{\sigma}) dz'\: \forall y$ we can affirm that $f(y)=\frac{1}{\sigma}\phi(\frac{(z-\mu)^2}{\sigma})$.
+That is exactly $F[y]$. Furthermore from $F[y]=\int^y_{-\infty}f(z)dz=\Phi[\frac{y-\mu}{\sigma}]=\int^y_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z'-\mu)^2}{2\sigma^2}} dz'=\int^y_{-\infty}\frac{1}{\sigma}\phi(\frac{z'-\mu}{\sigma}) dz'\: \forall y$ we can affirm that $f(y)=\frac{1}{\sigma}\phi(\frac{z-\mu}{\sigma})$.
 
 
 ### Ex 2.53
@@ -497,13 +499,14 @@ That is exactly $F[y]$. Furthermore from $F[y]=\int^y_{-\infty}f(z)dz=\Phi[\frac
 **Solution**
 
 
-I'll suppose that the random variable $\Phi(Y)$, with $\Phi$ the cdf of the standard normal distribution, will have a distribution function that is the uniform distribution function since the cdf of a random variable has the property to give a uniform distributed random variable if evaluated on the random variable itself.
+I will suppose that the random variable $\Phi(Y)$, with $\Phi$ the cdf of the standard normal distribution, will have a distribution function that is the uniform distribution function since the cdf of a random variable evaluated on the random variable itself gives a random variable with a uniform distribution.
+
 ```{r, echo=T}
-#Generating a sample of one million of variable with standard normal distribution 
+#Generating a sample of one million variables with standard normal distribution 
 y=rnorm(1000000,mean=0,sd=1)
-#Generating the sample of one million of random variable x that correspond to the cdf evaluated on y 
+#Generating the sample of one million random variables x that correspond to the cdf evaluated on y 
 x=pnorm(y,mean=0,sd=1)
-#Comparign the histogram of the two samples
+#Comparing the histogram of the two samples
 par(mfrow=c(1,2))
 hist(y,freq = F)
 curve(dnorm(x, mean=0, sd=1), add=TRUE, lty=1, col=2) 
@@ -513,9 +516,9 @@ curve(dunif(x), add=TRUE, lty=1, col=2)
 
 ### Ex 2.67
 
-*For n observations {*$y_i$*}, let *$y_{(1)}$ *≤ *$y_{(2)}$ *≤ ⋯ ≤*$y_{(n)}$ *denote their ordered values, called order statistics. Let *$q_i$ *be the i/(n + 1) quantile of the standard normal distribution, for  i = 1...., n. When {*$y_i$*} are a random sample from a normal distribution, the plot of the points  (*$q_{(1)}$ *, *$y_{(1)}$ *),..., (*$q_{(n)}$ *,*$y_{(n)}$ *) should approximately follow a straight line, more closely so when n is  large. This normal quantile plot is a special case of a quantile-quantile (Q-Q) plot. The  R appendix of this book presents details.*                                                                  
+*For n observations {*$y_i$*}, let *$y_{(1)}$ *≤ *$y_{(2)}$ *≤ ⋯ ≤*$y_{(n)}$ *denote their ordered values, called order statistics. Let *$q_i$ *be the i/(n + 1) quantile of the standard normal distribution, for  i = 1,..., n. When {*$y_i$*} are a random sample from a normal distribution, the plot of the points  (*$q_{(1)}$ *, *$y_{(1)}$ *),..., (*$q_{(n)}$ *,*$y_{(n)}$ *) should approximately follow a straight line, more closely so when n is  large. This normal quantile plot is a special case of a quantile-quantile (Q-Q) plot. The  R appendix of this book presents details.*                                                                  
 *(a) Randomly generate (i) n = 10, (ii) n = 100, (iii) n = 1000 observations from a N(0, 1)  distribution and construct the normal quantile plot each time, using software such as the  R functions rnorm and qqnorm. Note that as n increases the points cluster more tightly  along the line y = x, which you can add to the plot with command abline(0, 1).*                                                              
-*(b) Randomly generate 1000 observations from a N(100, 162) distribution of IQ’s and construct the normal quantile plot. What is the slope of the line approximating these points?  *                                                                          
+*(b) Randomly generate 1000 observations from a $N(100, 16^2)$ distribution of IQ’s and construct the normal quantile plot. What is the slope of the line approximating these points?  *                                                                          
 *(c) Randomly generate 1000 observations from the (i) exponential distribution (2.2), (ii) uniform distribution over (0, 1), using software such as the R functions rexp and runif. Construct the normal quantile plot in each case. Explain how they reveal the non-normality  of the data. *
 
 *(d) For case (ii) in (c), find appropriate uniform quantiles for which the Q-Q plot would be  approximately linear. Construct the plot.*
@@ -537,15 +540,14 @@ as n increase points cluster more close to the y = x line
 
 b)
 ```{r ex 2.67 b, echo=TRUE}
-yb <- rnorm(1000, 0, 16)
+yb <- rnorm(1000, 100, 16)
 qqnorm(yb)
-abline(0,16)
+abline(100,16)
 ```
 
 we change the values of abline() function and we find out that the slope of points is about 16
 
 c)
-the plot for the exponential distribution shows that, since the distribution is right skewed, there are some quite large observations but no very small observations, reflecting its lower boundary of 0 for possible values.
 
 ```{r ex 2.67 c part a, echo=TRUE}
 ye <- rexp(1000)
@@ -553,7 +555,9 @@ ye <- rexp(1000)
 qqnorm(ye,col='blue', main='Y3 ~ exp(1)') 
 ```
 
-the plot for the uniform distribution shows that there are fewer observations in the tails than expected with normal distribution.
+We observe that the points on the qqplot do not follow a line: as a matter of fact, if the distributions were the same the curve would have been a line with slope = 1.
+We know that the sample quantiles are taken from an exponential distribution: for x<0 the exponential distribution is not defined then we observe that the curve in the qq plot lays on the horizontal line y = 0.
+
 
 ```{r ex 2.67 c part b, echo=TRUE}
 yu <- runif(1000)
@@ -561,18 +565,22 @@ yu <- runif(1000)
 qqnorm(yu, col='blue', main='Y4 ~ uniform(0,1)')  
 ```
 
+The observations are the same for the previous point; moreover we can say that the points n the qqplot with x greater then 1 lay on the horizontal line y = 1, since all the values on the uniform distribution are in the interval [0,1]. 
+
 d) 
 
 qunif gives the quantile function for the uniform distribution;
 c(1:n)/(n+1) is the vector evaluated as in the text of the exercise 
-"Let $q_i$ be the i~(n + 1) quantile of the standard normal distribution ,for
+"Let $q_i$ be the i~(n + 1) quantile of the standard normal distribution, for
 i = 1. ...,n."
+
 we sort the vector of values generated from runif()
+
 we build the plot that compares sorted values of yu with quantiles found before
 
 ```{r ex 2.67 d, echo=TRUE}
-yu <- runif(1000)
-n=1000
+n <- 1000
+yu <- runif(n)
 q=qunif(c(1:n)/(n+1))
 yu=sort(yu)
 plot(q,yu)
@@ -582,13 +590,13 @@ plot(q,yu)
 so for the uniform(0,1) the appropriate quantiles are $q_i$ = i/(n+1)
 
 
-### (FSDS) Ex 2.69
+### Ex 2.69
 
 *For a sequence of independent, identical binary trials, explain why the probability distribution for $Y =$ the number of successes before failure number $k$ occurs has probability function* $$f(y; k, π) = \binom{y+k-1}{y}π^y(1-π)^k$$ *This distribution, studied further in Section 7.5.2 for analyzing count data, is called the* $negative \ binomial \ distribution$.
 
 **Solution**
 
-The total amount of trials is $y+k$, $y$ being the successes and $k$ being the failures. Note that, by the text of the problem, the last trial must be part of the $k$ failures. The probability that this happens in a specific order (for example, first of all we have all the $y$ successes and the all the $k$ failures) is simply given by: $$π^y(1−π)^k$$ being the trials independent. However, the order is not important, so we have to consider all the possible permutations of failures and successes, having fixed the last trial as a failure. Therefore the number of permutations is: $$\binom{y+k-1}{y}$$ since there are $k-1$ failures that are "all the same" and $y$ successes that are "all the same" as well. The obtain the final formula, we just have to multiply the two results, getting: $$f(y; k, π) = \binom{y+k-1}{y}π^y(1-π)^k$$
+The total amount of trials is $y+k$, $y$ being the successes and $k$ being the failures. Note that, by the text of the problem, the last trial must be part of the $k$ failures. The probability that this happens in a specific order (for example, first of all we have all the $y$ successes and the all the $k$ failures) is simply given by: $$π^y(1−π)^k$$ being the trials independent. However, the order is not important, so we have to consider all the possible permutations of failures and successes, having fixed the last trial as a failure. Therefore the number of permutations is: $$\binom{y+k-1}{y}$$ since there are $k-1$ failures that are "all the same" and $y$ successes that are "all the same" as well. To obtain the final formula, we just have to multiply the two results, getting: $$f(y; k, π) = \binom{y+k-1}{y}π^y(1-π)^k$$
 
 
 
@@ -674,9 +682,9 @@ $$
 
 **Solution**
 
-1. The cdf is defined as $F(y)=\int_0^yf(x)dx$ and so we obtain $F[y]=\int_0^y\lambda e^{-\lambda x}dx=1-e^{-\lambda y}$. The quantile function is defined as $F^{-1}[y]$ and so we have $Q_y=\frac{-log(1-y)}{\lambda}$.
-2. $Pr(X<\lambda)=F[\lambda]=1-e^{-\lambda^2}$, while the median is $Q_{0.5}=\frac{-log(0.5)}{\lambda}=\frac{0.7}{\lambda}$. 
-3. The mean is $E[x]=\int_0^\infty xf(x)dx=\int_0^\infty x\lambda e^{-\lambda x}dx$ and using integration by parts we obtain $E[X]=\frac{x}{\lambda}e^{-\lambda x}|_\infty^0+\int^0_\infty -\frac{e^{-\lambda x}}{\lambda}dx=\frac{1}{\lambda}$. For the variance we evaluate $var(x)=E[x^2]+E^2[x]$ adn with the same procedure we obtain $var(x)=\frac{2}{\lambda^2}-\frac{1}{\lambda^2}=\frac{1}{\lambda^2}$
+1. The cdf is defined as $F(y)=\int_0^yf(x)dx$ and so we obtain $F(y)=\int_0^y\lambda e^{-\lambda x}dx=1-e^{-\lambda y}$. The quantile function is defined as $F^{-1}(p)$ and so we have $Q_p=\frac{-log(1-p)}{\lambda}$.
+2. $Pr(X<\lambda)=F(\lambda)=1-e^{-\lambda^2}$, while the median is $Q_{0.5}=\frac{-log(0.5)}{\lambda}\simeq\frac{0.7}{\lambda}$. 
+3. The mean is $E[X]=\int_0^\infty xf(x)dx=\int_0^\infty x\lambda e^{-\lambda x}dx$ and using integration by parts we obtain $E[X]=\frac{x}{\lambda}e^{-\lambda x}|_\infty^0+\int^0_\infty -\frac{e^{-\lambda x}}{\lambda}dx=\frac{1}{\lambda}$. For the variance we evaluate $var(X)=E[X^2]+E^2[X]$ and with the same procedure we obtain $var(X)=\frac{2}{\lambda^2}-\frac{1}{\lambda^2}=\frac{1}{\lambda^2}$
 
 
 ### Ex 1.2
@@ -701,7 +709,7 @@ $$
 $$
 
 
-### (CS) Ex 1.6
+### Ex 1.6
 
 *Let $X$ and $Y$ be non-independent random variables, such that $var(X) = \sigma^2_x$, $var(Y) = \sigma^2_y$ and $cov(X, Y) = \sigma^2_{xy}$. Using the result from Section 1.6.2, find $var(X + Y)$ and $var(X − Y)$.*
 
@@ -746,7 +754,7 @@ $$= f_x(x) $$
 $$= \frac{d}{dx} F_x(X) $$
 
 $$= \phi \left( \frac{log x - \mu}{\sigma} \right) \frac{1}{x\sigma} ; x > 0 $$
-$$=\frac{1}{x\sigma \sqrt 2\pi}e^{- \frac{1}{2} \left( \frac{log x - \mu}{\sigma}  \right)^2}  ; 0 < x < \infty $$
+$$=\frac{1}{x\sigma \sqrt {2\pi}}e^{- \frac{1}{2} \left( \frac{log x - \mu}{\sigma}  \right)^2}  ; 0 < x < \infty $$
 X follows log normal distribution
 
 ## CS - Chapter 3
@@ -840,10 +848,10 @@ b.
    I = diag(n)
    A1 = solve(A, I) #inverse matrix of A, using the definition of it
    x1 = A1%*%y #x found with 1° method
+   print(Sys.time() - now1)
    e1 <- abs(x1 - x.true)
    sum1 <- sum(e1)
    MAE1 <- sum1/n
-   print(Sys.time() - now1)
    print(MAE1)
    ```
 
@@ -852,21 +860,21 @@ c.
    ```{r, echo=T}
    now2 <- Sys.time()
    x2 = solve(A, y) #x found with 2° method
+   print(Sys.time() - now2)
    e2 <- abs(x2 - x.true)
    sum2 <- sum(e2)
    MAE2 <- sum2/n
-   print(Sys.time() - now2)
    print(MAE2)
    ```
 
-d. We printed for both the two methods the time required to do the computation of $x$ and the mean absolute difference. One can observe that the method in point c. is better since both the time to compute the result and the error are less than those in point b. We imagine that in particular the value of the error is due to the fact that in point b. there are a higher amout of computations to be done. Regarding the time, in point b. operations are, overall, heavier than the ones in point c.
+d. We printed for both the two methods the time required to do the computation of $x$ and the mean absolute difference. One can observe that the method in point c. is better since both the time to compute the result and the error has a lower value than those in point b. We imagine that in particular the value of the error is due to the fact that in point b. there is a higher amount of computations to be done then errors add up. Regarding the time, in point b. operations require, overall, more computational effort than the ones in point c.
 
 
 
 ### Ex 3.6 
 
 *The empirical cumulative distribution function for a set of measurements {*$x_i$ 
-*: i = 1, . . . n} is*
+*: i = 1, . . ., n} is*
 $$\hat{F}(x) = \frac{\#{x_i < x}}{n}$$
 *where #{*$x_i$*< x} denotes ‘number of *$x_i$ *values less than x’. When answering the following, try to ensure that your code is commented, clearly structured, and tested. To test your code, generate random samples using rnorm, runif, etc.*
 
@@ -878,13 +886,13 @@ $$\hat{F}(x) = \frac{\#{x_i < x}}{n}$$
 
 a) 
 
-the function is cdf(x) and takes in the set of observed values x.
+The function is cdf(x) and takes in the set of observed values x.
 
 Declare variable x_m denoting set of measured values.
 
 First sort the elements of x_m using sort().
  
-Then using while loop for set of observed values check for how many number of x_m’s is x_m
+Then using while loop for set of observed values check for how many numbers of x_m’s is x_m
  
 Print cdf of each element of x.
 
@@ -892,8 +900,11 @@ Print cdf of each element of x.
 ```{r ex 3.6 a, echo=TRUE}
 #defining cdf function
 cdf <- function(x){
+  
+  set.seed(123)
+  
   n<- 1000 # number of samples in measurements
-  x_m <- rnorm(n,0,n/2) #generate set of measurements
+  x_m <- rnorm(n,0,1) #generate set of measurements
   x_m <- sort(x_m) #sort measurements
   cdf <- c() #initialize vector for cdf
   
@@ -915,7 +926,7 @@ cdf <- function(x){
 #generate observations
 n<- 20
 m <- 0
-x<- rnorm(n,m,n)
+x<- rnorm(n,m,1)
 print("observed values")
 print(x)
 
@@ -934,8 +945,9 @@ Using plot function with type ’s’ plot the step function of c.d.f. with resp
 
 ```{r ex 3.6 b, echo=TRUE}
 cdf <- function(x,plot.cdf){
+  set.seed(123)
   n<- 1000 # number of samples
-  x_m <- rnorm(n,0,n/2) #generate set of measurements
+  x_m <- rnorm(n,0,1) #generate set of measurements
   x_m <- sort(x_m) #sort measurements
   cdf <- c() #initialize vector for cdf
   
@@ -967,7 +979,7 @@ cdf <- function(x,plot.cdf){
 #generate observations
 n<- 20
 m <- 0
-x<- rnorm(n,m,n)
+x<- rnorm(n,m,1)
 print("observed values")
 print(x)
 plot.cdf <- TRUE
