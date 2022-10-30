@@ -29,7 +29,7 @@
 * exercises
   * [x] FSDS     1.44
   * [x] FSDS     1.48
-  * [ ] FSDS     2.16
+  * [x] FSDS     2.16
   * [x] FSDS     2.27
   * [x] FSDS     2.71
   * [x] CS      1.2
