@@ -107,11 +107,14 @@ c. *To summarize* $\{y_i\}$, we find $\bar x$ and then use $exp(\bar x)$*. Show 
 **Solution**
 
 **(a)** <br>
-No, because:
+No, because there is at least one counterexample:
 
-$$
-\bar x = \sum_i log(y_i) \ne log \left( \sum_i y_i \right) = log(\bar y)
-$$
+```{r, echo=T}
+y = rgamma(n=100, shape=2)
+x = log(y)
+
+mean(x); log(mean(y))
+```
 
 **(b)** <br>
 No, because there is at least one counterexample:
@@ -141,14 +144,13 @@ $$
 **Solution**
 
 Let the observations be ordered, let $c$ = median, let $a = c+\Delta$ and let $m$ be the number of observations smaller than $a$. <br>
-If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$. <br>
-If $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$. <br>
+If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$; else if $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$ (let's call these remarks "rem 1"). <br>
 Let's demonstrate that $\begin{matrix} \sum_i \left| y_i-a \right| \ge \sum_i \left| y_i-c \right| \end{matrix}$:
 
 $$
 \sum_{i=1}^n \left| y_i-a \right| =
 \sum_{i=1}^m [(c+\Delta)-y_i] + \sum_{i=m+1}^n [y_i - (c+\Delta)] = \\
-m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) = \\
+m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) \overset{\text{rem 1}}= \\
 2m\Delta-n\Delta + \sum_{i=1}^n \left| y_i-c \right| \ge \sum_{i=1}^n \left| y_i-c \right|
 $$
 
@@ -353,7 +355,7 @@ Let's approximate the correlation:
 cor(x, y)
 ```
 
-$X$ and $Y$ are slightly positively correlated, so when $X$ > mean(x) then typically $Y$ > mean(y), and when $X$ < mean(x) then typically $Y$ < mean(y).
+$X$ and $Y$ are slightly positively correlated, that is: when $X$ > mean(x) then typically $Y$ > mean(y), and when $X$ < mean(x) then typically $Y$ < mean(y).
 
 ### Ex 2.52
 *The pdf $f$ of a $N(\mu,\sigma)$ distribution can be derived from the standard normal pdf $\phi(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}\: whit\:z\in(-\infty,\infty)$.*
