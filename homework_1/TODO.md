@@ -31,7 +31,7 @@
   * [x] FSDS     1.48
   * [ ] FSDS     2.16
   * [x] FSDS     2.27
-  * [ ] FSDS     2.71
+  * [x] FSDS     2.71
   * [x] CS      1.2
   * [x] CS      3.3 (hint: use `system.time()` function)
 
