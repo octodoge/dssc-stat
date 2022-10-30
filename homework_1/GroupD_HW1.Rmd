@@ -140,14 +140,13 @@ $$
 **Solution**
 
 Let the observations be ordered, let $c$ = median, let $a = c+\Delta$ and let $m$ be the number of observations smaller than $a$. <br>
-If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$. <br>
-If $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$. <br>
+If $\Delta > 0$ ("moving away from the median to the right") then $m \ge {n\over2}$; else if $\Delta < 0$ ("moving away from the median to the left") then $m \le {n\over2}$ (let's call these remarks "rem 1"). <br>
 Let's demonstrate that $\begin{matrix} \sum_i \left| y_i-a \right| \ge \sum_i \left| y_i-c \right| \end{matrix}$:
 
 $$
 \sum_{i=1}^n \left| y_i-a \right| =
 \sum_{i=1}^m [(c+\Delta)-y_i] + \sum_{i=m+1}^n [y_i - (c+\Delta)] = \\
-m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) = \\
+m\Delta + \sum_{i=1}^m (c-y_i) - (n-m)\Delta + \sum_{i=m+1}^n (y_i-c) \overset{\text{rem 1}}= \\
 2m\Delta-n\Delta + \sum_{i=1}^n \left| y_i-c \right| \ge \sum_{i=1}^n \left| y_i-c \right|
 $$
 
