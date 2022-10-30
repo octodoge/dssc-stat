@@ -7,12 +7,16 @@ output: html_document
 
 ### Ex 1.41
 
-*To investigate how y¯ can vary from sample to sample of size n, for the simulation from  a bell-shaped population shown at the end of Section 1.5.3, take (a) 10,000 random  samples of size n = 30 each; (b) 10,000 random samples of size n = 1000 each. In  each case, form a histogram of the 10,000 y¯ values and find their standard deviation.  Compare results and explain what this simulation reveals about the impact of sample  size on how study results can vary. (Chapter 3 shows that in sampling from a population  with standard deviation 16, the theoretical standard deviation of y¯ values is 16/ √ n.) *
+*To investigate how *$\overline{y}$ *can vary from sample to sample of size n, for the simulation from  a bell-shaped population shown at the end of Section 1.5.3, take (a) 10,000 random  samples of size n = 30 each; (b) 10,000 random samples of size n = 1000 each. In  each case, form a histogram of the 10,000 *$\overline{y}$ *values and find their standard deviation.  Compare results and explain what this simulation reveals about the impact of sample  size on how study results can vary. (Chapter 3 shows that in sampling from a population  with standard deviation 16, the theoretical standard deviation of *$\overline{y}$ *values is* $16/\sqrt n$ *) *
 
 
 
 
 **Solution**
+
+we take 10.000 random samples of size n = 30 and n = 1000 both for a simulation a bell-shaped population (using rnorm) and we evaluate the mean in each iteration of all the random samples and store them (in the following code y1 for n = 30 size and y2 for n = 1000 size). 
+Then we calculate the mean and standard deviation and compare them.
+
 ```{r ex 1.41, echo=TRUE}
 randomSample <- 10000
 y1 <- y2 <- rep(NA,randomSample)
@@ -27,7 +31,7 @@ mean(y2);sd(y2);hist(y2)
 
 In the second case we can see that we have a smaller standard deviation so data are more clustered to the mean than the first case.
 
-In the last part of the exercise we compare the theoretical formula (sampling from a population with standard deviation 16, the theoretical standard deviation of y¯ values is 16/ √ n)
+In the last part of the exercise we compare the theoretical formula (sampling from a population with standard deviation 16, the theoretical standard deviation of $\overline{y}$ values is $16/\sqrt n$)
 
 ```{r comparison with theoretical sd formula, echo=TRUE}
 16/sqrt(30)
@@ -41,7 +45,7 @@ they are the approximate same results of the previous standard deviations found
 
 *Suppose that a person is equally likely to be born on any of 365 days of the year.*  
 
-*(a) For three people selected randomly, explain why the probability that they all have different  birthdays is [(365)(364)(363)]/3653.*  
+*(a) For three people selected randomly, explain why the probability that they all have different  birthdays is [(365)(364)(363)]/365^3.*  
 
 *(b) Show that if at least 23 people attend a social party, the probability exceeds 0.50 that at  least two people have the same birthday. State any further assumptions needed for your  solution. (The R function pbirthday(n) gives the probability that at least 2 of n people  have the same birthday.)* 
 
@@ -49,10 +53,10 @@ they are the approximate same results of the previous standard deviations found
 
 **Solution**
 
-a) that is because these are indipendent events and 365 is the probability that the first person is born in 1 day of the 365. In the second probability we have 364 because we do not want the second person to be born the same day of the first person. Same thinking applied with the third person. (365)^3 is total sample points for the 3 birthdays
+a) that is because these are indipendent events. In the numerator, we multiply 365 for 364 because we do not want the second person to be born the same day of the first person and then for 363 because we do not want the third person to be born the same day than the others.
 
 b)
-following code shows the probability increasing the number of people
+The event of at least two of the n persons having the same birthday is complementary to all n birthdays being different.
 
 ```{r part b ex 2.5, echo=TRUE}
 o <- 365
@@ -60,7 +64,7 @@ pr <- 1/365
 res <- 1
 for (i in 1:23 ) {
   res = res * pr * o 
-  cat(i, " -- ",res)
+  cat(i, " -- ",1 - res)
   print(' ')
   o = o - 1
   
@@ -76,6 +80,7 @@ Probability that at least 2 out of 23 have the same birthday is 1 − 0.493 = 0.
 c)
 
 the following loop create 100000 times a sample of 50 observation of people's birthday attending a party( with the unique() function duplicates are removed so the variable ind is 1 everytime the sample has duplicates). At the end we divide ind with total number of samples to get the probability
+
 ```{r part c ex 2.5, echo=TRUE}
 ind<-0;iter<- 100000
 for(i in 1:iter){
@@ -89,18 +94,18 @@ ind/iter
 
 **Solution**
 
-simulate 10000000 times the no. of successes in 3 trials
-last rbinom() simulate what the exercise is asking to do.
+
 ```{r ex 2.7, echo=TRUE}
-y <- rbinom(10000000,3,0.50) 
+y <- rbinom(10000000,3,0.50) #the following simulate 10000000 times the no. of successes in 3 trials.
 head(y, 10)
 mean(y)
 sd(y)
 
-rbinom(1,30000000,0.50)/10000000
+rbinom(1,30000000,0.50)/10000000 #this simulate what the exercise is asking to do.
 ```
-theoretical expected value=1.5000 (that is p * n = 0.5 * 3).
-Let's see for example this (very simplified example)
+
+let's explain why this gives us the same result with a very simplified example (useful only to understand the problem):
+
 yx <- rbinom(10,3,0.50) 
 with result:
 1 2 1 2 0 1 2 2 1 3
@@ -112,7 +117,7 @@ that is the same if we take a single sample of 10 trials that
 give us 15 success and then we divide by 10
 15/10
 
-
+that is the same of the theoretical expected value is 1.5000 (that is p * n = 0.5 * 3).
 
 ### Ex 2.21
 
@@ -135,7 +140,7 @@ Looking at the plot we can see that Mean and standard deviation both increase(th
 
 ### Ex 2.67
 
-*For n observations {yi}, let y(1) ≤ y(2) ≤ ⋯ ≤ y(n) denote their ordered values, called order statistics. Let qi be the i/(n + 1) quantile of the standard normal distribution, for  i = 1...., n. When {yi} are a random sample from a normal distribution, the plot of the points  (q1, y(1)),..., (qn, y(n)) should approximately follow a straight line, more closely so when n is  large. This normal quantile plot is a special case of a quantile-quantile (Q-Q) plot. The  R appendix of this book presents details.*                                                                  
+*For n observations {*$y_i$*}, let *$y_{(1)}$ *≤ *$y_{(2)}$ *≤ ⋯ ≤*$y_{(n)}$ *denote their ordered values, called order statistics. Let *$q_i$ *be the i/(n + 1) quantile of the standard normal distribution, for  i = 1...., n. When {*$y_i$*} are a random sample from a normal distribution, the plot of the points  (*$q_{(1)}$ *, *$y_{(1)}$ *),..., (*$q_{(n)}$ *,*$y_{(n)}$ *) should approximately follow a straight line, more closely so when n is  large. This normal quantile plot is a special case of a quantile-quantile (Q-Q) plot. The  R appendix of this book presents details.*                                                                  
 *(a) Randomly generate (i) n = 10, (ii) n = 100, (iii) n = 1000 observations from a N(0, 1)  distribution and construct the normal quantile plot each time, using software such as the  R functions rnorm and qqnorm. Note that as n increases the points cluster more tightly  along the line y = x, which you can add to the plot with command abline(0, 1).*                                                              
 *(b) Randomly generate 1000 observations from a N(100, 162) distribution of IQ’s and construct the normal quantile plot. What is the slope of the line approximating these points?  *                                                                          
 *(c) Randomly generate 1000 observations from the (i) exponential distribution (2.2), (ii) uniform distribution over (0, 1), using software such as the R functions rexp and runif. Construct the normal quantile plot in each case. Explain how they reveal the non-normality  of the data. *
@@ -163,6 +168,7 @@ yb <- rnorm(1000, 0, 16)
 qqnorm(yb)
 abline(0,16)
 ```
+
 we change the values of abline() function and we find out that the slope of points is about 16
 
 c)
@@ -186,7 +192,7 @@ d)
 
 qunif gives the quantile function for the uniform distribution;
 c(1:n)/(n+1) is the vector evaluated as in the text of the exercise 
-"Let qi be the i~(n + 1) quantile of the standard normal distribution ,for
+"Let $q_i$ be the i~(n + 1) quantile of the standard normal distribution ,for
 i = 1. ...,n."
 we sort the vector of values generated from runif()
 we build the plot that compares sorted values of yu with quantiles found before
@@ -199,7 +205,8 @@ yu=sort(yu)
 plot(q,yu)
 
 ```
-so for the uniform(0,1) the appropriate quantiles are q_i = i/(n+1)
+
+so for the uniform(0,1) the appropriate quantiles are $q_i$ = i/(n+1)
 
 ### Ex 1.8 
 
@@ -231,9 +238,10 @@ X follows log normal distribution
 
 ### Ex 3.6 
 
-*The empirical cumulative distribution function for a set of measurements {xi : i = 1, . . . n} is*
+*The empirical cumulative distribution function for a set of measurements {*$x_i$ 
+*: i = 1, . . . n} is*
 $$\hat{F}(x) = \frac{\#{x_i < x}}{n}$$
-*where #{xi < x} denotes ‘number of xi values less than x’. When answering the following, try to ensure that your code is commented, clearly structured, and tested. To test your code, generate random samples using rnorm, runif, etc.*
+*where #{*$x_i$*< x} denotes ‘number of *$x_i$ *values less than x’. When answering the following, try to ensure that your code is commented, clearly structured, and tested. To test your code, generate random samples using rnorm, runif, etc.*
 
 *a. Write an R function that takes an unordered vector of observations x and returns the values of the empirical c.d.f. for each value, in the order corresponding to the original x vector. See ?sort.int.*
 
@@ -255,18 +263,19 @@ Print cdf of each element of x.
 
 
 ```{r ex 3.6 a, echo=TRUE}
+#defining cdf function
 cdf <- function(x){
-  n<- 1000 # number of samples
+  n<- 1000 # number of samples in measurements
   x_m <- rnorm(n,0,n/2) #generate set of measurements
   x_m <- sort(x_m) #sort measurements
   cdf <- c() #initialize vector for cdf
   
   for (i in 1:length(x)){
-    j <- 1
+    j <- 1 #initialize the variable to count #(x_m[j]<x[i])
     while((x_m[j]<x[i])&& (j-1)<length(x_m)){
-      j <- j+1      
+      j <- j+1  #increase j in case x_m[j]<x[i]
     }
-    cdf <- c(cdf, ((j-1)/length(x_m)))
+    cdf <- c(cdf, ((j-1)/length(x_m))) #add cdf of x[i]
   }
   
   #print cdf of each corresponding x
@@ -274,6 +283,7 @@ cdf <- function(x){
   print(cdf)
     
 }
+#end of function
 
 #generate observations
 n<- 20
