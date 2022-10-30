@@ -30,6 +30,7 @@
   * [x] FSDS     1.44
     * manca 1/n
   * [x] FSDS     1.48
+    * aggiungi info sopra ultimo uguale
   * [x] FSDS     2.16
   * [x] FSDS     2.27
   * [x] FSDS     2.71
