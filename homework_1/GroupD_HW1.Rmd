@@ -563,13 +563,14 @@ $$
 \int_0^{1\over2} {1\over8}+{3\over4}y^2 \,dy =
 \left[ {1\over8}y + {1\over4}y^3 \right]_0^{1\over2} = {3\over32}
 $$
+
 ### Ex 1.8 
 
-*If log(X) ∼ N(μ, σ2), find the p.d.f. of X.*
+*If *$log(x) ∼ N(μ,σ^2)$*, find the p.d.f. of X.*
 
 **Solution**
 
-Given that log(X) ∼ N(μ, σ2)
+Given that $log(x) ∼ N(μ,σ^2)$
 
 The cumulative distribution function of X is,
 
