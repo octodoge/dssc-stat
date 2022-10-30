@@ -96,7 +96,10 @@ mean(x); var(x)
 ```
 
 **(b)** <br>
-**TBD**
+The Poisson distribution assumes that the events occur independently and at a constant average rate. So we expect it to better describe weekly admissions for a rare disease than daily admissions for a generic treatment. In fact:
+
+  * We expect rare diseases to occur more independently than other causes of hospitalization (eg.: car accidents may involve more people).
+  * The average rate of hospitalization for a generic treatment may vary from day to day (eg.: workdays vs weekend days), invalidating one of the assumptions.
 
 ### Ex 2.27
 
