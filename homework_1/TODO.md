@@ -28,6 +28,7 @@
 
 * exercises
   * [x] FSDS     1.44
+    * manca 1/n
   * [x] FSDS     1.48
   * [x] FSDS     2.16
   * [x] FSDS     2.27
