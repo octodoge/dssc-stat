@@ -811,7 +811,7 @@ The rewrite is faster and gives the same result.
 
 
 
-### (CS) Ex 3.5
+### Ex 3.5
 
 *Consider solving the matrix equation $Ax = y$ for $x$, where $y$ is a known $n$ vector and $A$ is a known $n×n$ matrix. The formal solution to the problem is $x = A^{−1}y$, but it is possible to solve the equation directly, without actually forming $A^{-1}$. This question explores this direct solution. Read the help file for `solve` before trying it.*
 
