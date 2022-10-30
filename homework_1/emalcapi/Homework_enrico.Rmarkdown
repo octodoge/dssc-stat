@@ -46,11 +46,11 @@ hist(b1,freq = F)
 hist(b,freq = F)
 ```
 
-## Ex 2.3
-According to recent data at the FBI website, of all Blacks slain in the U.S., $85%$ are slain by Blacks, and of all Whites slain, $93%$ are slain by Whites. Let $Y = victim’s race$ and $X = offender’s race$.
+### Ex 2.3
+*According to recent data at the FBI website, of all Blacks slain in the U.S., $85%$ are slain by Blacks, and of all Whites slain, $93%$ are slain by Whites. Let $Y = victim’s race$ and $X = offender’s race$.*
 
-1. Which conditional distribution do these probabilities refer to, $Y$ given $X$, or $X$ given $Y$ ?
-2. Given that a murderer was White, what other probability do you need to estimate the conditional probability that the victim was White? To illustrate, fix a value of $0.60$ for that other probability and find the conditional probability.
+1. *Which conditional distribution do these probabilities refer to, $Y$ given $X$, or $X$ given $Y$ ?*
+2. *Given that a murderer was White, what other probability do you need to estimate the conditional probability that the victim was White? To illustrate, fix a value of $0.60$ for that other probability and find the conditional probability.*
 
 
 **Solution**
@@ -68,17 +68,15 @@ $$
 Having the value of $P(Y=white)=0.6$ we obtain $P(Y=white|X=white)=0.90$
 
 
-## Ex 2.19
-Lake Wobegon Junior College admits students only if they score above 400 on a standardized achievement test. Applicants from group A have a mean of 500 and a standard deviation of 100 on this test, and applicants from group B have a mean of 450 and a standard deviation of 100. Both distributions are approximately normal, and both groups have the same size.
-1. Find the proportion not admitted for each group.
-2. Of the students who are not admitted, what proportion are from group B?
-3. A state legislator proposes that the college lower the cutoff point for admission to 300,
-thinking that the proportion of not-admitted students who are from group B would de-
-crease. If this policy is implemented, determine the effect on the answer to (2).
+### Ex 2.19
+*Lake Wobegon Junior College admits students only if they score above 400 on a standardized achievement test. Applicants from group A have a mean of 500 and a standard deviation of 100 on this test, and applicants from group B have a mean of 450 and a standard deviation of 100. Both distributions are approximately normal, and both groups have the same size.*
+1. *Find the proportion not admitted for each group.*
+2. *Of the students who are not admitted, what proportion are from group B?*
+3. *A state legislator proposes that the college lower the cutoff point for admission to 300, thinking that the proportion of not-admitted students who are from group B would decrease. If this policy is implemented, determine the effect on the answer to (2)*
 
 
 **Solution**
-```{r es3, echo=T}
+```{r, echo=T}
 #Evaluating the proportion of not admitted students using the comulative distribution function 
 A_not_admitted=pnorm(400,mean=500,sd=100)
 B_not_admitted=pnorm(400,mean=450,sd=100)
@@ -99,10 +97,10 @@ B_not_admitted/(A_not_admitted+B_not_admitted)
 ```
 
 
-## Ex 2.52
-The pdf $f$ of a $N(\mu,\sigma)$ distribution can be derived from the standard normal pdf $\phi(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}\: whit\:z\in(-\infty,\infty)$.
-1. Show that the normal cdf $F$ relates to the standard normal cdf $\Phi$ by $F[y]=\Phi[\frac{y-\mu}{\sigma}]$.
-1. From (1), show that $f(y)=\frac{1}{\sigma}\phi(\frac{y-\mu}{\sigma})$, and show that $f(y;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}e^{\frac{(y-\mu)^2}{2\sigma}}$.
+### Ex 2.52
+*The pdf $f$ of a $N(\mu,\sigma)$ distribution can be derived from the standard normal pdf $\phi(z)=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}\: whit\:z\in(-\infty,\infty)$.*
+1. *Show that the normal cdf $F$ relates to the standard normal cdf $\Phi$ by $F[y]=\Phi[\frac{y-\mu}{\sigma}]$.*
+1. *From (1), show that $f(y)=\frac{1}{\sigma}\phi(\frac{y-\mu}{\sigma})$, and show that $f(y;\mu,\sigma)=\frac{1}{\sqrt{2\pi}\sigma}e^{\frac{(y-\mu)^2}{2\sigma}}$.*
 
 
 **Solution**
@@ -113,14 +111,17 @@ $$
 That is exactly $F[y]$. Furthermore from $F[y]=\int^y_{-\infty}f(z)dz=\Phi[\frac{y-\mu}{\sigma}]=\int^y_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(z'-\mu)^2}{2\sigma^2}} dz'=\int^y_{-\infty}\frac{1}{\sigma}\phi(\frac{(z-\mu)^2}{\sigma}) dz'\: \forall y$ we can affirm that $f(y)=\frac{1}{\sigma}\phi(\frac{(z-\mu)^2}{\sigma})$.
 
 
-## Ex 2.53
+### Ex 2.53
+
+
+*If $Y$ is a standard normal random variable, with cdf $\Phi$, what is the probability distribution of $X=\Phi(Y)$? Illustrate by randomly generating a million standard normal random variables, applying the cdf function $\Phi$ to each, and plotting histograms of the (a) $y$ values, (b) $x$ values.*
 
 
 **Solution**
 
 
 I'll suppose that the random variable $\Phi(Y)$, with $\Phi$ the cdf of the standard normal distribution, will have a distribution function that is the uniform distribution function since the cdf of a random variable has the property to give a uniform distributed random variable if evaluated on the random variable itself.
-```{r es4, echo=T}
+```{r, echo=T}
 #Generating a sample of one million of variable with standard normal distribution 
 y=rnorm(1000000,mean=0,sd=1)
 #Generating the sample of one million of random variable x that correspond to the cdf evaluated on y 
@@ -137,11 +138,11 @@ curve(dunif(x), add=TRUE, lty=1, col=2)
 # Core Statistics
 
 
-## Ex 1.1
-Exponential random variable, $X\ge0$, has pdf $f(x)=\lambda e^{-\lambda x}$.
-1. Find the cdf and the quantile function for $X$.
-2. Find $Pr(X<\lambda)$ and the median of $X$.
-3. Find the mean and variance of $X$.
+### Ex 1.1
+*Exponential random variable, $X\ge0$, has pdf $f(x)=\lambda e^{-\lambda x}$.*
+1. *Find the cdf and the quantile function for $X$.*
+2. *Find $Pr(X<\lambda)$ and the median of $X$.*
+3. *Find the mean and variance of $X$.*
 
 
 **Solution**

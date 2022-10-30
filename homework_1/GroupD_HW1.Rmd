@@ -60,35 +60,39 @@ they are the approximate same results of the previous standard deviations found
 
 **Solution**
 
-
+First we crate a sample of 1000 elements with a p.d.f. $N(4,3)$, and evaluate the mean and standard deviation:
 ```{r, echo=T}
-#Create a sample with pdf N(4,3)
+#Create the sample
 b <- rnorm(n=1000,4,3)
-#Evaluate the mean and variance 
+#Evaluate the mean and standard deviation 
 mean=mean(b)
-var=var(b)
+s_deviaition=sd(b)
+```
+Now we create a second sample by adding to each element of the first sample the costant $c=2$, and then we compare the mean and standard deviation of the two samples:
+```{r, echo=T}
 #Adds c=2 to each element of the sample 
 c=2
 b1=b+c
-#Compare the mean and variance (since the standard deviation is the square of the variance) 
+#Compare the mean and standard deviation  
 mean1=mean(b1)
-var1=var(b1)
-mean+c==mean1
-var==var
-par(mfrow=c(1,2))
-hist(b1,freq = F)
-hist(b,freq = F)
-
+s_deviation1=sd(b1)
+print("mean of the first sample +c: ", mean+c)
+print("mean of the second sample: ",mean1)
+print("standard deviation of the first sample: ",s.deviation)
+print("standard deviation of the second sample: ",s.deviation1)
+```
+Now we create the second sample by moltypling the elements of the first one by $c=2$, and compare again the mean and standard deviation:
+```{r, echo=T}
 #multiply the valuse by c=2
 b1=c*b
 #Compare the mean and variance  
 mean1=mean(b1)
-var1=var(b1)
-mean1==mean*c
-var1==c**2*var
-par(mfrow=c(1,2))
-hist(b1,freq = F)
-hist(b,freq = F)
+s.deviation1=sd(b1)
+print("mean of the first sample times c: ", mean*c)
+print("mean of the second sample: ",mean1)
+print("standard deviation of the first sample times c^2: ",s.deviation*c**2)
+print("standard deviation of the second sample: ",s.deviation1)
+
 ```
 
 
