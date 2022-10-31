@@ -1,6 +1,6 @@
 ## General
 
-* adjust date
+* 
 
 ## G. Marsich
 
