@@ -28,9 +28,7 @@
 
 * exercises
   * [x] FSDS     1.44
-    * manca 1/n
   * [x] FSDS     1.48
-    * aggiungi info sopra ultimo uguale
   * [x] FSDS     2.16
   * [x] FSDS     2.27
   * [x] FSDS     2.71
@@ -41,12 +39,6 @@
 
 * exercises
   * [ ] FSDS     1.43
-    * sd is the sqrt of var, NOT the square
-      * perché viene usato `var` al posto che direttamente `sd`?
-    * NON viene mostrato che la media diventa $\bar y + c$
-      * evitare di confrontare numeric values con `==` perché non è detto che tenga conto degli errori di approsimazione
-    * IMHO gli istogrammi appesantiscono la lettura (serve scrollare inutilmente di più ogni volta che si torna indietro a rileggere la domanda ecc.) e non sono richiesti
-    * "valuse" is a typo
   * [ ] FSDS      2.3
   * [ ] FSDS     2.19
   * [ ] FSDS     2.52
