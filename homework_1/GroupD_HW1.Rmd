@@ -120,7 +120,7 @@ mean(x); log(mean(y))
 No, because there is at least one counterexample:
 
 ```{r, echo=T}
-y = rgamma(n=100, shape=2)
+y = rgamma(n=2, shape=2)
 x = log(y)
 
 median(x); log(median(y))
