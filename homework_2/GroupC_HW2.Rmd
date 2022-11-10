@@ -1,20 +1,24 @@
 ---
 title: "GroupC_HW2"
 author: "M. Polo, A. Campagnolo, S. D'Avenia, G. Cera"
-output: 
+date: '2022-11-10'
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
   pdf_document:
-    toc: true
+    toc: yes
     toc_depth: 3
-date: "2022-11-10"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## FSDS - Chapter X 
+## FSDS - Chapter 3
 
-### Ex X.x
+### Ex 3.12
 
 *Here the text of the first exercise.*
 
@@ -22,11 +26,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Add comments to the solution.
 
-```{r cars, echo=T}
-summary(cars)
-```
 
-### Ex X.x
+### Ex 3.18
+
+*Sunshine City, which attracts primarily retired people, has 90,000 residents with a mean age of 72 years and a standard deviation of 12 years. The age distribution is skewed to the left. A random sample of 100 residents of Sunshine City has  $\bar{y} = 70$ and $s = 11$. a) Describe the center and spread of the (i) population distribution, (ii) sample data distribution. What shape does the sample data distribution probably have? Why? b)Find the center and spread of the sampling distribution of $\bar{y}$ for n = 100. What shape does it have and what does it describe? c) Explain why it would not be unusual to sample a person of age 60 in Sunshine City, but it would be highly unusual for the sample mean to be 60, for a random sample of 100 residents.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 3.28
 
 *Here the text of the second exercise.*
 
@@ -34,16 +43,92 @@ summary(cars)
 
 Add comments to the solution.
 
-$$ Y \sim N(0,1)$$
 
-## CS - Chapter X 
 
-### Ex X.x
+## FSDS - Chapter 4 
 
-*Here the text of the first exercise from Wood's textbook.*
+### Ex 4.2
+
+*Here the text of the first exercise.*
 
 **Solution**
 
 Add comments to the solution.
 
-$$ X \sim N(0,1)$$
+
+### Ex 4.4
+
+*For the Students data file (Exercise 1.2 in Chapter 1) and corresponding population, find the ML estimate of the population proportion believing in life after death. Construct a Wald 95% confidence interval, using its formula (4.8). Interpret.*
+
+**Solution**
+
+Add comments to the solution.
+```{r Students}
+data <- read.table("http://stat4ds.rwth-aachen.de/data/Students.dat", header = TRUE)
+
+```
+
+
+### Ex 4.38
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+
+### Ex 4.44
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+
+### Ex 4.48
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+
+
+## FSDS - Chapter 5 
+
+### Ex 5.2
+
+*When a government does not have enough money to pay for the services that it provides, it can raise taxes or it can reduce services. When the Florida Poll asked a random sample of 1200 Floridians which they preferred, 52% (624 of the 1200) chose raise taxes and 48% chose reduce services. Let $\pi$ denote the population proportion of Floridians who would choose raising taxes. Analyze whether this is a minority of the population ($\pi <$ 0.50) or a majority ($\pi >$ 0.50) by testing H0 ∶ $\pi$ = 0.50 against Ha: $\pi \neq $ 0.50. Interpret the P-value. Is it appropriate to “accept H0? Why or why not?*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 5.12
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 5.16
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 5.68
+
+*Here the text of the second exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+
