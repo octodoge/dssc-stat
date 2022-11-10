@@ -16,7 +16,7 @@
 
 ## M. Polo
 
-* fix "homework 2" link in README.md
+* wait for days of birth and divide exercises
 
 ## A. Campagnolo
 
