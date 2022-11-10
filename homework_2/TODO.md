@@ -16,16 +16,24 @@
 
 ## M. Polo
 
-* wait for days of birth and divide exercises
+4.2
+4.48
+5.16
 
 ## A. Campagnolo
 
-* 
+3.28
+4.38
+5.12 
 
 ## S. D'Avenia
 
-* 
+3.18
+4.4
+5.2
 
 ## G. Cera
 
-* 
+3.12
+4.44
+5.68
