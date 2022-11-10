@@ -5,7 +5,7 @@ FSDS_exs = as.character(c(3.12, 3.18, 3.28, #add quotes to avoid stripping trail
 books = rep("FSDS", length(FSDS_exs))
 
 students = c()
-set.seed(6 + 26 + 3 + ?) #days of birth
+set.seed(6 + 26 + 3 + 15) #days of birth
 for (i in 1:3) {
   students = c(students, sample(c("M. Polo", "A. Campagnolo", "S. D'Avenia", "G. Cera")))
 }
