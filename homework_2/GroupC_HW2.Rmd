@@ -33,7 +33,29 @@ Add comments to the solution.
 
 **Solution**
 
-Add comments to the solution.
+#### a)
+
+(i) The population distribution has mean 72, which we can take as a measure of center, while it has a standard deviation of 12 which we can take as a measure of spread. 
+
+(ii) For the sample, the mean is 70 while the standard deviation is 11. Since the sample is random, we can assume that it is representative of the whole population, meaning that we can expect it will have the same distribution (more or less) as the population, i.e. a left skewed distribution. For this particular sample the mean and standard deviation are as stated above.
+
+
+#### b) 
+
+Under the reasonable assumption that a sample size of 100 is large enough for the Central Limit Theorem to hold we have that:
+$$\bar{Y}_{100} \mathrel{\dot\sim} N(72, \frac{\sigma^2}{n} = 1.44)$$
+Where with $\bar{Y}_{100}$ we denote the random variable describing the sample mean of a sample of size 100.\
+This means that this distribution is centered at 72 and standard deviation 1.2. Under the CLT assumption this random variable has a normal distribution.\
+It describes the distribution of the mean age of a sample of size 100 collected from the population of Sunshine City.
+
+
+#### c)
+
+Consider the first statement: "Sample a person of age 60 in Sunshine City" and consider $Y_i$ the random variable describing the distribution of height for a person in Sunshine City. We know that it is distributed with a mean of 72 and a standard deviation of 12, meaning that the specific value of 60 falls within 2 standard deviations of the sample mean, making it not that unlikely.
+
+Now consider the second statement "Sample mean for a sample of size 100 is 60". We have seen in part b how the random variable $\bar{Y}_{100}$ has approximately the normal distribution with parameters stated above. Under these assumptions, the value of 60 falls exactly 10 standard deviations away from the mean, making it much less likely.
+
+
 
 ### Ex 3.28
 
