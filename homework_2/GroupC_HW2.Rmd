@@ -147,8 +147,26 @@ Add comments to the solution.
 *When a government does not have enough money to pay for the services that it provides, it can raise taxes or it can reduce services. When the Florida Poll asked a random sample of 1200 Floridians which they preferred, 52% (624 of the 1200) chose raise taxes and 48% chose reduce services. Let $\pi$ denote the population proportion of Floridians who would choose raising taxes. Analyze whether this is a minority of the population ($\pi <$ 0.50) or a majority ($\pi >$ 0.50) by testing H0 ∶ $\pi$ = 0.50 against Ha: $\pi \neq $ 0.50. Interpret the P-value. Is it appropriate to “accept H0? Why or why not?*
 
 **Solution**
+We denote as $\pi$ the proportion of Floridians who would choose to raise taxes. We have the following set of hypotheses:
+$$H_0: \pi = 0.5 \qquad H_1: \pi \neq 0.5$$
+Since the sample size is quite large, the sampling distribution of $\hat{\pi}$, which is the proportion of people in the sample saying they prefer taxes to be raised, is approximately normal (by CLT), and under $H_0$ we have that its distribution is as follows
+$$\hat{\pi} \mathrel{\dot\sim} N(\pi_0,\frac{\pi_0 (1-\pi_0)}{n}) = N(0.5, \frac{0.25}{1200}) \ \ (\text{In this case}) $$
+Hence we can obtain the p-value for this set of hypotheses as the probability of observing a value as "extreme" or more than the observed 0.52 in both direction (since we are considering a double sided test).
 
-Add comments to the solution.
+```{r Florida_Poll}
+# Code as 1 those who prefer raising taxes
+y <- c(rep(1, 624), rep(0, 1200-624))
+n <- length(y)
+
+pi_hat <- sum(y)/n
+se <- sqrt(0.5 * (1 - 0.5)/n)
+test <- (pi_hat - 0.5)/se
+
+p <- 2*pnorm(test, lower.tail = FALSE)
+```
+The p value we obtain is `r round(p, 2)`. This p-value is not very strong, meaning that we do not have enough evidence supporting the hypothesis that the proportion of voters is different than the 0.5 stated in the null hypothesis. Hence I would reject the alternative hypothesis. \
+In any case it would be wrong to state that we "accept the null hypothesis", as we assume that the null hypothesis is true and work under that construct. We are simply trying to see if there is enough evidence against it to support an alternative hypothesis.
+
 
 ### Ex 5.12
 
