@@ -83,13 +83,34 @@ Add comments to the solution.
 *For the Students data file (Exercise 1.2 in Chapter 1) and corresponding population, find the ML estimate of the population proportion believing in life after death. Construct a Wald 95% confidence interval, using its formula (4.8). Interpret.*
 
 **Solution**
+We only need to consider the \textit{life} column in the Student dataset, which is recorded as: (1 = yes, 2 = no, 3 = undecided).
+Assuming that the student responses are independent, we can model the responses as a set of i.i.d. Bernoulli distribution with parameter $\pi$. This can be stated as 
+$$Y_i \sim i.i.d. \  Ber(\pi) \qquad i = 1, ... 60$$
+We have seen in class that the ML estimator for this model is given by the sample mean $\hat{\pi} = \frac{\sum_{i=0}^{60}y_i}{n} = $.
 
-Add comments to the solution.
+To construct an approximate Wald 95% Confidence interval we have seen in class that an approximate pivot is:
+$$Z(\pi) = \frac{\bar{y} - \pi}{\sqrt{\frac{\bar{y}(1-\bar{y})}{n}}} \qquad \bar{y} = \hat{\pi}$$
+So a 95% Wald confidence interval for $\pi$ is given by:
+$$\bar{y}\pm z_{1-0.05/2}\sqrt{\frac{\bar{y}(1-\bar{y})}{n}}$$
 ```{r Students}
 data <- read.table("http://stat4ds.rwth-aachen.de/data/Students.dat", header = TRUE)
+life <- data$life
+
+# 1 if students believes in life after death, 0 otherwise
+y <- as.numeric(life==1)
+n <- length(y)
+pi_hat <- sum(y)/n
+
+#Now we construct the CI
+alpha <- 0.05
+z_alpha <- qnorm(1 - alpha/2)
+se <- sqrt( (pi_hat * (1-pi_hat))/n)
+lower <- pi_hat + z_alpha * se
+upper <- pi_hat - z_alpha * se
+
 
 ```
-
+The ML estimate is `r round(pi_hat, 4)`, while the Wald Confidence Interval is [`r round(lower, 4)`; `r round(upper, 4)` ]
 
 ### Ex 4.38
 
