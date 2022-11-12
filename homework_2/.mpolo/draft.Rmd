@@ -1,0 +1,40 @@
+
+### Ex 4.2
+
+*For a sequence of observations of a binary random variable, you observe the geometric random variable (Section 2.2.2) outcome of the first success on observation number* $y=3$*. Find and plot the likelihood function.*
+
+**Solution**
+
+TBD
+
+### Ex 4.48
+
+*For a simple random sample of* $n$ *subjects, explain why it is about 95% likely that the sample proportion has error no more than* $1/\sqrt{n}$ *in estimating the population proportion. (Hint: To show this "*$1/\sqrt{n}$ *rule", find two standard errors when* $\pi = 0.50$*, and explain how this compares to two standard errors at other values of* $\pi$*.) Using this result, show that* $n = 1/M^2$ *is a safe sample size for estimating a proportion to within* $M$ *with 95% confidence.*
+
+**Solution**
+
+TBD
+
+### Ex 5.16
+
+*An experiment used a sample of college students to investigate whether cell phone use impairs drivers’ reaction times. On a machine that simulated driving situations, at irregular periods a target flashed red or green. Participants were instructed to press a brake button as soon as possible when they detected a red light. Under the cell phone condition, each student carried out a conversation on a cell phone with someone in a separate room. In the control condition, the same students listened to a radio broadcast. The "CellPhone" data file records the students’ mean response times (in milliseconds) over several trials for each condition,* $\{y_{i1}\}$ *for the cell phone condition and* $\{y_{i2}\}$ *for control.*
+
+a. *The comparisons of means or proportions in this chapter assume independent samples for the two groups. Explain why the samples for these two conditions are dependent rather than independent.*
+
+b. *To compare* $\mu_1$ *and* $\mu_2$*, you can use* $\{d_i = y_{i1} − y_{i2},\; i=1,...,n\}$*, here with* $n=8$*. Specify the parameter* $\mu_d$ *and* $H_0$ *for doing this, and explain why* $\mu_d = \mu_1 - \mu_2$*.*
+
+c. *State the assumptions and test statistic, explain why it has a t-distribution with* $df = n−1$*. Report the P-value with two-sided* $H_a$*, and interpret. (The test is called a matched-pairs t-test. Matched-pairs analyses also are possible with confidence intervals, as Section 4.4.3 did in comparing weights of anorexic girls before and after a period of treatment by analyzing the mean difference in weights.)*
+
+**Solution**
+
+#### a
+
+TBD
+
+#### b
+
+TBD
+
+#### c
+
+TBD
