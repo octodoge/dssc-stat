@@ -36,6 +36,11 @@ draft ex solution (1st part):
   the times, our sample is between -2*sqrt((1-p)*p)/sqrt(n) and 2*sqrt((1-p)*p)/sqrt(n).
   * also sqrt((1-p)*p)/sqrt(n) is maximized by p=0.5, so 95% prob to be between -1/sqrt(n) and
   1/sqrt(n)
+  
+draft ex solution (2nd part):
+  * for 95% conf we must be within 1/sqrt(n) for the previous result
+  * If n=1/M^2 then 1/sqrt(n) = M
+
 
 ### Ex 5.16
 
