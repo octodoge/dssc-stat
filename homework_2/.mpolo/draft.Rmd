@@ -1,12 +1,3 @@
-
-### Ex 4.2
-
-*For a sequence of observations of a binary random variable, you observe the geometric random variable (Section 2.2.2) outcome of the first success on observation number* $y=3$*. Find and plot the likelihood function.*
-
-**Solution**
-
-TBD
-
 ### Ex 4.48
 
 *For a simple random sample of* $n$ *subjects, explain why it is about 95% likely that the sample proportion has error no more than* $1/\sqrt{n}$ *in estimating the population proportion. (Hint: To show this "*$1/\sqrt{n}$ *rule", find two standard errors when* $\pi = 0.50$*, and explain how this compares to two standard errors at other values of* $\pi$*.) Using this result, show that* $n = 1/M^2$ *is a safe sample size for estimating a proportion to within* $M$ *with 95% confidence.*
@@ -27,14 +18,14 @@ c. *State the assumptions and test statistic, explain why it has a t-distributio
 
 **Solution**
 
-#### a
+#### a.
 
 TBD
 
-#### b
+#### b.
 
 TBD
 
-#### c
+#### c.
 
 TBD

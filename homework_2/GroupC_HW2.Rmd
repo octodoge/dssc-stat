@@ -71,12 +71,26 @@ Add comments to the solution.
 
 ### Ex 4.2
 
-*Here the text of the first exercise.*
+*For a sequence of observations of a binary random variable, you observe the geometric random variable (Section 2.2.2) outcome of the first success on observation number* $y=3$*. Find and plot the likelihood function.*
 
 **Solution**
 
-Add comments to the solution.
+Since we observe the first success at the third trial, we have the following observations of a Bernoulli r.v.:
+$$
+0, 0, 1
+$$
+The likelihood function is the joint probability of our observations viewed as a function of the parameter:
+$$
+L(p) = (1-p)^2 p
+$$
+Now let's plot it:
 
+```{r}
+L = function(p) {
+  (1-p)^2 * p
+}
+curve(L, xlab='p', ylab='L(p)') #p already in [0,1] by default
+```
 
 ### Ex 4.4
 
