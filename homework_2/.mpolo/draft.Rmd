@@ -56,12 +56,38 @@ c. *State the assumptions and test statistic, explain why it has a t-distributio
 
 #### a.
 
-TBD
+The samples for these two conditions are dependent because the students are the same.
 
 #### b.
 
 TBD
 
+Being the students the same, to compare ... we can use ...
+
+To compare the population means $\mu_1$ and $\mu_2$ of two groups, we usually test the null hypothesis $H_0: \mu_1 = \mu_2$ or equivalently $H_0: \mu_1 - \mu_2 = 0$.
+
+But in this case we can also test $H_0: \mu_d = 0$ with $\mu_d = {1 \over 8} \sum_{i=1}^8 d_i$ since:
+$$
+\mu_d = {1 \over 8} \sum_{i=1}^8 d_i = {1 \over 8} \sum_{i=1}^8 (y_{i1} − y_{i2}) =
+{1 \over 8} \sum_{i=1}^8 y_{i1} - {1 \over 8} \sum_{i=1}^8 y_{i2} = \mu_1 - \mu_2
+$$
+
 #### c.
 
 TBD
+
+* We assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem.
+
+Since we want to do a matched-pairs t-test, the test statistic is:
+$$
+T = {\bar Y - \mu_0 \over {s \over \sqrt n}}
+$$
+It has a t-distribution with $df = n−1 = 7$ (instead of a standard normal distribution) because it uses the sample standard deviation $s$ (instead of the population standard deviation $\sigma$, which is unknown).
+
+.....................
+
+
+```{r}
+data = read.table("http://stat4ds.rwth-aachen.de/data/CellPhone.dat", header=TRUE)
+data
+```
