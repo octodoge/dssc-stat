@@ -27,6 +27,6 @@
 ## G. Cera
 
 * exercises
-  * [ ] FSDS 3.12
+  * [x] FSDS 3.12
   * [ ] FSDS 4.44
   * [ ] FSDS 5.68

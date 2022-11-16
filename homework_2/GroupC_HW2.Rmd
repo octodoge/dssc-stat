@@ -19,12 +19,55 @@ knitr::opts_chunk$set(echo = TRUE)
 ## FSDS - Chapter 3
 
 ### Ex 3.12
+*Simulate random sampling from a normal population distribution with several *$n$ *values to illustrate the law of large numbers.*
 
-*Here the text of the first exercise.*
+**Solution**  
+We simulate three sets of data using a standard normal distribution with $n$ equal 4, 16 and 64
+```{r data_generation}
+i <- 1:3
+n <- 4^(i)
+rn.x <- list((1:n[1]), (1:n[2]), (1:n[3]))
+for (j in i){
+  rn.x[[j]] <- rnorm(n[j])
+}
+```
 
-**Solution**
+We see that the mean tends to get closer to zero as $n$ increases.
+```{r mean}
+mean(as.numeric(unlist(rn.x[1]))) # n = 4
+mean(as.numeric(unlist(rn.x[2]))) # n = 16
+mean(as.numeric(unlist(rn.x[3]))) # n = 64
+```
 
-Add comments to the solution.
+Similarly the variance tends to get closer to one as $n$ increases.
+```{r variance}
+var(as.numeric(unlist(rn.x[1]))) # n = 4
+var(as.numeric(unlist(rn.x[2]))) # n = 16
+var(as.numeric(unlist(rn.x[3]))) # n = 64
+```
+
+Displaying the sampled data in histograms and comparing them to the actual standard normal distribution we can see  that, as $n$ increases, the histogram better approximates the curve. 
+```{r plots}
+tr_colors <- c('lightblue', 'pink', 'lightgreen')
+
+par(mfrow=c(2,2))
+library(MASS)
+for (j in i) {
+  hist.scott(as.numeric(unlist(rn.x[j])), col = tr_colors[j], xlim = range(-4,4), 
+             ylim = range(0.,0.6), main = paste('n =', n[j]), xlab = 'x')
+  curve(dnorm, col = "red", type = 'l', lwd=2, add = T)
+}
+```
+
+Following the formulation of the Central Limit theorem in Agresti-Kateri's book we calculate the cumulative distribution function for the three datasets and compare it to the actual cumulative distribution of a standard normal distribution.
+```{r cdf}
+par(mfrow=c(2,2))
+for (j in i) {
+  plot(ecdf(as.numeric(unlist(rn.x[j]))), main = paste('n =', n[j]), 
+       xlim = range(-3,3))
+  curve(pnorm, col = "red", type = 'l', lwd=2, add = T)
+}
+```
 
 
 ### Ex 3.18
