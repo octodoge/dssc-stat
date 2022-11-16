@@ -42,6 +42,7 @@ draft ex solution (2nd part):
   * If n=1/M^2 then 1/sqrt(n) = M
 
 
+
 ### Ex 5.16
 
 *An experiment used a sample of college students to investigate whether cell phone use impairs drivers’ reaction times. On a machine that simulated driving situations, at irregular periods a target flashed red or green. Participants were instructed to press a brake button as soon as possible when they detected a red light. Under the cell phone condition, each student carried out a conversation on a cell phone with someone in a separate room. In the control condition, the same students listened to a radio broadcast. The "CellPhone" data file records the students’ mean response times (in milliseconds) over several trials for each condition,* $\{y_{i1}\}$ *for the cell phone condition and* $\{y_{i2}\}$ *for control.*
@@ -60,34 +61,37 @@ The samples for these two conditions are dependent because the students are the 
 
 #### b.
 
-TBD
+TBD (nella formula non posso dire che la population mean è uguale alla sample mean...)
 
-Being the students the same, to compare ... we can use ...
-
-To compare the population means $\mu_1$ and $\mu_2$ of two groups, we usually test the null hypothesis $H_0: \mu_1 = \mu_2$ or equivalently $H_0: \mu_1 - \mu_2 = 0$.
-
-But in this case we can also test $H_0: \mu_d = 0$ with $\mu_d = {1 \over 8} \sum_{i=1}^8 d_i$ since:
+Let $\mu_d$ be the population mean of the differences $d_i$. To compare the population means $\mu_1$ and $\mu_2$ of the two conditions, we can test the null hypothesis $H_0: \mu_d = 0$. In fact $\mu_d = \mu_1 - \mu_2$:
 $$
-\mu_d = {1 \over 8} \sum_{i=1}^8 d_i = {1 \over 8} \sum_{i=1}^8 (y_{i1} − y_{i2}) =
-{1 \over 8} \sum_{i=1}^8 y_{i1} - {1 \over 8} \sum_{i=1}^8 y_{i2} = \mu_1 - \mu_2
+\mu_d = {1 \over n} \sum_{i=1}^n d_i = {1 \over n} \sum_{i=1}^n (y_{i1} − y_{i2}) =
+{1 \over n} \sum_{i=1}^n y_{i1} - {1 \over n} \sum_{i=1}^n y_{i2} = \mu_1 - \mu_2
 $$
 
 #### c.
 
-TBD
+TBD (continua a calcolare il P-value)
 
-* We assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem.
+Now we want to do a significance test for the mean $\mu_d$.
 
-Since we want to do a matched-pairs t-test, the test statistic is:
+We can assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem. But, actually, the significance test for the mean is quite robust and performs well even if this assumption is violated.
+
+For this test, the test statistic is:
 $$
 T = {\bar Y - \mu_0 \over {s \over \sqrt n}}
 $$
 It has a t-distribution with $df = n−1 = 7$ (instead of a standard normal distribution) because it uses the sample standard deviation $s$ (instead of the population standard deviation $\sigma$, which is unknown).
 
-.....................
-
+Let's explore the data file with the mean response times $y_{i1}$ and $y_{i2}$:
 
 ```{r}
 data = read.table("http://stat4ds.rwth-aachen.de/data/CellPhone.dat", header=TRUE)
 data
+```
+
+Let's calculate the P-value:
+
+```{r}
+
 ```
