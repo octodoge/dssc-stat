@@ -6,7 +6,7 @@
 
 * exercises
   * [x] FSDS 4.2
-  * [ ] FSDS 4.48
+  * [x] FSDS 4.48
   * [x] FSDS 5.16
 
 ## A. Campagnolo
