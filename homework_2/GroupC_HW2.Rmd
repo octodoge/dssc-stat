@@ -202,11 +202,118 @@ So MLE of $\theta$ is $\frac{1}{\bar{y}}$.
 
 ### Ex 4.44
 
-*Here the text of the second exercise.*
+*Refer to the previous two exercises. Consider the selling prices (in thousands of dollars) in the* **`Houses`** *data file mentioned in Exercise 4.31.*
+
+*(a) Fit the normal distribution to the data by finding the ML estimates of $\mu$ and $\sigma$ for that distribution.*  
+*(b) Fit the log-normal distribution to the data by finding the ML estimates of its parameters.*  
+*(c) Find and compare the ML estimates of the mean and standard deviation of selling price for the two distributions.*  
+*(d) Superimpose the fitted normal and log-normal distributions on a histogram of the data. Which distribution seems to be more appropriate for summarizing the selling prices?*
 
 **Solution**
 
-Add comments to the solution.
+```{r import_dataset}
+# import dataset
+Houses <- read.table('http://stat4ds.rwth-aachen.de/data/Houses.dat', 
+                     header = T)
+```
+
+**(a)** Likelihood function for **normal distribution**:
+$$\begin{aligned}
+\ell(\bf{y},\mu,\sigma)
+&=\prod_{i=1}^nf(\bf{y}, \mu, \sigma)\\
+&=\prod_{i=1}^n(2\pi\sigma^2)^{-\frac{1}{2}}\exp\left(-\frac{1}{2}\frac{(y_i-\mu)^2}{\sigma^2}\right)\\
+&=(2\pi\sigma^2)^{-\frac{n}{2}}\exp\left(-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2\right)
+\end{aligned}$$
+Log Likelihood function for normal distribution:
+$$\begin{aligned}
+L(\bf{y}, \mu, \sigma)
+&=\ln(\ell(\bf{y},\mu,\sigma))\\
+&=\ln\left((2\pi\sigma^2)^{-\frac{n}{2}}\exp\left(-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2\right)\right)\\
+&=\ln\left((2\pi\sigma^2)^{-\frac{n}{2}}\right)+\ln\left(\exp\left(-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2\right)\right)\\
+&=-\frac{n}{2}\ln(2\pi\sigma^2)-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2\\
+&=-\frac{n}{2}\left(\ln(2\pi)+\ln(\sigma^2)\right)-\frac{1}{2\sigma^2}\sum_{j=1}^n(y_i-\mu)^2
+\end{aligned}$$
+Maximum Likelihood estimator:  
+we need to solve the following $$\max_{\mu,\sigma}L(\bf{y},\mu,\sigma)$$  
+Differentiating for $\mu$ and $\sigma$ to find the likelihood equation for each parameter 
+$$\frac{\partial L(\bf{y},\mu,\sigma)}{\partial\mu}=0$$ 
+$$\frac{\partial L(\bf{y},\mu,\sigma)}{\partial\sigma}=0$$
+The partial derivative of the log-likelihood function in regards to the **mean** is the following
+$$\begin{aligned}
+\frac{\partial L(\bf{y},\mu,\sigma)}{\partial\mu}
+&=\frac{\partial}{\partial\mu}\left(-\frac{n}{2}\left(\ln(2\pi)+\ln(\sigma^2)\right)-\frac{1}{2\sigma^2}\sum_{j=1}^n(y_i-\mu)^2\right)\\
+&=\frac{1}{\sigma^2}\sum_{i=1}^n(y_i-\mu)\\
+&=\frac{1}{\sigma^2}\left(\sum_{i=1}^n y_i-n\mu\right)
+\end{aligned}$$
+setting this equal to zero means the numerator has to be zero $$\sum_{i=1}^n y_i-n\mu=0$$
+therefore the result is $$\mu=\frac{1}{n}\sum_{i=1}^{n}y_i$$
+
+The partial derivative of the log-likelihood function in regards to the **standard deviation** is the following
+$$\begin{aligned}
+\frac{\partial L(\bf{y},\mu,\sigma)}{\partial\sigma}
+&=\frac{\partial}{\partial\sigma}\left(-\frac{n}{2}\left(\ln(2\pi)+\ln(\sigma^2)\right)-\frac{1}{2\sigma^2}\sum_{j=1}^n(y_i-\mu)^2\right)\\
+&=-\frac{n}{\sigma}+\frac{1}{\sigma^3}\sum_{i=1}^{n}(y_i-\mu)^2\\
+&=\frac{1}{\sigma}\left(\frac{1}{\sigma^2}\sum_{i=1}^{n}(y_i-\mu)^2-n\right)
+\end{aligned}$$
+assuming $\sigma\ne0$, the expression is equal to zero only if $$\sigma=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\mu)^2}$$
+In conclusion the two likelihood equations are
+$$\begin{aligned}
+&\hat\mu=\frac{1}{n}\sum_{i=1}^{n}y_i\\
+&\hat\sigma=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat\mu)^2}
+\end{aligned}$$
+which are respectively, the sample mean and (elevating to the square to get the variance from the standard deviation), the unadjusted sample variance.  
+
+Translating these in R we can get estimates on the houses size.
+```{r norm_estimates}
+y <- Houses$size
+n <- length(Houses$size)
+mu <- sum(y)/n
+sig <- sqrt(sum((y-mu)^2)/n)
+print(paste("mu_hat =", mu))
+print(paste("sigma_hat =", sig))
+```
+
+**(b)**
+The procedure is the same for the **log-normal distribution** but we can use the function `fitdistr()` from the `MASS` library to avoid all the math and just get the estimates for the two parameters.
+```{r log_norm_estimates}
+# y argument defined for the norm MLE
+parameters <- MASS::fitdistr(y, densfun = 'log-normal')
+parameters
+```
+ 
+**(c)** 
+We apply `fitdistr()` again on the prices for both the normal and log-normal distribution.
+```{r price_MLE}
+y <- Houses$price
+n <- length(Houses$price)
+# Normal distribution
+MLE_norm <- MASS::fitdistr(y, densfun = 'normal')
+# Log-Normal distribution
+MLE_logn <- MASS::fitdistr(y, densfun = 'log-normal')
+
+MLE_norm # Normal distribution 
+MLE_logn # Log-Normal distribution
+```
+
+**(d)** 
+```{r}
+# data
+x <- Houses$price 
+# Histogram of data density
+MASS::hist.scott(x, col = 'aquamarine', xlab = 'Prices', main='House prices')
+# plot of fitted normal distribution
+curve(dnorm(x, mean=MLE_norm$estimate[1], sd=MLE_norm$estimate[2]), 
+       col='purple', lwd=4, add=T)
+# plot of fitted log-normal distribution
+curve(dlnorm(x, mean=MLE_logn$estimate[1], sd=MLE_logn$estimate[2]), 
+       col='orange', lwd=4, add=T)
+# graph legend
+legend(x='topright', 
+       legend=c('real data','normal distribution','log-normal distribution'), 
+       col=c('aquamarine','purple','orange'),
+       pch=c(15,19,19))
+```
+The log normal distribution seems to represent better the data since it is not symmetrical.
 
 
 ### Ex 4.48
@@ -361,10 +468,19 @@ The P-value is the probability that the test statistic equals the observed value
 
 ### Ex 5.68
 
-*Here the text of the second exercise.*
+*Explain why the confidence interval based on the Wald test of $H_0:\theta=\theta_0$ is symmetric around $\hat\theta$ (i.e., having center exactly equal to $\hat\theta$. This is not true for the confidence intervals based on the likelihood-ratio and score tests.) Explain why such symmetry can be problematic when $\theta$ and $\hat\theta$ are near a boundary, using the example of a population proportion that is very close to 0 or 1 and a sample proportion that may well equal 0 or 1.*
 
-**Solution**
-
-Add comments to the solution.
+**Solution**  
+Wald confidence interval $$\hat\theta\pm z_{\alpha/2}\sqrt{\frac{\hat\theta(1-\hat\theta)}{n}}$$
+It is symmetrical around $\hat\theta$ by construction.  
+Wald test $$ W=\frac{(\hat\theta-\theta_0)^2}{SE(\hat\theta)^2} $$
+To demonstrate that the Wald test does not perform well near boundaries we use the function `binom.coverage` from the package `binom`, which determines the probability coverage for a binomial confidence interval.
+```{r}
+library(binom)
+# n=30  p=0.1
+binom.coverage(0.1, 30, conf.level = 0.95, method="asymptotic")
+# Wald CI has true probability = 0.81 of containing pi = 0.1
+```
+We can see that coverage is lower than the required confidence level of `0.95`.
 
 

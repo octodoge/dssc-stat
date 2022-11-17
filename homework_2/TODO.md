@@ -27,5 +27,5 @@
 
 * exercises
   * [x] FSDS 3.12
-  * [ ] FSDS 4.44
-  * [ ] FSDS 5.68
+  * [x] FSDS 4.44
+  * [x] FSDS 5.68
