@@ -433,7 +433,7 @@ $$
 
 Now we want to do a significance test for the mean $\mu_d$.
 
-We can assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem (since they are means). Actually, the significance test for the mean is quite robust and thus performs adequately even if this assumption is violated.
+We assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are independent. They are also approximately normally distributed, since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem (since they are means). But, actually, the significance test for the mean is quite robust and thus performs adequately even if this last assumption is violated.
 
 For this test, the test statistic is:
 $$
