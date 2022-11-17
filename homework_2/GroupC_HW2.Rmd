@@ -232,11 +232,64 @@ Add comments to the solution.
 
 ### Ex 5.16
 
-*Here the text of the second exercise.*
+*An experiment used a sample of college students to investigate whether cell phone use impairs drivers’ reaction times. On a machine that simulated driving situations, at irregular periods a target flashed red or green. Participants were instructed to press a brake button as soon as possible when they detected a red light. Under the cell phone condition, each student carried out a conversation on a cell phone with someone in a separate room. In the control condition, the same students listened to a radio broadcast. The "CellPhone" data file records the students’ mean response times (in milliseconds) over several trials for each condition,* $\{y_{i1}\}$ *for the cell phone condition and* $\{y_{i2}\}$ *for control.*
+
+a. *The comparisons of means or proportions in this chapter assume independent samples for the two groups. Explain why the samples for these two conditions are dependent rather than independent.*
+
+b. *To compare* $\mu_1$ *and* $\mu_2$*, you can use* $\{d_i = y_{i1} − y_{i2},\; i=1,...,n\}$*, here with* $n=8$*. Specify the parameter* $\mu_d$ *and* $H_0$ *for doing this, and explain why* $\mu_d = \mu_1 - \mu_2$*.*
+
+c. *State the assumptions and test statistic, explain why it has a t-distribution with* $df = n−1$*. Report the P-value with two-sided* $H_a$*, and interpret. (The test is called a matched-pairs t-test. Matched-pairs analyses also are possible with confidence intervals, as Section 4.4.3 did in comparing weights of anorexic girls before and after a period of treatment by analyzing the mean difference in weights.)*
 
 **Solution**
 
-Add comments to the solution.
+#### a.
+
+The samples for these two conditions are dependent because the students are the same.
+
+#### b.
+
+Let $\mu_d$ be the population mean of the differences $d_i$. To compare the population means $\mu_1$ and $\mu_2$ of the two conditions, we can test the null hypothesis $H_0: \mu_d = 0$. In fact $\mu_d = \mu_1 - \mu_2$:
+$$
+\mu_d = {1 \over m} \sum_{i=1}^m d_i = {1 \over m} \sum_{i=1}^m (y_{i1} − y_{i2}) =
+{1 \over m} \sum_{i=1}^m y_{i1} - {1 \over m} \sum_{i=1}^m y_{i2} = \mu_1 - \mu_2
+$$
+
+#### c.
+
+Now we want to do a significance test for the mean $\mu_d$.
+
+We can assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem (since they are means). Actually, the significance test for the mean is quite robust and thus performs adequately even if this assumption is violated.
+
+For this test, the test statistic is:
+$$
+T = {\bar Y - \mu_d \over {s \over \sqrt n}}
+$$
+with $\mu_d = 0$ because we assume that the null hypothesis is true.
+
+This test statistic has a t-distribution with $df = n−1 = 7$ (instead of a standard normal distribution) because it uses the sample standard deviation $s$ (instead of the population standard deviation $\sigma$, which is unknown).
+
+Let's explore the data file with the mean response times $y_{i1}$ and $y_{i2}$:
+
+```{r}
+data = read.table("http://stat4ds.rwth-aachen.de/data/CellPhone.dat", header=TRUE)
+data
+```
+
+Let's calculate the observation of the test statistic $T$ with the formula above:
+
+```{r}
+diffs = data$phone - data$control #differences
+T_obs = mean(diffs) * sqrt(8) / sd(diffs) #observation of T
+T_obs
+```
+
+Finally, let's calculate the two-sided P-value:
+
+```{r}
+2 * pt(T_obs, df=7, lower.tail=FALSE) #2 times because two-sided
+```
+
+The P-value is the probability that the test statistic equals the observed value (or a more extreme one) assuming that $H_0$ is true. In this case it is quite low, meaning that we can confidently reject $H_0$ in favor of the alternative hypothesis $H_a: \mu_d \ne 0$. This indicates that cell phone use impairs drivers' reaction times.
 
 ### Ex 5.68
 
