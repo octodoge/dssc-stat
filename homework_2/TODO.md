@@ -7,7 +7,7 @@
 * exercises
   * [x] FSDS 4.2
   * [x] FSDS 4.48
-  * [x] FSDS 5.16
+  * [x] FSDS 5.16 : maybe add in part c that we assume the differences are independent.
 
 ## A. Campagnolo
 
@@ -19,9 +19,9 @@
 ## S. D'Avenia
 
 * exercises
-  * [ ] FSDS 3.18
-  * [ ] FSDS 4.4
-  * [ ] FSDS 5.2
+  * [x] FSDS 3.18
+  * [x] FSDS 4.4
+  * [x] FSDS 5.2
 
 ## G. Cera
 
