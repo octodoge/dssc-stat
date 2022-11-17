@@ -61,27 +61,25 @@ The samples for these two conditions are dependent because the students are the 
 
 #### b.
 
-TBD (nella formula non posso dire che la population mean è uguale alla sample mean...)
-
 Let $\mu_d$ be the population mean of the differences $d_i$. To compare the population means $\mu_1$ and $\mu_2$ of the two conditions, we can test the null hypothesis $H_0: \mu_d = 0$. In fact $\mu_d = \mu_1 - \mu_2$:
 $$
-\mu_d = {1 \over n} \sum_{i=1}^n d_i = {1 \over n} \sum_{i=1}^n (y_{i1} − y_{i2}) =
-{1 \over n} \sum_{i=1}^n y_{i1} - {1 \over n} \sum_{i=1}^n y_{i2} = \mu_1 - \mu_2
+\mu_d = {1 \over m} \sum_{i=1}^m d_i = {1 \over m} \sum_{i=1}^m (y_{i1} − y_{i2}) =
+{1 \over m} \sum_{i=1}^m y_{i1} - {1 \over m} \sum_{i=1}^m y_{i2} = \mu_1 - \mu_2
 $$
 
 #### c.
 
-TBD (continua a calcolare il P-value)
-
 Now we want to do a significance test for the mean $\mu_d$.
 
-We can assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem. But, actually, the significance test for the mean is quite robust and performs well even if this assumption is violated.
+We can assume that the differences $\{d_i = y_{i1} − y_{i2},\; i=1,...,8\}$ are approximately normally distributed since the mean response times $y_{i1}$ and $y_{i2}$ are approximately normally distributed for the Central Limit Theorem (since they are means). Actually, the significance test for the mean is quite robust and thus performs adequately even if this assumption is violated.
 
 For this test, the test statistic is:
 $$
-T = {\bar Y - \mu_0 \over {s \over \sqrt n}}
+T = {\bar Y - \mu_d \over {s \over \sqrt n}}
 $$
-It has a t-distribution with $df = n−1 = 7$ (instead of a standard normal distribution) because it uses the sample standard deviation $s$ (instead of the population standard deviation $\sigma$, which is unknown).
+with $\mu_d = 0$ because we assume that the null hypothesis is true.
+
+This test statistic has a t-distribution with $df = n−1 = 7$ (instead of a standard normal distribution) because it uses the sample standard deviation $s$ (instead of the population standard deviation $\sigma$, which is unknown).
 
 Let's explore the data file with the mean response times $y_{i1}$ and $y_{i2}$:
 
@@ -90,8 +88,18 @@ data = read.table("http://stat4ds.rwth-aachen.de/data/CellPhone.dat", header=TRU
 data
 ```
 
-Let's calculate the P-value:
+Let's calculate the observation of the test statistic $T$ with the formula above:
 
 ```{r}
-
+diffs = data$phone - data$control #differences
+T_obs = mean(diffs) * sqrt(8) / sd(diffs) #observation of T
+T_obs
 ```
+
+Finally, let's calculate the two-sided P-value:
+
+```{r}
+2 * pt(T_obs, df=7, lower.tail=FALSE) #2 times because two-sided
+```
+
+The P-value is the probability that the test statistic equals the observed value (or a more extreme one) assuming that $H_0$ is true. In this case it is quite low, meaning that we can confidently reject $H_0$ in favor of the alternative hypothesis $H_a: \mu_d \ne 0$. This indicates that cell phone use impairs drivers' reaction times.
