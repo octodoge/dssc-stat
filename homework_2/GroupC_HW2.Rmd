@@ -84,14 +84,13 @@ for (j in i) {
 
 Under the reasonable assumption that a sample size of 100 is large enough for the Central Limit Theorem to hold we have that:
 $$\bar{Y}_{100} \mathrel{\dot\sim} N(72, \frac{\sigma^2}{n} = 1.44)$$
-Where with $\bar{Y}_{100}$ we denote the random variable describing the sample mean of a sample of size 100.\
-This means that this distribution is centered at 72 and standard deviation 1.2. Under the CLT assumption this random variable has a normal distribution.\
-It describes the distribution of the mean age of a sample of size 100 collected from the population of Sunshine City.
+Where with $\bar{Y}_{100}$ we denote the random variable describing the sample mean of a sample of size 100 collected from the population of Sunshine City.\
+This means that this distribution is centered at 72 and has standard deviation 1.2. Under the CLT assumption this random variable has a normal distribution.
 
 
 #### c)
 
-Consider the first statement: "Sample a person of age 60 in Sunshine City" and consider $Y_i$ the random variable describing the distribution of height for a person in Sunshine City. We know that it is distributed with a mean of 72 and a standard deviation of 12, meaning that the specific value of 60 falls within 2 standard deviations of the sample mean, making it not that unlikely.
+Consider the first statement: "Sample a person of age 60 in Sunshine City" and consider $Y_i$ the random variable describing the age for a person in Sunshine City. We know that it is distributed with a mean of 72 and a standard deviation of 12, meaning that the specific value of 60 falls within 2 standard deviations of the sample mean, making it not that unlikely.
 
 Now consider the second statement "Sample mean for a sample of size 100 is 60". We have seen in part b how the random variable $\bar{Y}_{100}$ has approximately the normal distribution with parameters stated above. Under these assumptions, the value of 60 falls exactly 10 standard deviations away from the mean, making it much less likely.
 
@@ -137,12 +136,12 @@ curve(L, xlab='p', ylab='L(p)') #p already in [0,1] by default
 *For the Students data file (Exercise 1.2 in Chapter 1) and corresponding population, find the ML estimate of the population proportion believing in life after death. Construct a Wald 95% confidence interval, using its formula (4.8). Interpret.*
 
 **Solution**
-We only need to consider the \textit{life} column in the Student dataset, which is recorded as: (1 = yes, 2 = no, 3 = undecided).
+We only need to consider the life variable in the Student dataset, which is recorded as: (1 = yes, 2 = no, 3 = undecided).
 Assuming that the student responses are independent, we can model the responses as a set of i.i.d. Bernoulli distribution with parameter $\pi$. This can be stated as 
 $$Y_i \sim i.i.d. \  Ber(\pi) \qquad i = 1, ... 60$$
-We have seen in class that the ML estimator for this model is given by the sample mean $\hat{\pi} = \frac{\sum_{i=0}^{60}y_i}{n} = $.
+The ML estimator for this model is given by the sample mean $$\hat{\pi} = \frac{\sum_{i=0}^{60}y_i}{n} $$.
 
-To construct an approximate Wald 95% Confidence interval we have seen in class that an approximate pivot is:
+To construct an approximate Wald 95% Confidence interval an approximate pivot is:
 $$Z(\pi) = \frac{\bar{y} - \pi}{\sqrt{\frac{\bar{y}(1-\bar{y})}{n}}} \qquad \bar{y} = \hat{\pi}$$
 So a 95% Wald confidence interval for $\pi$ is given by:
 $$\bar{y}\pm z_{1-0.05/2}\sqrt{\frac{\bar{y}(1-\bar{y})}{n}}$$
