@@ -98,11 +98,16 @@ Now consider the second statement "Sample mean for a sample of size 100 is 60". 
 
 ### Ex 3.28
 
-*Here the text of the second exercise.*
+*A survey is planned to estimate the population proportion $\pi$ supporting more government action to address global warming. For a simple random sample, if $\pi$ may be near $0.50$, how large should $n$ be so that the standard error of the sample proportion is $0.04 ?$*
 
 **Solution**
 
-Add comments to the solution.
+The standard error of the sampling distribution of the sample proportion $\bar{\pi}$ is 
+$$\sigma_{\hat{\pi}}=\sqrt{\frac{\pi(1-\pi)}{n}}$$
+If half of the population (0.50) are supporting the government action to address globar warming, for a simple random sample $n$ should be
+$$
+(0.04)=\sqrt{\frac{0.50(1-0.50)}{n}} \Rightarrow (0.04)=\sqrt{\frac{0.25}{n}} \Rightarrow (0.04)^2=\frac{0.25}{n} \Rightarrow \frac{0.04^2}{0.25}=\frac{1}{n} \Rightarrow n=\frac{0.25}{0.0016}=156,25
+$$
 
 
 
@@ -167,11 +172,32 @@ The ML estimate is `r round(pi_hat, 4)`, while the Wald Confidence Interval is [
 
 ### Ex 4.38
 
-*Here the text of the second exercise.*
+*For independent observations $y_1, \ldots, y_n$ having the geometric distribution (2.1):*
+*(a) Find a sufficient statistic for $\pi$.*
+*(b) Derive the ML estimator of $\pi$. *
 
 **Solution**
 
-Add comments to the solution.
+a)
+The joint probability mass function of $y_1,...,y_n$ is:
+$$
+f(y_1,...,y_n|\pi) = \prod_{i=1}^{n}(1-\pi)^{y_i}\pi = \pi^n \prod_{i=1}^{n}(1-\pi)^{y_i} = \pi^n (1-\pi)^{y_1+...+y_i} = \pi^n (1-\pi)^{\sum_{i=1}^{n}y_i}
+$$
+Set $T(y) = \sum_{i=1}^{n} y_i$, we see that $f(y|\pi)$ has been expressed as a function that depends on $\pi$ but depends on the observations y only through the value of $\sum_{i=1}^{n} y_i$
+By the factorization theorem, $T(y) = \sum_{i=1}^{n} y_i$ is a sufficient statistic.
+
+b)
+
+The log likelihood function is defined as
+
+$$
+\ell(\theta) = \sum_{i=1}^{n}log[(1-\theta)^{y_i-1}\theta] = \sum_{i=1}^{n}[log(1-\theta)^{y_i-1}+log(\theta)] = log(1-\theta)\sum_{i=1}^{n}({y_i-1})+n\,log(\theta) = log(1-\theta)(\sum_{i=1}^{n}{(y_i)-n})+n\,log(\theta)
+$$
+The likelihood equation for estimating $\theta$ is
+$$
+\frac{d}{d\theta}log\, L = 0 \Rightarrow \frac{-1}{1-\theta} (\sum_{i=1}^{n}{(y_i)-n})+\frac{n}{\theta}=0 \Rightarrow \frac{n}{\theta} =  \frac{\sum_{i=1}^{n}{(y_i)-n}}{1-\theta} \Rightarrow n-n\theta = \theta\sum_{i=1}^{n}{(y_i)-n\theta} \Rightarrow \theta=\frac{n}{\sum_{i=1}^{n}{(y_i)}} \Rightarrow \theta=\frac{1}{\bar{y}}
+$$
+So MLE of $\theta$ is $\frac{1}{\bar{y}}$.
 
 
 ### Ex 4.44
@@ -238,11 +264,39 @@ In any case it would be wrong to state that we "accept the null hypothesis", as 
 
 ### Ex 5.12
 
-*Here the text of the second exercise.*
+*The example in Section 3.1.4 described an experiment to estimate the mean sales with a proposed menu for a new restaurant. In a revised experiment to compare two menus, on Tuesday of the opening week the owner gives customers menu A and on Wednesday she gives them menu B. The bills average \$22.30 for the 43 customers on Tuesday (s = 6.88) and \$25.91 for the 50 customers on Wednesday (s = 8.01). Under the strong assumption that her customers each night are comparable to a random sample from the conceptual population of potential customers, show how to compare the mean sales for the two menus based on (a) the P -value of a significance test, (b) a 95% confidence interval. Which is more informative, and why? (When used in an experiment to compare two treatments to determine which works better, a two-sample test is often called an A/B test.).*
 
 **Solution**
 
-Add comments to the solution.
+a)
+We test $H0: \mu_1 = \mu_2$ against $Ha: \mu_1 \ne \mu_2$
+
+The pooled standard deviation estimate is:
+$$
+s=\sqrt{\frac{\left(n_1-1\right) s_1^2+\left(n_2-1\right) s_2^2}{n_1+n_2-2}}= \sqrt{\frac{\left(43-1\right) 6.88^2+\left(50-1\right) 8.01^2}{43+50-2}} = \sqrt{\frac{5131.8897}{91}} = 7.509...
+$$
+and $\bar{y_2} − \bar{y_1} =  25.91 -22.30  = 3.61$ has estimated standard error:
+$$
+s e=s \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}=7.51 \sqrt{\frac{1}{43}+\frac{1}{50}}= 1.54
+$$
+For testing $H0: \mu_1 = \mu_2$, the observed value of the $T$ test statistic is
+$$
+t=\frac{\bar{y}_2-\bar{y}_1}{s e}=\frac{25.91 -22.30}{1.54}=2.34,
+$$
+with $df = n_1 +n_2 −2 = 43+50-2=91$, the two-sided $P$-value is 0.022 .
+
+b)
+From the previous answer, we know that $s=7.51$, $\bar{y_2} − \bar{y_1} = 3.61$ and $se=1.54$.
+
+With $df =n_1 +n_2 −2=91$, a 95% confidence interval for $(\mu_1 −\mu_2)$ is
+$$
+\left(\bar{y}_2-\bar{y}_1\right) \pm t_{0.025,91}(s e)=3.61 \pm 1.99(1.54) \text {, which is } 3.61 \pm 3.06 \text {, or }(0.55, 6.67) \text {. }
+$$
+
+Since the size of the sample and the dispersion is known, confidence intervals can be calculated from p-values, and conversely.
+
+To compare the mean sales, the p-value is more informative since allow a decision about the rejection or maintenance of the previously formulated null hypothesis. In this case we reject $H_0$ because P-value of 0.022 is less than 0.05 and we can infer that $\mu_2>\mu_1$, so menu B works better than menu A.
+
 
 ### Ex 5.16
 
