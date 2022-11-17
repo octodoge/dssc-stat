@@ -185,13 +185,28 @@ Add comments to the solution.
 
 ### Ex 4.48
 
-*Here the text of the second exercise.*
+*For a simple random sample of* $n$ *subjects, explain why it is about 95% likely that the sample proportion has error no more than* $1/\sqrt{n}$ *in estimating the population proportion. (Hint: To show this "*$1/\sqrt{n}$ *rule", find two standard errors when* $\pi = 0.50$*, and explain how this compares to two standard errors at other values of* $\pi$*.) Using this result, show that* $n = 1/M^2$ *is a safe sample size for estimating a proportion to within* $M$ *with 95% confidence.*
 
 **Solution**
 
-Add comments to the solution.
+The sample proportion can be seen as the sample mean of a Bernoulli random sample with parameter $\pi$. Therefore, for the Central Limit Theorem, it is approximately normally distributed with mean $\pi$ and standard deviation:
+$$
+\sqrt{(1-\pi)\pi} \over \sqrt{n}
+$$
+This is also the standard error of the sample proportion because the standard error of a statistic is the standard deviation of its sampling distribution (or an estimate of that standard deviation).
 
-
+For a normal distribution, about 95% of values fall within 2 standard deviations of the mean. This means that, in estimating the population proportion, it is about 95% likely that the sample proportion has error no more than:
+$$
+2 {\sqrt{(1-\pi)\pi} \over \sqrt{n}}
+$$
+However, note that $(1-\pi)\pi$ is maximized by $\pi = 0.5$. So, actually, the error is no more than:
+$$
+2 {\sqrt{(1-0.5)0.5} \over \sqrt{n}} = {1 \over \sqrt{n}}
+$$
+Using this result, we can find a safe sample size $n$ for estimating a proportion within $M$ with 95% confidence:
+$$
+M = {1 \over \sqrt{n}} \implies n = {1 \over M^2}
+$$
 
 ## FSDS - Chapter 5 
 
