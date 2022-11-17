@@ -7,7 +7,8 @@
 * exercises
   * [x] FSDS 4.2
   * [x] FSDS 4.48
-  * [x] FSDS 5.16 : maybe add in part c that we assume the differences are independent.
+  * [x] FSDS 5.16
+    * [x] maybe add in part c that we assume the differences are independent.
 
 ## A. Campagnolo
 
