@@ -7,8 +7,7 @@
 * exercises
   * [x] FSDS 4.2
   * [ ] FSDS 4.48
-  * [ ] FSDS 5.16
-    * remove reference to Section 4.4.3 in the text?
+  * [x] FSDS 5.16
 
 ## A. Campagnolo
 
