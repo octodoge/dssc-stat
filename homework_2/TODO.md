@@ -30,4 +30,6 @@
 * exercises
   * [x] FSDS 3.12
   * [x] FSDS 4.44
+    * [ ] Part (d), the mean and standard deviation of the log-normal distribution are not mu and sigma, so I would obtain those as well.
   * [x] FSDS 5.68
+    * [ ] I would add some comments on the fact that a symmetric CI for a proportion falls outside the parameter space for the proportion, so the coverage is not the specified one.
