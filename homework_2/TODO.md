@@ -31,6 +31,7 @@
   * [x] FSDS 3.12
     * [ ] first line of the solution: IMO the tilde doesn't make sense here
     * [ ] IMO `rn.x <- list((1:n[1]), (1:n[2]), (1:n[3]))` doesn't make sense. Why not `rn.x <- list()`?
+    * [ ] `mean(as.numeric(unlist(rn.x[j])))` --> `mean(rn.x[[j]])`
   * [x] FSDS 4.44
     * [ ] Part (d), the mean and standard deviation of the log-normal distribution are not mu and sigma, so I would obtain those as well.
   * [x] FSDS 5.68
