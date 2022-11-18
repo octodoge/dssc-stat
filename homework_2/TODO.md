@@ -31,8 +31,9 @@
   * [x] FSDS 3.12
     * [ ] first line of the solution: IMO the tilde doesn't make sense here
     * [ ] IMO `rn.x <- list((1:n[1]), (1:n[2]), (1:n[3]))` doesn't make sense. Why not `rn.x <- list()`?
-    * [ ] `mean(as.numeric(unlist(rn.x[j])))` --> `mean(rn.x[[j]])`
+    * [ ] `as.numeric(unlist(rn.x[j]))` is unnecessarily hard to read. IMO use `rn.x[[j]]` instead
     * [ ] IMO "calculate $P(|\overline{Y}-\mu|\geq\epsilon)\rightarrow0$" means nothing. Maybe "calculate $P(|\overline{Y}-\mu|\geq\epsilon)$"? But I don't think that it's calculated like that. For instance, you can get P=1 for n=10 (it depends on the sample) but it cannot be that $P(|\overline{Y}-\mu|\geq\epsilon)=1$
+    * [ ] IMO it doesn't make sense to compare histograms with different bin widths
   * [x] FSDS 4.44
     * [ ] Part (d), the mean and standard deviation of the log-normal distribution are not mu and sigma, so I would obtain those as well.
   * [x] FSDS 5.68
