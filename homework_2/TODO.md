@@ -16,6 +16,7 @@
   * [ ] FSDS 3.28
   * [ ] FSDS 4.38
   * [ ] FSDS 5.12 
+    * [ ] Add R code to obtain p-value and confidence intervals.
 
 ## S. D'Avenia
 
