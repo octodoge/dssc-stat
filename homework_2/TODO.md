@@ -17,6 +17,7 @@
   * [ ] FSDS 4.38
   * [ ] FSDS 5.12 
     * [ ] Add R code to obtain p-value and confidence intervals.
+    * [ ] check confidence interval: maybe $t_{0.975,91}$ instead of $t_{0.025,91}$?
 
 ## S. D'Avenia
 
