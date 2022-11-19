@@ -376,7 +376,7 @@ In any case it would be wrong to state that we "accept the null hypothesis", as 
 **Solution**
 
 a)
-We test $H0: \mu_1 = \mu_2$ against $Ha: \mu_1 \ne \mu_2$
+We test $H0: \mu_2 = \mu_1$ against $Ha: \mu_2 > \mu_1$
 
 The pooled standard deviation estimate is:
 $$
@@ -390,19 +390,42 @@ For testing $H0: \mu_1 = \mu_2$, the observed value of the $T$ test statistic is
 $$
 t=\frac{\bar{y}_2-\bar{y}_1}{s e}=\frac{25.91 -22.30}{1.54}=2.34,
 $$
-with $df = n_1 +n_2 −2 = 43+50-2=91$, the two-sided $P$-value is 0.022 .
+with $df = n_1 +n_2 −2 = 43+50-2=91$.
+Since the alternate hypothesis contains greater than inequality a right-tailed test is performed:
+
+
+```{r}
+#set.seed(7)
+#menuA <- c(rnorm(43, mean = 22.30, sd = 6.88))
+#menuB <- c(rnorm(50, mean = 25.91, sd = 8.01))
+#t.test(menuB, menuA, var.equal = TRUE, alternative = "greater")
+p_value=pt(q=2.34, df=91, lower.tail = FALSE)
+p_value
+```
+give a $P$-value of 0.011.
 
 b)
 From the previous answer, we know that $s=7.51$, $\bar{y_2} − \bar{y_1} = 3.61$ and $se=1.54$.
 
-With $df =n_1 +n_2 −2=91$, a 95% confidence interval for $(\mu_1 −\mu_2)$ is
+With $df =n_1 +n_2 −2=91$, a 95% confidence interval for $(\mu_1 −\mu_2)$ is calculated
+```{r}
+sample.se = 1.54
+sample.mean = 3.61
+t.score = qt(p=.95, df=91,lower.tail=T)
+t.score
+
+margin.error <- t.score * sample.se
+margin.error
+lower.bound <- sample.mean - margin.error
+upper.bound <- sample.mean + margin.error
+print(c(lower.bound,upper.bound))
+```
+
 $$
-\left(\bar{y}_2-\bar{y}_1\right) \pm t_{0.025,91}(s e)=3.61 \pm 1.99(1.54) \text {, which is } 3.61 \pm 3.06 \text {, or }(0.55, 6.67) \text {. }
+\left(\bar{y}_2-\bar{y}_1\right) \pm t_{0.95,91}(s e)=3.61 \pm 1.66(1.54) \text {, which is } 3.61 \pm 2.56 \text {, or }(1.05, 6.17) \text {. }
 $$
 
-Since the size of the sample and the dispersion is known, confidence intervals can be calculated from p-values, and conversely.
-
-To compare the mean sales, the p-value is more informative since allow a decision about the rejection or maintenance of the previously formulated null hypothesis. In this case we reject $H_0$ because P-value of 0.022 is less than 0.05 and we can infer that $\mu_2>\mu_1$, so menu B works better than menu A.
+To compare the mean sales, the p-value is more informative since allow a decision about the rejection or maintenance of the previously formulated null hypothesis. In this case we reject $H_0$ because P-value of 0.011 is less than 0.05 and we can infer that $\mu_2>\mu_1$, so menu B works better than menu A.
 
 
 ### Ex 5.16
