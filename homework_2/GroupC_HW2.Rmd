@@ -22,12 +22,12 @@ knitr::opts_chunk$set(echo = TRUE)
 *Simulate random sampling from a normal population distribution with several *$n$ *values to illustrate the law of large numbers.*
 
 **Solution**  
-We simulate three sets of data using a normal distribution $\sim N(\mu=0, \ \sigma=10)$ with $n$ equal $10$, $100$ and $1000$.
+We simulate three sets of data using a normal distribution $N(\mu=0, \ \sigma=10)$ with $n$ equal $10$, $100$ and $1000$.
 ```{r data_generation}
 i <- 1:3
 stand_dev <- 10
 n <- 10^(i)
-rn.x <- list((1:n[1]), (1:n[2]), (1:n[3]))
+rn.x <- list()
 for (j in i){
   rn.x[[j]] <- rnorm(n[j], sd = stand_dev)
 }
@@ -36,20 +36,9 @@ for (j in i){
 We see that $mean \ of \ the \ data \rightarrow \mu = 0$ as $n$ increases.
 ```{r mean}
 for (j in i){
-  print(paste('n =', n[j], '  mean =', mean(as.numeric(unlist(rn.x[j])))))
+  print(paste('n =', n[j], '  mean =', mean(rn.x[[j]])))
 }
 ```
-
-Following the definition for the Law of large numbers in Agresti-Kateri's book under section *3.2.5*, $\mu = 0$, we can set a value for $\epsilon = 2$ and calculate $P(|\overline{Y}-\mu|\geq\epsilon)\rightarrow0$ simply by counting the number of values generated that are further away from $\mu$ than $\epsilon$ and dividing it by the total number of values generated, $n$.
-```{r}
-eps <- 2                            # epsilon
-for (j in i){
-  v <- as.numeric(unlist(rn.x[j]))
-  under_eps <- v[abs(v) >= eps]     # values further away from mu than epsilon
-  print(paste('n =', n[j], '  P =', length(under_eps)/n[j]))
-}
-```
-$P$ tends to decrease as $n$ increases.
 
 Displaying the sampled data in histograms and comparing them to the actual standard normal distribution we can see  that, as $n$ increases, the histogram better approximates the curve. 
 ```{r plots}
@@ -59,7 +48,7 @@ par(mfrow=c(2,2))
 x <- -10:10
 library(MASS)
 for (j in i) {
-  hist.scott(as.numeric(unlist(rn.x[j])), col = tr_colors[j], xlim = range(-30,30), 
+  hist.scott(rn.x[[j]], col = tr_colors[j], xlim = range(-30,30), 
              ylim = range(0.,0.05), main = paste('n =', n[j]), xlab = 'x')
   curve(dnorm(x, sd = stand_dev), col = "red", type = 'l', lwd=2, add = T)
 }
@@ -276,7 +265,7 @@ print(paste("sigma_hat =", sig))
 **(b)**
 The procedure is the same for the **log-normal distribution** but we can use the function `fitdistr()` from the `MASS` library to avoid all the math and just get the estimates for the two parameters.
 ```{r log_norm_estimates}
-# y argument defined for the norm MLE
+# y: argument defined for the norm MLE
 parameters <- MASS::fitdistr(y, densfun = 'log-normal')
 parameters
 ```
@@ -312,7 +301,8 @@ legend(x='topright',
        legend=c('real data','normal distribution','log-normal distribution'), 
        col=c('aquamarine','purple','orange'),
        pch=c(15,19,19))
-```
+```  
+
 The log normal distribution seems to represent better the data since it is not symmetrical.
 
 
@@ -504,6 +494,6 @@ library(binom)
 binom.coverage(0.1, 30, conf.level = 0.95, method="asymptotic")
 # Wald CI has true probability = 0.81 of containing pi = 0.1
 ```
-We can see that coverage is lower than the required confidence level of `0.95`.
+We can see that coverage is lower than the requested confidence level of `0.95`. The reason for this discrepancy is that the confidence interval, being symmetric, falls outside the parameter space for the proportion, resulting in an empirical coverage lower than the thoretical one.
 
 
