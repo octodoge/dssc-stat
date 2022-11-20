@@ -254,7 +254,7 @@ which are respectively, the sample mean and (elevating to the square to get the 
 
 Translating these in R we can get estimates on the houses size.
 ```{r norm_estimates}
-y <- Houses$size
+y <- Houses$price
 n <- length(Houses$size)
 mu <- sum(y)/n
 sig <- sqrt(sum((y-mu)^2)/n)
@@ -281,8 +281,15 @@ MLE_norm <- MASS::fitdistr(y, densfun = 'normal')
 MLE_logn <- MASS::fitdistr(y, densfun = 'log-normal')
 
 MLE_norm # Normal distribution 
-MLE_logn # Log-Normal distribution
+MLE_logn # Log-Normal distribution parameters mu and sigma
 ```
+For the log-normal distribution the mean is given by $exp(\mu + \frac{\sigma^2}{2})$ while the variance is $[exp(\sigma^2)-1]exp(2\mu + \sigma^2)$. We can compute these with the parameters we have found above:
+```{r price_MLE2}
+mean_lognormal <- exp(MLE_logn$estimate[1] + MLE_logn$estimate[2]^2/2)
+sd_lognormal <- sqrt((exp(MLE_logn$estimate[2]^2) - 1)*exp(2 * MLE_logn$estimate[1] + MLE_logn$estimate[2]^2))
+cbind(mean_lognormal , sd_lognormal)
+```
+We can see that the estimates for the mean are very similar, while those for the standard deviation are slightly different.
 
 **(d)** 
 ```{r}
