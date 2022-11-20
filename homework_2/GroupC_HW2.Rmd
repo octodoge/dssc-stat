@@ -388,18 +388,16 @@ $$
 t=\frac{\bar{y}_2-\bar{y}_1}{s e}=\frac{25.91 -22.30}{1.54}=2.34,
 $$
 with $df = n_1 +n_2 −2 = 43+50-2=91$.
-Since the alternate hypothesis contains greater than inequality a right-tailed test is performed:
-
-
+A two sided test is performed:
 ```{r}
 #set.seed(7)
 #menuA <- c(rnorm(43, mean = 22.30, sd = 6.88))
 #menuB <- c(rnorm(50, mean = 25.91, sd = 8.01))
 #t.test(menuB, menuA, var.equal = TRUE, alternative = "greater")
-p_value=pt(q=2.34, df=91, lower.tail = FALSE)
+p_value=2*pt(q=2.34, df=91, lower.tail = FALSE)
 p_value
 ```
-give a $P$-value of 0.011.
+give a $P$-value of 0.0212.
 
 b)
 From the previous answer, we know that $s=7.51$, $\bar{y_2} − \bar{y_1} = 3.61$ and $se=1.54$.
