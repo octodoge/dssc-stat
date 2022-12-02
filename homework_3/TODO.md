@@ -1,6 +1,6 @@
 ## General
 
-* 
+* Add seed to divide exercises
 
 ## S. MADON KENGNE
 
