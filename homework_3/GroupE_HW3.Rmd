@@ -45,7 +45,6 @@ something
 
 something
 
-
 ## FSDS - Chapter 6
 
 ### Ex 6.10 
@@ -89,12 +88,22 @@ $$
 $$
 \frac{R^2/p}{(1-R^2)/[n-(p+1)]}
 $$
-
 *Explain why larger values of* $R^2$ *yield larger values of* $F$*.* \
+
 $(b)$ *Show that for comparing nested linear models,*
 $$
 F = \frac{(SSE_0 - SSE_1)/(p_1 - p_0)}{SSE_1/[n-(p_1+1)]} = \frac{(R_1^2 - R_0^2)/(p_1-p_0)}{(1-R_1^2)/[n- (p_1+1)]}
 $$
+
+**Solution**
+
+#### (a)
+
+something
+
+#### (b)
+
+something
 
 ## LAB
 
