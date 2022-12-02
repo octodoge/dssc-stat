@@ -5,7 +5,7 @@ FSDS_exs = c(4.24, 4.26, 4.62,
 books = c(rep("LAB", length(LAB_exs)), rep("FSDS", length(FSDS_exs)))
 
 students = c()
-set.seed(? + ? + ? + ?) #days of birth
+set.seed(14 + 6 + 25 + 14) #days of birth
 for (i in 1:2) {
   students = c(students, sample(c("S. MADON KENGNE", "M. Polo", "S. Cappiello", "R. Morsi")))
 }
