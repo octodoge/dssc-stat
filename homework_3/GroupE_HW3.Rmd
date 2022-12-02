@@ -1,0 +1,109 @@
+---
+title: "GroupE_HW3"
+author: "S. MADON KENGNE, M. Polo, S. Cappiello, R. Morsi"
+date: "2022-12-2"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## FSDS - Chapter 4 
+
+### Ex 4.24
+
+*Refer to the vegetarian survey result in Exercise 4.6, with * $n$ *= 25 and no vegetarians.*\
+$(a)$ *Find the Bayesian estimate of* $\pi$ *using a beta prior distribution with* $\alpha = \beta$ *equal:* $(i)$ *0.5,* $(ii)$ *1.0,* $(iii)$ *10.0.*\
+*Explain how the choice of prior distribution affects the posterior mean estimate.* \
+$(b)$ *If you were planning how to take a larger survey from the same population, explain how you can use the posterior results of the previous survey with* $n$ *= 25 based on the prior with* $\alpha = \beta = 1$ *to form the prior distribution to use with the new survey results.*
+
+**Solution**
+
+something
+
+### Ex 4.26
+
+*Refer to the clinical trial example in Section 4.7.5. Using the Jeffreys prior for* $\pi_1$ *and for* $\pi_2$*, simulate and plot the posterior distribution of* $\pi_1 -\pi_2$*. Find the HPD interval. What does that interval reflect about the posterior distribution?*
+
+**Solution**
+
+something
+
+### Ex 4.62
+
+*For the bootstrap method, explain the similarity and difference between the true sampling distribution of* $\hat{\theta}$ *and the empirically-generated bootstrap distribution in terms of its center and its spread.*
+
+**Solution**
+
+something
+
+
+## FSDS - Chapter 6
+
+### Ex 6.10 
+
+*The Students data file shows responses on variables summarized in Exercise 1.2.* \
+$(a)$ *Fit the linear model using* `hsgpa` *= high school GPA,* `tv` *= weekly hours watching TV, and* `sport` *= weekly hours participating in sports as predictors of* `cogpa` *= college GPA. Report the prediction equation. What do the* $P$*-values suggest?* \
+$(b)$ *Summarize the estimated effect of* `hsgpa`*.*\
+$(c)$ *Report and interpret* $R^2$*, adjusted* $R^2$*, and the multiple correlation.*
+
+**Solution**
+
+something
+
+### Ex 6.30
+
+*When the values of* $y$ *are multiplied by a constant* $c$*, from their formulas, show that* $s_y$ *and* $\hat{\beta_1}$ *in the bivariate linear model are also then multiplied by* $c$*. Thus, show that* $r = \hat{\beta_1}(s_x/s_y)$ *does not depend on the units of measurement.*
+
+**Solution**
+
+something
+
+### Ex 6.42
+
+*You can fit the quadratic equation* $E(Y) = \beta_0+\beta_1 \cdot x+\beta_2 \cdot x^2$ *by fitting a multiple regression model with* $x_1 = x$ *and* $x_2 = x^2$*.* \
+$(a)$ *Simulate* $100$ *independent observations from the model* $Y = 40.0-5.0 \cdot x+0.5\cdot x^2+\epsilon$*, where* $X$ *has a uniform distribution over* $\left[0, 10\right]$ *and* $\epsilon \sim \mathcal{N}(0,1)$*. Plot the data and fit the quadratic model. Report how the fitted equation compares with the true relationship.* \
+$(b)$ *Find the correlation between* $x$ *and* $y$ *and explain why it is so weak even though the plot shows a strong relationship with a large* $R^2$ *value for the quadratic model.*
+
+**Solution**
+
+something
+
+### Ex 6.52
+
+$F$ *statistics have alternate expressions in terms of* $R^2$ *values.* \
+
+$(a)$ *Show that for testing* $H_0: \beta_1 = \dots = \beta_p = 0$*,* 
+$$
+F = \frac{(TSS-SSE)/p}{SSE/[n-(p+1)]}
+$$ 
+*is equivalently*
+$$
+\frac{R^2/p}{(1-R^2)/[n-(p+1)]}
+$$
+
+*Explain why larger values of* $R^2$ *yield larger values of* $F$*.* \
+$(b)$ *Show that for comparing nested linear models,*
+$$
+F = \frac{(SSE_0 - SSE_1)/(p_1 - p_0)}{SSE_1/[n-(p_1+1)]} = \frac{(R_1^2 - R_0^2)/(p_1-p_0)}{(1-R_1^2)/[n- (p_1+1)]}
+$$
+
+## LAB
+
+*Suppose you receive* $n=15$ *phone calls in a day, and you want to build a model to assess their average length. Your likelihood for each call length is* $y_i \sim Exponential(\lambda)$*. Now, you have to choose the prior* $\pi(\lambda)$*. Please, tell which of these priors is adequate to describe the problem, and provide a short motivation for each of them:* \
+- $\pi(\lambda)=\mathcal{B}eta(4,2)$*;*\
+- $\pi(\lambda)=\mathcal{N}(1,2)$*;*\
+- $\pi(\lambda)=\mathcal{G}amma(4,2)$*.*\
+*Now, compute your posterior as* $\pi(\lambda|y) \propto L(\lambda;y)\cdot \pi(\lambda)$ *for the selected prior. If your first choice was correct, you will be able to compute it analytically.*
+
+**Solution**
+
+something 
