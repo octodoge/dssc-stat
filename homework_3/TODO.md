@@ -1,27 +1,27 @@
 ## General
 
-* Add seed to divide exercises
+* 
 
 ## S. MADON KENGNE
 
 * exercises
-  * [ ] FSDS ...
-  * [ ] ...
+  * [ ] FSDS 4.24
+  * [ ] FSDS 6.30
 
 ## M. Polo
 
 * exercises
-  * [ ] FSDS ...
-  * [ ] ...
+  * [ ] FSDS 4.62
+  * [ ] FSDS 6.52
 
 ## S. Cappiello
 
 * exercises
-  * [ ] FSDS ...
-  * [ ] ...
+  * [ ] LAB
+  * [ ] FSDS 6.10
 
 ## R. Morsi
 
 * exercises
-  * [ ] FSDS ...
-  * [ ] ...
+  * [ ] FSDS 4.26
+  * [ ] FSDS 6.42
