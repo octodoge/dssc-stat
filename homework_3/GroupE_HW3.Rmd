@@ -27,7 +27,28 @@ $(b)$ *If you were planning how to take a larger survey from the same population
 
 **Solution**
 
-something
+(a) The Bayesian estimate of pi is the mean of this posterior distribution. 
+Since the prior distribution follow the Beta distribution and the likelihood follow the binomial distribution $(n,\pi)$, we can demonstrate that the posterior distribution follow a Beta distribution $Beta(\alpha*=\alpha+y,\beta*=\beta+n-y)$. So to get the Bayesian estimate we can just apply the formula $E(\pi|y)=\frac{\alpha*}{\alpha*+\beta*}$  
+```{r}
+n<-25
+y<-0
+alpha<-c(0.5,1.0,10.0)
+beta<-alpha
+alpha_star<-alpha+y
+beta_star<-beta+n-y
+bay_est<-alpha_star/(alpha_star+beta_star)
+bay_est
+```
+We see that the posterior mean estimate increase with the parameters of the prior distribution.
+
+
+(b) let's plot the posterior distribution
+```{r }
+alpha<-1
+beta<-1
+curve(dbeta(x,alpha+y,beta+n-y),xlab="p", ylab="density",lty=1,lwd=2)#, cex.axis=.5, cex.lab=.6, ann=F)
+legend(.7,15,"posterior", lty=1)#c(3,4,1))
+```
 
 ### Ex 4.26
 
@@ -64,7 +85,16 @@ something
 
 **Solution**
 
-something
+Let's $Y_i=cy_i$.
+
+We know that $\hat{\beta_1}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$ and $s_y=\frac{\sqrt{(y_i-\bar{y})^2}}{n-1}$. By replacing $y_i$ by $Y_i$, we have :
+
+$new\hat{\beta_1}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})(cy_i-c\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}=\frac{c\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}=c\hat{\beta_1}$ and
+
+$news_y=\frac{\sqrt{(cy_i-c\bar{y})^2}}{n-1}=\frac{c\sqrt{(y_i-\bar{y})^2}}{n-1}=cs_y$.
+
+So the new correlation is $newr = new\hat{\beta_1}\frac{s_x}{news_y}=c\hat{\beta_1}\frac{s_x}{cs_y}=\hat{\beta_1}\frac{s_x}{s_y}=r$.
+Then, the correlation does not depend on the units of measurement.
 
 ### Ex 6.42
 
