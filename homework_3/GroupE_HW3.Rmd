@@ -64,7 +64,11 @@ something
 
 **Solution**
 
-something
+Let $\hat \theta$ be the point estimate of a parameter $\theta$ calculated on a sample $y$. <br>
+Let $y^{(1)},...,y^{(B)}$ be the samples obtained applying the bootstrap method on $y$. <br>
+Let $\hat \theta^{(i)}$ be the point estimate of $\theta$ calculated on $y^{(i)}$.
+
+The bootstrap distribution is the empirical distribution of $\hat \theta^{(1)},...,\hat \theta^{(B)}$. It is similar to the sampling distribution of $\hat \theta$ in terms of spread because they have similar shape and variability. However, they differ in terms of center because the bootstrap distribution is centered in $\hat \theta$ instead of $\theta$.
 
 ## FSDS - Chapter 6
 
