@@ -11,7 +11,7 @@
 ## M. Polo
 
 * exercises
-  * [ ] FSDS 4.62
+  * [x] FSDS 4.62
   * [ ] FSDS 6.52
 
 ## S. Cappiello
