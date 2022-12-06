@@ -133,7 +133,17 @@ $$
 
 #### (a)
 
-something
+Let $TSS$ be the Total Sum of Squares and $SSE$ be the Sum of Squared Errors (also known as residual sum of squares). The coefficient of determination $R^2$ is defined as:
+$$
+R^2 = {TSS - SSE \over TSS} = 1 - {SSE \over TSS}
+$$
+Therefore:
+$$
+{R^2/p \over (1-R^2)/[n-(p+1)]} =
+{{TSS - SSE \over TSS}/p \over {SSE \over TSS}/[n-(p+1)]} =
+{(TSS - SSE)/p \over SSE/[n-(p+1)]} = F
+$$
+Larger values of $R^2$ yield larger values of $F$ because $0 \le R^2 \le 1$.
 
 #### (b)
 
