@@ -56,7 +56,24 @@ legend(.7,15,"posterior", lty=1)#c(3,4,1))
 
 **Solution**
 
-something
+In this example we have two binomial experiments, one with all success and the other is with a fail. i.e. $$Y_1 \sim Bin(11, \pi_1) \quad y_1 =11, \qquad Y_2 \sim Bin(1, \pi_2) \quad y_2 = 0 $$
+
+The Jeffreys Prior for $\pi$ is $$p(\pi) \sim \sqrt{(I(\pi)}$$ where $I(\pi)$ is the Fischer information matrix. $$I(\pi) = - E\left[\frac{{\partial}^2 log(f(y|\pi))}{{\partial \pi}^2} | \pi \right]$$
+Substituting with $f(y|\pi) = \pi^y (1 - \pi)^{1-y}$, we get that the Jeffreys prior is $\frac{1}{\sqrt{\pi (1-\pi)}}$ which is the beta distribution with hyperparameters $\alpha = \beta = \frac{1}{2}$, $Beta(1/2, 1/2)$.\ Hence, the posterior distributions of $\pi_1$ and $\pi_2$ are $Beta(11.5, 0.5)$, and $Beta(0.5, 1.5)$ respectively.
+```{r}
+library(HDInterval)
+pi1 <- rbeta(1000000, 11.5, 0.5)
+pi2 <- rbeta(1000000, 0.5, 1.5)
+hdi1 <- hdi(pi1-pi2)
+hdi1
+hist(pi1-pi2)
+plot(density(pi1-pi2))
+pi1 <- rbeta(1000000, 110.5, 0.5)
+pi2 <- rbeta(1000000, 0.5, 10.5)
+hdi(pi1-pi2)
+
+```
+The posterior probability is $0.95$ that the probability of success with this treatment is between $(0.18, 1)$ higher than without it. The interval is wide due to the small size samples. The HDI of the sample experiment with larger sample sizes $n_1 =110, n_2 =10$ is $(0.82, 1)$.
 
 ### Ex 4.62
 

@@ -23,5 +23,5 @@
 ## R. Morsi
 
 * exercises
-  * [ ] FSDS 4.26
+  * [x] FSDS 4.26
   * [ ] FSDS 6.42
