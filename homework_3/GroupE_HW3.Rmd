@@ -81,7 +81,46 @@ $(c)$ *Report and interpret* $R^2$*, adjusted* $R^2$*, and the multiple correlat
 
 **Solution**
 
-something
+$(a)$  We first fit the model using hspga, sport and tv as explanatory variables for cogpa:
+
+```{r}
+datafile <-read.table("http://stat4ds.rwth-aachen.de/data/Students.dat", header=TRUE)
+fit.students<-lm(datafile$cogpa~ datafile$hsgpa + datafile$tv + datafile$sport,data=datafile )
+summary(fit.students)
+```
+
+Let's identify $y_i=i_{th}\ student's\   observed\ cogpa\ $ and $x_{i1},\ x_{i2},\ x_{i1} $ as hspga, tv, sport of the $i_{th}$ student respectively. We get the following equation:
+$$\begin{aligned}
+y_i &=\hat\beta_0 + \hat{\beta_1} x_{i1} + \hat{\beta_2} x_{i2} + \hat{\beta_3} x_{i3} \ +\epsilon_i\\
+&=2.815+(0.2088) x_{i1}+(0.003336)x_{i2} -(0.014066)x_{i3}+\epsilon_i\\
+&\approx2.815+(0.2088) x_{i1}+\epsilon_i
+\end{aligned}$$
+
+The predictive equation is then: 
+$$\begin{aligned}
+y \approx2.815+(0.2088) x_{1}
+\end{aligned}$$
+
+The high p-values of $t_2=\frac{\hat\beta_2}{standarderror(\hat\beta_2)}$ and $t_3=\frac{\hat\beta_3}{standarderror(\hat\beta_3)}$ suggest us not to reject the null hypotheses $\beta_2=0\ and\ \beta_3=0$. The low p-values of $t_0=\frac{\hat\beta_0}{standarderror(\hat\beta_0)}$ and $t_1=\frac{\hat\beta_1}{standarderror(\hat\beta_1)}$ suggest us to reject the null hypotheses, so we assume $\beta_0\neq0\ and\ \beta_1\neq0$ 
+
+$(b)$ Our model estimates that for each 1 point increase of the high school gpa  we would observe an increase of roughly 0.2 points in the college gpa of a student ($\hat\beta_1=0.21285$).  
+
+```{r}
+fit.students1<-lm(datafile$cogpa~ datafile$hsgpa, data=datafile )
+summary(fit.students1)
+```
+
+$(c)$ $R^{2}=0.1045$ and $R^{2}_{adjusted}=0.05655$.
+The model can explain about the 10% of the variability of y=cogpa at best.
+The multiple correlation is:
+```{r}
+cor(datafile$cogpa, fitted(fit.students))
+```
+The coefficient of multiple correlation takes values between 0 and 1. Higher values indicate higher predictability of the dependent variable from the independent variables, with a value of 1 indicating that the predictions are exactly correct and a value of 0 indicating that no linear combination of the independent variables is a better predictor than the fixed mean of the dependent variable $\bar{y}$.
+The multiple correlation is also defined as the square root of the coefficient of determination ($\sqrt{R^2}$), as we can see we get the same result:
+```{r}
+sqrt(0.1045)
+```
 
 ### Ex 6.30
 
