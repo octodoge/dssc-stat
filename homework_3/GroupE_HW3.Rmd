@@ -159,4 +159,27 @@ something
 
 **Solution**
 
-something 
+Let's visualize the three possible prior distributions $\pi(\lambda)$:
+
+```{r}
+par(mfrow = c(2, 2))
+curve(dbeta(x, 4, 2), xlim=c(0,1), ylim=c(0, 2.1), ylab=expression(Beta(lambda)), xlab=expression(lambda))
+curve(dnorm(x, mean=1, sd=sqrt(2)),  xlim=c(-3, 5), ylim=c(0, 0.3), ylab=expression(N(lambda)), xlab=expression(lambda))
+
+curve(dgamma(x,shape=4,rate=2), xlim=c(0,5), ylim=c(0, 0.5), ylab=expression(Gamma(lambda)), xlab=expression(lambda))
+
+
+```
+The first one, $\pi(\lambda)=Beta(4,2)$, is not adequate because we would only model values $\lambda\in[0,1]$ ($\Rightarrow E(Y)=\frac{1}{\lambda} \in[1,+\infty)$, i.e. we would only model phone calls of length with mean greater than 1).
+The second one, $\pi(\lambda)=N(1,2)$, is not suitable for the phenomenon we are taking into account because it models negative values of $\lambda$, which are not of our interest.
+$\pi(\lambda)=Gamma(4,2)$ as prior distribution is instead a plausible distribution for $\lambda$ (phone calls that roughly last, on average, between 0.20 seconds and 2 minutes and less likely to occur as they depart from this interval).
+
+We now compute the posterior distribution $\pi(\lambda|y)	\propto  L(\lambda;y)\pi(\lambda)$, knowing that $L(\lambda;y)=\lambda^{n} e^{-\lambda \sum_{i=1}^{n}y_i}=\lambda^{15} e^{-\lambda \sum_{i=1}^{15}y_i}$ and $\pi(\lambda)=Gamma(4,2)=\frac{2^4}{6}\lambda^{3}e^{-2\lambda}$:
+
+$$
+\begin{aligned}
+\pi(\lambda|y) 	&\propto \lambda^{n} e^{-\lambda \sum_{i=1}^{n}y_i} \frac{\beta^\alpha}{\Gamma(\alpha)}\lambda^{\alpha-1}e^{-\beta\lambda} \\
+&=\lambda^{15} e^{-\lambda \sum_{i=1}^{15}y_i} \frac{2^4}{6}\lambda^{3}e^{-2\lambda}\\
+&=\frac{8}{3}\lambda^{18}e^{-\lambda((\sum_{i=1}^{15}y_i) +2)}
+\end{aligned}
+$$ 
