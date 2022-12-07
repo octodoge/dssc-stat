@@ -186,7 +186,18 @@ Larger values of $R^2$ yield larger values of $F$ because $0 \le R^2 \le 1$.
 
 #### (b)
 
-something
+Let the model $M_0$ be nested in the model $M_1$ (meaning they have the same response variable $Y$ but the explanatory variables of $M_0$ are a subset of those of $M_1$). <br>
+The Total Sum of Squares $\; TSS = \sum_i (y_i - \bar y)^2 \;$ is the same for both models (because it only depends on the observations $y_i$ of $Y$ and their mean $\bar y$). <br>
+In this case, the coefficient of determination of $M_i$ is defined as:
+$$
+R_i^2 = 1 - {SSE_i \over TSS}
+$$
+Therefore:
+$$
+\frac{(R_1^2 - R_0^2)/(p_1-p_0)}{(1-R_1^2)/[n- (p_1+1)]} =
+{\left( 1-{SSE_1 \over TSS} - 1+{SSE_0 \over TSS} \right)/(p_1-p_0) \over {SSE_1 \over TSS}/[n-(p_1+1)]} =
+\frac{(SSE_0 - SSE_1)/(p_1 - p_0)}{SSE_1/[n-(p_1+1)]} = F
+$$
 
 ## LAB
 

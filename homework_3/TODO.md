@@ -12,7 +12,7 @@
 
 * exercises
   * [x] FSDS 4.62
-  * [ ] FSDS 6.52
+  * [x] FSDS 6.52
 
 ## S. Cappiello
 

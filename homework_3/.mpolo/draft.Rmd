@@ -1,6 +1,3 @@
+### Ex 4.62
+
 ### Ex 6.52
-
-#### (b)
-
-Let the model $M_0$ be nested in the model $M_1$.
-Let $SSE_0$ and $SSE_1$ be the Sum of Squared Errors of $M_0$ and $M_1$ respectively.
