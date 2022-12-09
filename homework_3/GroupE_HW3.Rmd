@@ -50,7 +50,24 @@ We see that the posterior mean estimate increase with the parameters of the prio
 
 **Solution**
 
-something
+In this example we have two binomial experiments, one with all success and the other is with a fail. i.e. $$Y_1 \sim Bin(11, \pi_1) \quad y_1 =11, \qquad Y_2 \sim Bin(1, \pi_2) \quad y_2 = 0 $$
+
+The Jeffreys Prior for $\pi$ is $$p(\pi) \sim \sqrt{(I(\pi)}$$ where $I(\pi)$ is the Fischer information matrix. $$I(\pi) = - E\left[\frac{{\partial}^2 log(f(y|\pi))}{{\partial \pi}^2} | \pi \right]$$
+Substituting with $f(y|\pi) = \pi^y (1 - \pi)^{1-y}$, we get that the Jeffreys prior is $\frac{1}{\sqrt{\pi (1-\pi)}}$ which is the beta distribution with hyperparameters $\alpha = \beta = \frac{1}{2}$, $Beta(1/2, 1/2)$.\ Hence, the posterior distributions of $\pi_1$ and $\pi_2$ are $Beta(11.5, 0.5)$, and $Beta(0.5, 1.5)$ respectively.
+```{r}
+library(HDInterval)
+pi1 <- rbeta(1000000, 11.5, 0.5)
+pi2 <- rbeta(1000000, 0.5, 1.5)
+hdi1 <- hdi(pi1-pi2)
+hdi1
+hist(pi1-pi2)
+plot(density(pi1-pi2))
+pi1 <- rbeta(1000000, 110.5, 0.5)
+pi2 <- rbeta(1000000, 0.5, 10.5)
+hdi(pi1-pi2)
+
+```
+The posterior probability is $0.95$ that the probability of success with this treatment is between $(0.18, 1)$ higher than without it. The interval is wide due to the small size samples. The HDI of the sample experiment with larger sample sizes $n_1 =110, n_2 =10$ is $(0.82, 1)$.
 
 ### Ex 4.62
 
@@ -58,7 +75,11 @@ something
 
 **Solution**
 
-something
+Let $\hat \theta$ be the point estimate of a parameter $\theta$ calculated on a sample $y$. <br>
+Let $y^{(1)},...,y^{(B)}$ be the samples obtained applying the bootstrap method on $y$. <br>
+Let $\hat \theta^{(i)}$ be the point estimate of $\theta$ calculated on $y^{(i)}$.
+
+The bootstrap distribution is the empirical distribution of $\hat \theta^{(1)},...,\hat \theta^{(B)}$. It is similar to the sampling distribution of $\hat \theta$ in terms of spread because they have similar shape and variability. However, they differ in terms of center because the bootstrap distribution is centered in $\hat \theta$ instead of $\theta$.
 
 ## FSDS - Chapter 6
 
@@ -71,7 +92,46 @@ $(c)$ *Report and interpret* $R^2$*, adjusted* $R^2$*, and the multiple correlat
 
 **Solution**
 
-something
+$(a)$  We first fit the model using hspga, sport and tv as explanatory variables for cogpa:
+
+```{r}
+datafile <-read.table("http://stat4ds.rwth-aachen.de/data/Students.dat", header=TRUE)
+fit.students<-lm(datafile$cogpa~ datafile$hsgpa + datafile$tv + datafile$sport,data=datafile )
+summary(fit.students)
+```
+
+Let's identify $y_i=i_{th}\ student's\   observed\ cogpa\ $ and $x_{i1},\ x_{i2},\ x_{i1} $ as hspga, tv, sport of the $i_{th}$ student respectively. We get the following equation:
+$$\begin{aligned}
+y_i &=\hat\beta_0 + \hat{\beta_1} x_{i1} + \hat{\beta_2} x_{i2} + \hat{\beta_3} x_{i3} \ +\epsilon_i\\
+&=2.815+(0.2088) x_{i1}+(0.003336)x_{i2} -(0.014066)x_{i3}+\epsilon_i\\
+&\approx2.815+(0.2088) x_{i1}+\epsilon_i
+\end{aligned}$$
+
+The predictive equation is then:
+$$\begin{aligned}
+y \approx2.815+(0.2088) x_{1}
+\end{aligned}$$
+
+The high p-values of $t_2=\frac{\hat\beta_2}{standarderror(\hat\beta_2)}$ and $t_3=\frac{\hat\beta_3}{standarderror(\hat\beta_3)}$ suggest us not to reject the null hypotheses $\beta_2=0\ and\ \beta_3=0$. The low p-values of $t_0=\frac{\hat\beta_0}{standarderror(\hat\beta_0)}$ and $t_1=\frac{\hat\beta_1}{standarderror(\hat\beta_1)}$ suggest us to reject the null hypotheses, so we assume $\beta_0\neq0\ and\ \beta_1\neq0$
+
+$(b)$ Our model estimates that for each 1 point increase of the high school gpa  we would observe an increase of roughly 0.2 points in the college gpa of a student ($\hat\beta_1=0.21285$).
+
+```{r}
+fit.students1<-lm(datafile$cogpa~ datafile$hsgpa, data=datafile )
+summary(fit.students1)
+```
+
+$(c)$ $R^{2}=0.1045$ and $R^{2}_{adjusted}=0.05655$.
+The model can explain about the 10% of the variability of y=cogpa at best.
+The multiple correlation is:
+```{r}
+cor(datafile$cogpa, fitted(fit.students))
+```
+The coefficient of multiple correlation takes values between 0 and 1. Higher values indicate higher predictability of the dependent variable from the independent variables, with a value of 1 indicating that the predictions are exactly correct and a value of 0 indicating that no linear combination of the independent variables is a better predictor than the fixed mean of the dependent variable $\bar{y}$.
+The multiple correlation is also defined as the square root of the coefficient of determination ($\sqrt{R^2}$), as we can see we get the same result:
+```{r}
+sqrt(0.1045)
+```
 
 ### Ex 6.30
 
@@ -123,11 +183,32 @@ $$
 
 #### (a)
 
-something
+Let $TSS$ be the Total Sum of Squares and $SSE$ be the Sum of Squared Errors (also known as residual sum of squares). The coefficient of determination $R^2$ is defined as:
+$$
+R^2 = {TSS - SSE \over TSS} = 1 - {SSE \over TSS}
+$$
+Therefore:
+$$
+{R^2/p \over (1-R^2)/[n-(p+1)]} =
+{{TSS - SSE \over TSS}/p \over {SSE \over TSS}/[n-(p+1)]} =
+{(TSS - SSE)/p \over SSE/[n-(p+1)]} = F
+$$
+Larger values of $R^2$ yield larger values of $F$ because $0 \le R^2 \le 1$.
 
 #### (b)
 
-something
+Let the model $M_0$ be nested in the model $M_1$ (meaning they have the same response variable $Y$ but the explanatory variables of $M_0$ are a subset of those of $M_1$). <br>
+The Total Sum of Squares $\; TSS = \sum_i (y_i - \bar y)^2 \;$ is the same for both models (because it only depends on the observations $y_i$ of $Y$ and their mean $\bar y$). <br>
+In this case, the coefficient of determination of $M_i$ is defined as:
+$$
+R_i^2 = 1 - {SSE_i \over TSS}
+$$
+Therefore:
+$$
+\frac{(R_1^2 - R_0^2)/(p_1-p_0)}{(1-R_1^2)/[n- (p_1+1)]} =
+{\left( 1-{SSE_1 \over TSS} - 1+{SSE_0 \over TSS} \right)/(p_1-p_0) \over {SSE_1 \over TSS}/[n-(p_1+1)]} =
+\frac{(SSE_0 - SSE_1)/(p_1 - p_0)}{SSE_1/[n-(p_1+1)]} = F
+$$
 
 ## LAB
 
@@ -139,4 +220,27 @@ something
 
 **Solution**
 
-something 
+Let's visualize the three possible prior distributions $\pi(\lambda)$:
+
+```{r}
+par(mfrow = c(2, 2))
+curve(dbeta(x, 4, 2), xlim=c(0,1), ylim=c(0, 2.1), ylab=expression(Beta(lambda)), xlab=expression(lambda))
+curve(dnorm(x, mean=1, sd=sqrt(2)),  xlim=c(-3, 5), ylim=c(0, 0.3), ylab=expression(N(lambda)), xlab=expression(lambda))
+
+curve(dgamma(x,shape=4,rate=2), xlim=c(0,5), ylim=c(0, 0.5), ylab=expression(Gamma(lambda)), xlab=expression(lambda))
+
+
+```
+The first one, $\pi(\lambda)=Beta(4,2)$, is not adequate because we would only model values $\lambda\in[0,1]$ ($\Rightarrow E(Y)=\frac{1}{\lambda} \in[1,+\infty)$, i.e. we would only model phone calls of length with mean greater than 1).
+The second one, $\pi(\lambda)=N(1,2)$, is not suitable for the phenomenon we are taking into account because it models negative values of $\lambda$, which are not of our interest.
+$\pi(\lambda)=Gamma(4,2)$ as prior distribution is instead a plausible distribution for $\lambda$ (phone calls that roughly last, on average, between 0.20 seconds and 2 minutes and less likely to occur as they depart from this interval).
+
+We now compute the posterior distribution $\pi(\lambda|y)	\propto  L(\lambda;y)\pi(\lambda)$, knowing that $L(\lambda;y)=\lambda^{n} e^{-\lambda \sum_{i=1}^{n}y_i}=\lambda^{15} e^{-\lambda \sum_{i=1}^{15}y_i}$ and $\pi(\lambda)=Gamma(4,2)=\frac{2^4}{6}\lambda^{3}e^{-2\lambda}$:
+
+$$
+\begin{aligned}
+\pi(\lambda|y) 	&\propto \lambda^{n} e^{-\lambda \sum_{i=1}^{n}y_i} \frac{\beta^\alpha}{\Gamma(\alpha)}\lambda^{\alpha-1}e^{-\beta\lambda} \\
+&=\lambda^{15} e^{-\lambda \sum_{i=1}^{15}y_i} \frac{2^4}{6}\lambda^{3}e^{-2\lambda}\\
+&=\frac{8}{3}\lambda^{18}e^{-\lambda((\sum_{i=1}^{15}y_i) +2)}
+\end{aligned}
+$$

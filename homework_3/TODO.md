@@ -5,8 +5,8 @@
 ## S. MADON KENGNE
 
 * exercises
-  * [ ] FSDS 4.24
-  * [ ] FSDS 6.30
+  * [x] FSDS 4.24
+  * [x] FSDS 6.30
 
 ## M. Polo
 
@@ -17,8 +17,8 @@
 ## S. Cappiello
 
 * exercises
-  * [ ] LAB
-  * [ ] FSDS 6.10
+  * [x] LAB
+  * [x] FSDS 6.10
 
 ## R. Morsi
 
