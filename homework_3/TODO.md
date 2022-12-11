@@ -7,6 +7,7 @@
 * exercises
   * [x] FSDS 4.24
     * [ ] typo: pi -> $\pi$
+    * [ ] "mean of this(??) posterior distribution"
   * [x] FSDS 6.30
 
 ## M. Polo
