@@ -10,6 +10,7 @@
     * [ ] "mean of this(??) posterior distribution"
     * [ ] typos: follow -> follows
     * [ ] typo: binomial distribution $(n,\pi)$ -> binomial distribution $B(n,\pi)$
+    * [ ] "posterior distribution follow a Beta distribution": can a distribution follow a distribution?
   * [x] FSDS 6.30
 
 ## M. Polo
