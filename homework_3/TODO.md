@@ -13,6 +13,7 @@
     * [ ] "posterior distribution follow a Beta distribution": can a distribution follow a distribution?
     * [ ] typo: increase -> increases
     * [ ] typos?: $\alpha*$ -> $\alpha^\*$; $\beta*$ -> $\beta^*$
+    * [ ] "Explain how the choice of prior distribution affects the posterior mean estimate": IMO it asks in general, so more informative prior distr implies estimate closer to prior mean
   * [x] FSDS 6.30
 
 ## M. Polo
