@@ -158,7 +158,22 @@ $(b)$ *Find the correlation between* $x$ *and* $y$ *and explain why it is so wea
 
 **Solution**
 
-something
+(a)
+```{r}
+set.seed(123)
+x <- sort(runif(101, 0,10))
+x2 <- x*x
+e = rnorm(101, 0,1)
+y= 40 - 5*x + 0.5*x2 + e
+fityx <- lm(y ~ x +x2)
+summary(fityx)
+coef(fityx)
+plot(seq(0,10, 1/10), y, replace = FALSE)
+cor(y,x)
+cor(y,x2)
+```
+
+(b) The correlation between $y$ and $x$ is `r cor(y,x)` (very close to $0$), which show the lack of __linear__ relationship between $y$ and $x$. Indeed the scatter plot above reveals a nonlinear relationship between $x$ and $y$.
 
 ### Ex 6.52
 
