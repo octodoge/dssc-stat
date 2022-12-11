@@ -9,6 +9,7 @@
     * [ ] typo: pi -> $\pi$
     * [ ] "mean of this(??) posterior distribution"
     * [ ] typos: follow -> follows
+    * [ ] typo: binomial distribution $(n,\pi)$ -> binomial distribution $B(n,\pi)$
   * [x] FSDS 6.30
 
 ## M. Polo
