@@ -6,6 +6,7 @@
 
 * exercises
   * [x] FSDS 4.24
+    * [] typo: pi -> $\pi$
   * [x] FSDS 6.30
 
 ## M. Polo
