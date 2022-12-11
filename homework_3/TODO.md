@@ -8,6 +8,7 @@
   * [x] FSDS 4.24
     * [ ] typo: pi -> $\pi$
     * [ ] "mean of this(??) posterior distribution"
+    * [ ] typos: follow -> follows
   * [x] FSDS 6.30
 
 ## M. Polo
