@@ -57,7 +57,7 @@ We see that the posterior mean estimate increases with the parameters of the pri
 In this example we have two binomial experiments, one with all success and the other is with a fail. i.e. $$Y_1 \sim Bin(11, \pi_1) \quad y_1 =11, \qquad Y_2 \sim Bin(1, \pi_2) \quad y_2 = 0 $$
 
 The Jeffreys Prior for $\pi$ is $$p(\pi) \sim \sqrt{(I(\pi)}$$ where $I(\pi)$ is the Fischer information matrix. $$I(\pi) = - E\left[\frac{{\partial}^2 log(f(y|\pi))}{{\partial \pi}^2} | \pi \right]$$
-Substituting with $f(y|\pi) = \pi^y (1 - \pi)^{1-y}$, we get that the Jeffreys prior is $\frac{1}{\sqrt{\pi (1-\pi)}}$ which is the beta distribution with hyperparameters $\alpha = \beta = \frac{1}{2}$, $Beta(1/2, 1/2)$.\ Hence, the posterior distributions of $\pi_1$ and $\pi_2$ are $Beta(11.5, 0.5)$, and $Beta(0.5, 1.5)$ respectively.
+Substituting with $f(y|\pi) = \pi^y (1 - \pi)^{n-y}$, we get that the Jeffreys prior is $\frac{1}{\sqrt{\pi (1-\pi)}}$ which is the beta distribution with hyperparameters $\alpha = \beta = \frac{1}{2}$, $Beta(1/2, 1/2)$.\ Hence, the posterior distributions of $\pi_1$ and $\pi_2$ are $Beta(11.5, 0.5)$, and $Beta(0.5, 1.5)$ respectively.
 ```{r}
 library(HDInterval)
 pi1 <- rbeta(1000000, 11.5, 0.5)
