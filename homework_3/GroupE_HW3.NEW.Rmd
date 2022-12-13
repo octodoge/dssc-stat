@@ -104,7 +104,7 @@ fit.students<-lm(datafile$cogpa~ datafile$hsgpa + datafile$tv + datafile$sport,d
 summary(fit.students)
 ```
 
-Let's identify $y_i=i_{th}\ student's\   observed\ cogpa\ $ and $x_{i1},\ x_{i2},\ x_{i1} $ as hspga, tv, sport of the $i_{th}$ student respectively. We get the following equation:
+Let's identify $y_i=i_{th}\ student's\ observed\ cogpa\ $ and $x_{i1},\ x_{i2},\ x_{i1}$ as hspga, tv, sport of the $i_{th}$ student respectively. We get the following equation:
 $$\begin{aligned}
 y_i &=\hat\beta_0 + \hat{\beta_1} x_{i1} + \hat{\beta_2} x_{i2} + \hat{\beta_3} x_{i3} \ +\epsilon_i\\
 &=2.815+(0.2088) x_{i1}+(0.003336)x_{i2} -(0.014066)x_{i3}+\epsilon_i\\
