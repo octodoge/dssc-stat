@@ -14,6 +14,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+
 ```
 
 ## FSDS - Chapter 4 
@@ -27,9 +29,10 @@ $(b)$ *If you were planning how to take a larger survey from the same population
 
 **Solution**
 
-(a) The Bayesian estimate of pi is the mean of this posterior distribution. 
-Since the prior distribution follow the Beta distribution and the likelihood follow the binomial distribution $(n,\pi)$, we can demonstrate that the posterior distribution follow a Beta distribution $Beta(\alpha*=\alpha+y,\beta*=\beta+n-y)$. So to get the Bayesian estimate we can just apply the formula $E(\pi|y)=\frac{\alpha*}{\alpha*+\beta*}$  
+(a) The Bayesian estimate of $\pi$ is the mean of its posterior distribution. 
+Since the prior distribution follows a Beta distribution and the likelihood follows the binomial distribution $B(n,\pi)$, we can demonstrate that the posterior distribution is a Beta distribution $Beta(\alpha^*=\alpha+y,\beta^*=\beta+n-y)$. So to get the Bayesian estimate we can just apply the formula $E(\pi|y)=\frac{\alpha^*}{\alpha^*+\beta^*}$  
 ```{r}
+
 n<-25
 y<-0
 alpha<-c(0.5,1.0,10.0)
@@ -39,10 +42,11 @@ beta_star<-beta+n-y
 bay_est<-alpha_star/(alpha_star+beta_star)
 bay_est
 ```
-We see that the posterior mean estimate increase with the parameters of the prior distribution.  The larger the values of $\alpha$ and $\beta$, the more weight the prior will have on the posterior estimate of $\pi$.
+We see that the posterior mean estimate increases with the parameters of the prior distribution.  The larger the values of $\alpha$ and $\beta$, the more weight the prior will have on the posterior estimate of $\pi$.
 
 
-(b)  If we were planning to take a larger survey from the same population, we could use the posterior results of the previous survey with $n = 25$ and a beta prior with $\alpha = \beta = 1$ as the prior distribution for the new survey. This would involve using the updated parameters $\alpha *$ and $\beta *$ from the previous posterior distribution as the parameters for the beta prior in the new survey. This allows you to incorporate the information from the previous survey into the prior distribution for the new survey, which can help improve the accuracy of the posterior estimate of $\pi$.
+*(b)* If we were planning to take a larger survey from the same population, we could use the posterior results of the previous survey with $n = 25$ and a beta prior with $\alpha = \beta = 1$ to form the prior distribution for the new survey. This would involve using the updated parameters $\alpha^*$ and $\beta^*$ from the previous posterior distribution as the parameters for the beta prior in the new survey. This allows you to incorporate the information from the previous survey into the prior distribution for the new survey, which can help improve the accuracy of the posterior estimate of $\pi$.
+
 
 ### Ex 4.26
 
@@ -52,8 +56,7 @@ We see that the posterior mean estimate increase with the parameters of the prio
 
 In this example we have two binomial experiments, one with all success and the other is with a fail. i.e. $$Y_1 \sim Bin(11, \pi_1) \quad y_1 =11, \qquad Y_2 \sim Bin(1, \pi_2) \quad y_2 = 0 $$
 
-The Jeffreys Prior for $\pi$ is $$p(\pi) \sim \sqrt{(I(\pi)}$$ where $I(\pi)$ is the Fischer information matrix. $$I(\pi) = - E\left[\frac{{\partial}^2 log(f(y|\pi))}{{\partial \pi}^2} | \pi \right]$$
-Substituting with $f(y|\pi) = \pi^y (1 - \pi)^{1-y}$, we get that the Jeffreys prior is $\frac{1}{\sqrt{\pi (1-\pi)}}$ which is the beta distribution with hyperparameters $\alpha = \beta = \frac{1}{2}$, $Beta(1/2, 1/2)$.\ Hence, the posterior distributions of $\pi_1$ and $\pi_2$ are $Beta(11.5, 0.5)$, and $Beta(0.5, 1.5)$ respectively.
+The Jeffreys Prior for $\pi$ is the beta distribution with hyperparameters $\alpha = \beta = 0.5$, $Beta(0.5, 0.5)$.\ Hence, the posterior distributions of $\pi_1$ and $\pi_2$ are $Beta(11.5, 0.5)$, and $Beta(0.5, 1.5)$ respectively.
 ```{r}
 library(HDInterval)
 pi1 <- rbeta(1000000, 11.5, 0.5)
@@ -100,7 +103,7 @@ fit.students<-lm(datafile$cogpa~ datafile$hsgpa + datafile$tv + datafile$sport,d
 summary(fit.students)
 ```
 
-Let's identify $y_i=i_{th}\ student's\   observed\ cogpa\ $ and $x_{i1},\ x_{i2},\ x_{i1} $ as hspga, tv, sport of the $i_{th}$ student respectively. We get the following equation:
+Let's identify $y_i=i_{th}\ student's\ observed\ cogpa\ $ and $x_{i1},\ x_{i2},\ x_{i1}$ as hspga, tv, sport of the $i_{th}$ student respectively. We get the following equation:
 $$\begin{aligned}
 y_i &=\hat\beta_0 + \hat{\beta_1} x_{i1} + \hat{\beta_2} x_{i2} + \hat{\beta_3} x_{i3} \ +\epsilon_i\\
 &=2.815+(0.2088) x_{i1}+(0.003336)x_{i2} -(0.014066)x_{i3}+\epsilon_i\\
@@ -139,16 +142,14 @@ sqrt(0.1045)
 
 **Solution**
 
-Let's $Y_i=cy_i$.
+We know that $\hat{\beta_1}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$ and $s_y=\sqrt\frac{{\sum_{i=1}^{n}(y_i-\bar{y})^2}}{n-1}$. By replacing $y_i$ with $cy_i$, we have :
 
-We know that $\hat{\beta_1}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}$ and $s_y=\frac{\sqrt{(y_i-\bar{y})^2}}{n-1}$. By replacing $y_i$ by $Y_i$, we have :
+$\hat{\beta_1}'=\frac{\sum_{i=1}^{n}(x_i-\bar{x})(cy_i-c\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}=\frac{c\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}=c\hat{\beta_1}$ and
 
-$new\hat{\beta_1}=\frac{\sum_{i=1}^{n}(x_i-\bar{x})(cy_i-c\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}=\frac{c\sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y})}{\sum_{i=1}^{n}(x_i-\bar{x})^2}=c\hat{\beta_1}$ and
+$s_y'=\sqrt\frac{{\sum_{i=1}^{n}(cy_i-c\bar{y})^2}}{n-1}=c\sqrt\frac{{(\sum_{i=1}^{n}y_i-\bar{y})^2}}{n-1}=cs_y$.
 
-$news_y=\frac{\sqrt{(cy_i-c\bar{y})^2}}{n-1}=\frac{c\sqrt{(y_i-\bar{y})^2}}{n-1}=cs_y$.
-
-So the new correlation is $newr = new\hat{\beta_1}\frac{s_x}{news_y}=c\hat{\beta_1}\frac{s_x}{cs_y}=\hat{\beta_1}\frac{s_x}{s_y}=r$.
-Then, the correlation does not depend on the units of measurement.
+So the new correlation is $r' = \hat{\beta_1}'\frac{s_x}{s_y'}=c\hat{\beta_1}\frac{s_x}{cs_y}=\hat{\beta_1}\frac{s_x}{s_y}=r$.
+Therefore, the correlation does not depend on the units of measurement.
 
 ### Ex 6.42
 
@@ -246,6 +247,8 @@ curve(dgamma(x,shape=4,rate=2), xlim=c(0,5), ylim=c(0, 0.5), ylab=expression(Gam
 
 
 ```
+
+
 The first one, $\pi(\lambda)=Beta(4,2)$, is not adequate because we would only model values $\lambda\in[0,1]$ ($\Rightarrow E(Y)=\frac{1}{\lambda} \in[1,+\infty)$, i.e. we would only model phone calls of length with mean greater than 1).
 The second one, $\pi(\lambda)=N(1,2)$, is not suitable for the phenomenon we are taking into account because it models negative values of $\lambda$, which are not of our interest.
 $\pi(\lambda)=Gamma(4,2)$ as prior distribution is instead a plausible distribution for $\lambda$ (phone calls that roughly last, on average, between 0.20 seconds and 2 minutes and less likely to occur as they depart from this interval).
@@ -255,7 +258,10 @@ We now compute the posterior distribution $\pi(\lambda|y)	\propto  L(\lambda;y)\
 $$
 \begin{aligned}
 \pi(\lambda|y) 	&\propto \lambda^{n} e^{-\lambda \sum_{i=1}^{n}y_i} \frac{\beta^\alpha}{\Gamma(\alpha)}\lambda^{\alpha-1}e^{-\beta\lambda} \\
-&=\lambda^{15} e^{-\lambda \sum_{i=1}^{15}y_i} \frac{2^4}{6}\lambda^{3}e^{-2\lambda}\\
-&=\frac{8}{3}\lambda^{18}e^{-\lambda((\sum_{i=1}^{15}y_i) +2)}
+&\approx \lambda^{15} e^{-\lambda \sum_{i=1}^{15}y_i} \lambda^{3}e^{-2\lambda}\\
+&\approx\lambda^{18}e^{-\lambda((\sum_{i=1}^{15}y_i) +2)}
 \end{aligned}
 $$
+
+
+The posterior is a Gamma distribution with $\alpha=19$ and $\beta=\sum_{i=1}^{15}y_i + 2$.
