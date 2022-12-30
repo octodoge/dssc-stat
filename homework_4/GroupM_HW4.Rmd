@@ -1,6 +1,6 @@
 ---
 title: "GroupM_HW4"
-author: "S. Lippolis, ?. Spreafichi, M. Polo"
+author: "S. Lippolis, F. Spreafichi, M. Polo"
 date: "2022-12-30"
 output:
   html_document:
