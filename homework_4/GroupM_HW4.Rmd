@@ -1,0 +1,77 @@
+---
+title: "GroupM_HW4"
+author: "S. Lippolis, ?. Spreafichi, M. Polo"
+date: "2022-12-30"
+output:
+  html_document:
+    toc: yes
+    toc_depth: '3'
+    df_print: paged
+  pdf_document:
+    toc: yes
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## FSDS - Chapter 7
+
+### Ex 7.4
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 7.20
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 7.26
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 7.28
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 7.42
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 7.44
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
+
+## FSDS - Chapter 8 
+
+### Ex 8.4
+
+*Here the text of the exercise.*
+
+**Solution**
+
+Add comments to the solution.
