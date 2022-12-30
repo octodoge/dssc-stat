@@ -1,6 +1,5 @@
 ## General
 
-* Fix Spreafichi first name (here, in `exercise_division.R` and `GroupM_HW4.Rmd`)
 * Exercise division
 
 ## S. Lippolis
@@ -10,7 +9,7 @@
   * [ ] FSDS ?
   * [ ] FSDS 8.4?
 
-## ?. Spreafichi
+## F. Spreafichi
 
 * exercises
   * [ ] FSDS ?
