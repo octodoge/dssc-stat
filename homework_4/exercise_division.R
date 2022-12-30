@@ -5,7 +5,7 @@ books = rep("FSDS", length(FSDS_exs))
 students = c()
 set.seed(? + ? + ?) #days of birth
 for (i in 1:2) {
-  students = c(students, sample(c("S. Lippolis", "?. Spreafichi", "M. Polo")))
+  students = c(students, sample(c("S. Lippolis", "F. Spreafichi", "M. Polo")))
 }
 
 df = data.frame(student = students[1:length(books)],
