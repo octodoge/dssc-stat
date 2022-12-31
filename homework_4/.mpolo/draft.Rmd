@@ -1,1 +1,39 @@
-### Ex...
+### Ex 7.20
+
+*In the* `Crabs` *data file introduced in Section 7.4.2, the variable y indicates whether a female horseshoe crab has at least one satellite (1 = yes, 0 = no).*
+
+a. *Fit a main-effects logistic model using weight and categorical color as explanatory variables. Conduct a significance test for the color effect, and construct a 95% confidence interval for the weight effect.*
+
+b. *Fit the model that permits interaction between color as a factor and weight in their effects, showing the estimated effect of weight for each color. Test whether this model provides a significantly better fit.*
+
+c. *Use AIC to determine which models seem most sensible among the models with (i) interaction, (ii) main effects, (iii) weight as the sole predictor, (iv) color as the sole predictor, and (v) the null model.*
+
+**Solution**
+
+#### a.
+
+Add comments to the solution.
+
+#### b.
+
+Add comments to the solution.
+
+#### c.
+
+Add comments to the solution.
+
+### Ex 7.44
+
+*For a sequence of independent binary trials, Exercise 2.69 showed the probability distribution of* $Y=$ *the number of successes before the* $k$*th failure. Show that this distribution is a special case of the negative binomial distribution (7.7), for* $\pi = \mu/(\mu + k)$*. (The geometric distribution is the special case* $k=1$*.)*
+
+**Solution**
+
+Add comments to the solution.
+
+### Ex 8.4
+
+*Refer to Exercise 8.1. Construct a classification tree, and prune strongly until the tree uses a single explanatory variable. Which crabs were predicted to have satellites? How does the proportion of correct predictions compare with the more complex tree in Figure 8.2?*
+
+**Solution**
+
+Add comments to the solution.
