@@ -20,11 +20,106 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Ex 7.4
 
-*Here the text of the exercise.*
+*Analogously to the previous exercise, randomly sample 30 X observations from a uniform in
+the interval (-4,4) and conditional on X = x, 30 normal observations with E(Y ) = 3.5x3 −
+20x2 + 0.5x + 20 and σ = 30. Fit polynomial normal GLMs of lower and higher order than
+that of the true relationship. Which model would you suggest? Repeat the same task for
+E(Y ) = 0.5x3 − 20x2 + 0.5x + 20 (same σ) several times. What do you observe? Which model
+would you suggest now?*
 
 **Solution**
 
-Add comments to the solution.
+First data:
+```{r, include=TRUE}
+### 1.
+
+## Build the data
+
+# Randomly sample x observations with uniform distribution in (-4,4)
+x<-runif(30,min=-4,max=4)
+
+# Mean of each resposne variable
+y_mean<-3.5*x^3 - 20*x^2 + 0.5*x + 20
+
+# The response variable follows a normal distribution of mean y_mean
+#   and standard deviation sd
+y<-rnorm(30,mean=y_mean,sd=30)
+
+
+
+## Build models
+
+# Build dataframe
+df<-data.frame(y,x)
+
+# Build GLMs
+fit0<-glm(formula = y~1, data=df , family=gaussian)
+fit1<-glm(formula = y~x, data=df,family=gaussian)
+fit2<-glm(formula = y~x+I(x^2), data=df,family=gaussian)
+fit3<-glm(formula = y~x+I(x^2)+I(x^3), data=df,family=gaussian)
+
+## Assess models
+
+# Save summury of the models
+model0<-summary(fit0)
+model1<-summary(fit1)
+model2<-summary(fit2)
+model3<-summary(fit3)
+
+# Extract AIC of each model
+rbind(model0$aic, model1$aic,model2$aic,model3$aic)
+
+```
+I would suggest the last model. \
+Because the lower is the AIC, the better is the model.
+
+
+
+Second data:
+
+```{r, include=TRUE}
+### 2.
+
+## Build the data
+
+# Randomly sample x observations with uniform distribution in (-4,4)
+set.seed(24)
+x<-runif(30,min=-4,max=4)
+
+# Mean of each resposne variable
+y_mean<-0.5*x^3 - 20*x^2 + 0.5*x + 20
+
+# The response variable follows a normal distribution of mean y_mean
+#   and standard deviation sd
+y<-rnorm(30,mean=y_mean,sd=30)
+
+
+
+## Build models
+
+# Build dataframe
+df<-data.frame(y,x)
+
+# Build GLMs
+fit0<-glm(formula = y~1, data=df , family=gaussian)
+fit1<-glm(formula = y~x, data=df,family=gaussian)
+fit2<-glm(formula = y~x+I(x^2), data=df,family=gaussian)
+fit3<-glm(formula = y~x+I(x^2)+I(x^3), data=df,family=gaussian)
+
+## Assess models
+
+# Save summury of the models
+model0<-summary(fit0)
+model1<-summary(fit1)
+model2<-summary(fit2)
+model3<-summary(fit3)
+
+# Extract AIC of each model
+rbind(model0$aic, model1$aic,model2$aic,model3$aic)
+
+```
+Now AIC says that the better model is the 2nd. \
+I think that the impact of the polynomial term of order 3 has no a big impact. Then AIC suggests the second model that is a good compromise between fit on data and complexity.
 
 ### Ex 7.20
 
@@ -60,11 +155,103 @@ Add comments to the solution.
 
 ### Ex 7.28
 
-*Here the text of the exercise.*
+*For the Students data file, model y = whether you are a vegetarian with the 14 binary and
+quantitative explanatory variables.
+(a) For ordinary logistic regression, show that this model fits better than the null model, but
+no Wald tests are significant.
+(b) Use the lasso, with λ to minimize the sample mean prediction error in cross-validation.
+Compare estimates to those from ordinary logistic regression.
+(c) Specify the range of λ values for which the lasso smoothing generates the null model.*
 
 **Solution**
 
-Add comments to the solution.
+* Point (a):
+
+```{r, echo=T}
+## Data
+
+# Import data set
+students=read.table("http://stat4ds.rwth-aachen.de/data/Students.dat",header=TRUE)
+
+
+
+## Models
+
+# Build the logit null model
+fit0<-glm(formula = veg~1, data = students,
+            family = binomial(link="logit"))
+
+# Build the logit model (with all the possible explanatory variables)
+fit14<-glm(formula = veg~., data = students,
+                family = binomial(link="logit"))
+
+
+## Assess models: compare the error
+
+# Error of the null model
+pred0 <- predict(fit0, type="response")
+
+err.rate0 <- mean((pred0 > 0.5 & students$veg ==0) |
+                     ((pred0 < 0.5 & students$veg ==1 )))
+err.rate0
+
+# Error of the complete model
+pred14 <- predict(fit14, type="response")
+
+err.rate14 <- mean((pred14 > 0.5 & students$veg ==0) |
+                    ((pred14 < 0.5 & students$veg ==1 )))
+err.rate14
+```
+
+The complete model fits better then the null model because has less error.
+
+```{r, echo=TRUE}
+# Build the logit model (with all the possible explanatory variables)
+fit14<-glm(formula = veg~., data = students,
+                family = binomial(link="logit"))
+
+# Significance of variable
+summary(fit14)
+```
+There aren't significant variables.
+
+* Point (b):
+
+
+```{r, echo=T}
+## Organize data
+attach(students)
+x <- cbind(gender, abor, age, hsgpa, cogpa, dhome, dres, tv, sport, news,
+              aids, ideol, relig, affirm) # explanatory variables for lasso
+
+## Fit the lasso model
+library(glmnet)
+fit.lasso <- glmnet(x, veg, alpha=1, family="binomial"(link = "logit")) # alpha=1 selects lasso
+
+# Lambda graph
+plot(fit.lasso, "lambda")
+
+# Cross validation to find the better lambda
+set.seed(1) # a random seed to implement cross-validation
+cv <- cv.glmnet(x, veg, alpha=1, family="binomial"(link = "logit"))
+cv$lambda.min # best lambda by 10-fold cross-validation
+cv$lambda.1se # lambda suggested by one-standard-error rule, a random variable
+
+# Compare the coefficient of the model with the minimum lambda
+coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.0783021))
+coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.09431516))
+```
+The model with the minimum lambda for the cross validation process reveals that
+there is a dependency between veg (be vegetarian) and affirm (support affirmative causes).
+
+* Point (c):
+
+```{r, echo=T}
+# Find the model different form the null model but with the maximum lambda
+coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.0943))
+coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.0944))
+```
+The null model is obtained for $\lambda >\approx 0.0943$.
 
 ### Ex 7.42
 

@@ -5,8 +5,8 @@
 ## S. Lippolis
 
 * exercises
-  * [ ] FSDS 7.4
-  * [ ] FSDS 7.28
+  * [x] FSDS 7.4
+  * [x] FSDS 7.28
   * [ ] FSDS 8.4
 
 ## F. Spreafichi
