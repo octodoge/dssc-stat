@@ -1,0 +1,61 @@
+### Ex 8.4
+
+*Refer to Exercise 8.1. Construct a classification tree, and prune strongly until the tree uses a single explanatory variable. Which crabs were predicted to have satellites? How does the proportion of correct predictions compare with the more complex tree in Figure 8.2?*
+
+**Solution**
+
+```{r , echo=T}
+## Data
+
+# Import data
+Crabs <- read.table("http://stat4ds.rwth-aachen.de/data/Crabs.dat", header=TRUE)
+library(MASS)
+
+head(Crabs)
+
+# sat_cat variable: The categorical variable of sat (yes or not)
+Crabs$sat_cat<-0
+
+len<-length(Crabs$crab)
+
+for (i in 1:len){
+  if (Crabs$sat[i]!=0){
+    Crabs$sat_cat[i]=1
+  }
+}
+
+Crabs$sat_cat<-factor(Crabs$sat_cat, levels=c(0,1), labels = c("no","yes"))
+
+
+head(Crabs)  
+
+
+
+## Prediction tree
+
+# The tree
+require(tree)
+t<-tree(sat_cat~crab+y+weight+width+color+spine, Crabs)
+
+# Prediction set
+prediction_set<-data.frame(Crabs$crab, Crabs$y, Crabs$weight, 
+                           Crabs$width, Crabs$color, Crabs$spine)
+
+names(prediction_set)[1]="crab"
+names(prediction_set)[2]="y"
+names(prediction_set)[3]="weight"
+names(prediction_set)[4]="width"
+names(prediction_set)[5]="color"
+names(prediction_set)[6]="spine"
+
+head(prediction_set)
+
+# Predict
+predicted.cat_sat = predict(t,prediction_set,type="class")
+
+# Compare prediction and set
+head(cbind(Crabs$sat_cat,predicted.cat_sat))
+
+
+
+```
