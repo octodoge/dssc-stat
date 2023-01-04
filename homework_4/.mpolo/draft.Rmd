@@ -38,7 +38,7 @@ Anova(model) #likelihood-ratio test by default
 
 A p-value of 0.06594 suggests that the color may have an effect on $y$ but there is no strong evidence.\
 \
-To construct... TBD... per conf. int. vedi libro pag 286?
+To construct... TBD... per conf. int. vedi libro pag 286? ma prima cerca di capire se è da invertire la link function o roba simile (studia tutto capitolo 7). Imo pag 286 fa exp perché family è poisson che ha log come canonical
 
 #### b.
 
