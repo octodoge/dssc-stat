@@ -12,7 +12,39 @@ c. *Use AIC to determine which models seem most sensible among the models with (
 
 #### a.
 
-Add comments to the solution.
+Let's explore the `Crabs` data file:
+
+```{r}
+data = read.table("https://stat4ds.rwth-aachen.de/data/Crabs.dat", header=TRUE)
+head(data, n=3) #show first 3 rows
+```
+
+Let's fit the model:
+
+```{r}
+model = glm(
+  formula = y ~ weight + factor(color), #factor to make color categorical
+  family="binomial", #binomial because y is binary
+  data=data)
+summary(model)
+```
+
+TBD...
+
+A significance test for the color effect was already conducted and the p-values are reported in the summary above. They are ... indicating that ...
+
+MA FORSE NO PERCHÉ LIBRO USA Anova(). ChatGPT dice che si possono usare entrambi (però boh su summary ho 3 valori, e poi perché non 4 per i colori? uno a zero forse, come su libro). Ma GPT usa anova con due modelli (vedi chat su vscode se me l'ha cancellata). Poi boh attento che qui (https://www.scribbr.com/statistics/anova-in-r/) dicono che anova si usa con y quantitative e 
+le x categorical. Poi boh
+
+```{r}
+library(car)
+Anova(model)
+```
+
+
+TBD... 
+
+per conf int vedi libro pag 256?
 
 #### b.
 
