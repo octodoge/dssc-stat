@@ -43,6 +43,8 @@ Finally, let's construct the confidence interval for the weight effect:
 ```{r message=FALSE}
 confint(model, parm='weight') #95% confidence by default
 ```
+
+Note that these values don't represent the bounds for the effect on $y$ directly, but the effect on log odds (because of the logit link function of the binomial family).\
 \
 
 #### b.
@@ -57,9 +59,9 @@ model = glm( #same as before but with interaction term
 coef(summary(model))
 ```
 
-The summary above shows the estimated effect of weight for each color (`Estimate` column, last 3 rows)\
+The summary above shows the estimated effect of weight on log odds for each color (`Estimate` column, last 3 rows).\
 \
-Let's test whether this model provides a better fit:
+Finally, let's test whether this model provides a better fit:
 
 ```{r}
 Anova(model) #likelihood-ratio test by default
@@ -70,11 +72,28 @@ A p-value of 0.07562 suggests that the interaction term may provide a better fit
 
 #### c.
 
-TBD...
+Let's compare the 5 models:
 
-Studia capitolo 7.4 prima di procedere
+```{r}
+#define model formulas
+formulas = list(
+  interaction = y ~ weight + factor(color) + weight:factor(color),
+  main_effects = y ~ weight + factor(color),
+  weight_only = y ~ weight,
+  color_only = y ~ factor(color),
+  null_model = y ~ 1)
 
-Usa `AIC()` che è più pulito di `summary()`
+#fit models
+models = lapply(formulas, function(formula) glm(
+  formula=formula,
+  family='binomial',
+  data=data))
+
+#compare models
+lapply(models, AIC)
+```
+
+The lower the AIC score, the better, so the interaction model seems the most sensible.
 
 ### Ex 7.44
 
