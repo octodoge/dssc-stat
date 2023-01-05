@@ -29,26 +29,52 @@ model = glm(
 coef(summary(model))
 ```
 \
-The summary above shows the p-values (`Pr(>|z|)` column) of the Wald tests for the effect of each variable. But each color level is tested separately (the 1st one is missing because redundant). So it's better to conduct a likelihood-ratio test in this case:
+The summary above shows the p-values (`Pr(>|z|)` column) of the Wald tests for the effect of each variable. But each color level is tested separately (1st one missing because redundant). So it's better to conduct a likelihood-ratio test in this case:
 
 ```{r message=FALSE}
 library(car)
 Anova(model) #likelihood-ratio test by default
 ```
 
-A p-value of 0.06594 suggests that the color may have an effect on $y$ but there is no strong evidence.\
+A p-value of 0.06594 suggests that the color may have effect on $y$ but there is no strong evidence.\
 \
-To construct... TBD... per conf. int. vedi libro pag 286? ma prima cerca di capire se è da invertire la link function o roba simile (studia tutto capitolo 7). Imo pag 286 fa exp perché family è poisson che ha log come canonical
+Finally, let's construct the confidence interval for the weight effect:
+
+```{r message=FALSE}
+confint(model, parm='weight') #95% confidence by default
+```
+\
 
 #### b.
 
-Add comments to the solution.
+Let's fit the interaction model:
 
-TBD... pag 266 mi sembra buon esempio di come funziona interaction
+```{r}
+model = glm( #same as before but with interaction term
+  formula = y ~ weight + factor(color) + weight:factor(color),
+  family="binomial",
+  data=data)
+coef(summary(model))
+```
+
+The summary above shows the estimated effect of weight for each color (`Estimate` column, last 3 rows)\
+\
+Let's test whether this model provides a better fit:
+
+```{r}
+Anova(model) #likelihood-ratio test by default
+```
+
+A p-value of 0.07562 suggests that the interaction term may provide a better fit but there is no strong evidence.\
+\
 
 #### c.
 
-Add comments to the solution.
+TBD...
+
+Studia capitolo 7.4 prima di procedere
+
+Usa `AIC()` che è più pulito di `summary()`
 
 ### Ex 7.44
 
