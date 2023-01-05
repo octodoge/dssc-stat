@@ -1,109 +1,28 @@
-### Ex 7.20
-
-*In the* `Crabs` *data file introduced in Section 7.4.2, the variable y indicates whether a female horseshoe crab has at least one satellite (1 = yes, 0 = no).*
-
-a. *Fit a main-effects logistic model using weight and categorical color as explanatory variables. Conduct a significance test for the color effect, and construct a 95% confidence interval for the weight effect.*
-
-b. *Fit the model that permits interaction between color as a factor and weight in their effects, showing the estimated effect of weight for each color. Test whether this model provides a significantly better fit.*
-
-c. *Use AIC to determine which models seem most sensible among the models with (i) interaction, (ii) main effects, (iii) weight as the sole predictor, (iv) color as the sole predictor, and (v) the null model.*
-
-**Solution**
-
-#### a.
-
-Let's explore the `Crabs` data file:
-
-```{r}
-data = read.table("https://stat4ds.rwth-aachen.de/data/Crabs.dat", header=TRUE)
-head(data, n=3) #show first 3 rows
-```
-\
-Let's fit the model:
-
-```{r}
-model = glm(
-  formula = y ~ weight + factor(color), #factor to make color categorical
-  family="binomial", #binomial because y is binary
-  data=data)
-coef(summary(model))
-```
-\
-The summary above shows the p-values (`Pr(>|z|)` column) of the Wald tests for the effect of each variable. But each color level is tested separately (1st one missing because redundant). So it's better to conduct a likelihood-ratio test in this case:
-
-```{r message=FALSE}
-library(car)
-Anova(model) #likelihood-ratio test by default
-```
-
-A p-value of 0.06594 suggests that the color may have effect on $y$ but there is no strong evidence.\
-\
-Finally, let's construct the confidence interval for the weight effect:
-
-```{r message=FALSE}
-confint(model, parm='weight') #95% confidence by default
-```
-
-Note that these values don't represent the bounds for the effect on $y$ directly, but the effect on log odds (because of the logit link function of the binomial family).\
-\
-
-#### b.
-
-Let's fit the interaction model:
-
-```{r}
-model = glm( #same as before but with interaction term
-  formula = y ~ weight + factor(color) + weight:factor(color),
-  family="binomial",
-  data=data)
-coef(summary(model))
-```
-
-The summary above shows the estimated effect of weight on log odds for each color (`Estimate` column, last 3 rows).\
-\
-Finally, let's test whether this model provides a better fit:
-
-```{r}
-Anova(model) #likelihood-ratio test by default
-```
-
-A p-value of 0.07562 suggests that the interaction term may provide a better fit but there is no strong evidence.\
-\
-
-#### c.
-
-Let's compare the 5 models:
-
-```{r}
-#define model formulas
-formulas = list(
-  interaction = y ~ weight + factor(color) + weight:factor(color),
-  main_effects = y ~ weight + factor(color),
-  weight_only = y ~ weight,
-  color_only = y ~ factor(color),
-  null_model = y ~ 1)
-
-#fit models
-models = lapply(formulas, function(formula) glm(
-  formula=formula,
-  family='binomial',
-  data=data))
-
-#compare models
-lapply(models, AIC)
-```
-
-The lower the AIC score, the better, so the interaction model seems the most sensible.
-
 ### Ex 7.44
 
 *For a sequence of independent binary trials, Exercise 2.69 showed the probability distribution of* $Y=$ *the number of successes before the* $k$*th failure. Show that this distribution is a special case of the negative binomial distribution (7.7), for* $\pi = \mu/(\mu + k)$*. (The geometric distribution is the special case* $k=1$*.)*
 
 **Solution**
 
-Add comments to the solution.
-
-TBD... vedi anche soluzione di G.
+The probability mass function of $Y$ is:
+$$
+f(y;k,\pi) = {y+k-1 \choose y} \pi^y (1-\pi)^k, \quad y=0,1,2,...
+$$
+$\quad$ with the binomial coefficient defined as ${n \choose y} = {n! \over (n-y)!y!}$.\
+\
+The probability mass function of the negative binomial distribution is:
+$$
+p(y;\mu,k) = {\Gamma(y+k) \over \Gamma(k)\Gamma(y+1)}
+             \left(\mu \over \mu+k\right)^y
+             \left(k \over \mu+k\right)^k, \quad y=0,1,2,...
+$$
+$\quad$ with the gamma function defined as $\Gamma(n)=(n-1)!$.\
+\
+Let $\pi = {\mu \over \mu + k} = 1-{k \over \mu+k}$:
+$$
+p(y;\mu,k) = {(y+k-1)! \over (k-1)!y!} \pi^y (1-\pi)^k = f(y;k,\pi), \quad y=0,1,2,...
+$$
+So the distribution of $Y$ is a special case of the negative binomial distribution.
 
 ### Ex 8.4
 

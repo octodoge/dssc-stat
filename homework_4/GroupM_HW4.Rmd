@@ -340,7 +340,26 @@ Add comments to the solution.
 
 **Solution**
 
-Add comments to the solution.
+The probability mass function of $Y$ is:
+$$
+f(y;k,\pi) = {y+k-1 \choose y} \pi^y (1-\pi)^k, \quad y=0,1,2,...
+$$
+$\quad$ with the binomial coefficient defined as ${n \choose y} = {n! \over (n-y)!y!}$.\
+\
+The probability mass function of the negative binomial distribution is:
+$$
+p(y;\mu,k) = {\Gamma(y+k) \over \Gamma(k)\Gamma(y+1)}
+             \left(\mu \over \mu+k\right)^y
+             \left(k \over \mu+k\right)^k, \quad y=0,1,2,...
+$$
+$\quad$ with the gamma function defined as $\Gamma(n)=(n-1)!$.\
+\
+Let $\pi = {\mu \over \mu + k} = 1-{k \over \mu+k}$:
+$$
+p(y;\mu,k) = {(y+k-1)! \over (k-1)!y!} \pi^y (1-\pi)^k = f(y;k,\pi), \quad y=0,1,2,...
+$$
+
+So the distribution of $Y$ is a special case of the negative binomial distribution.
 
 ## FSDS - Chapter 8 
 
