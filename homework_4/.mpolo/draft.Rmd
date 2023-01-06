@@ -1,33 +1,41 @@
-### Ex 7.44
-
-*For a sequence of independent binary trials, Exercise 2.69 showed the probability distribution of* $Y=$ *the number of successes before the* $k$*th failure. Show that this distribution is a special case of the negative binomial distribution (7.7), for* $\pi = \mu/(\mu + k)$*. (The geometric distribution is the special case* $k=1$*.)*
-
-**Solution**
-
-The probability mass function of $Y$ is:
-$$
-f(y;k,\pi) = {y+k-1 \choose y} \pi^y (1-\pi)^k, \quad y=0,1,2,...
-$$
-$\quad$ with the binomial coefficient defined as ${n \choose y} = {n! \over (n-y)!y!}$.\
-\
-The probability mass function of the negative binomial distribution is:
-$$
-p(y;\mu,k) = {\Gamma(y+k) \over \Gamma(k)\Gamma(y+1)}
-             \left(\mu \over \mu+k\right)^y
-             \left(k \over \mu+k\right)^k, \quad y=0,1,2,...
-$$
-$\quad$ with the gamma function defined as $\Gamma(n)=(n-1)!$.\
-\
-Let $\pi = {\mu \over \mu + k} = 1-{k \over \mu+k}$:
-$$
-p(y;\mu,k) = {(y+k-1)! \over (k-1)!y!} \pi^y (1-\pi)^k = f(y;k,\pi), \quad y=0,1,2,...
-$$
-So the distribution of $Y$ is a special case of the negative binomial distribution.
-
 ### Ex 8.4
 
 *Refer to Exercise 8.1. Construct a classification tree, and prune strongly until the tree uses a single explanatory variable. Which crabs were predicted to have satellites? How does the proportion of correct predictions compare with the more complex tree in Figure 8.2?*
 
 **Solution**
 
-Add comments to the solution.
+Exercise 8.1 is about the `Crabs` data file. Let's explore it:
+
+```{r}
+data = read.table("https://stat4ds.rwth-aachen.de/data/Crabs.dat", header=TRUE)
+head(data, n=3) #show first 3 rows
+```
+\
+Let's construct the tree:
+
+```{r}
+library(rpart)
+library(rpart.plot)
+tree = rpart(
+  formula = y ~ weight + width + color + spine,
+  method="class", #class because y is binary
+  data=data)
+rpart.plot(tree, extra=2) #extra=2 to show proportion of correct predictions
+```
+\
+Let's print the complexity parameter table to figure out where to prune the tree:
+
+```{r}
+printcp(tree, digits=2) #digits=2 to round values
+```
+\
+The table above shows that, to get a tree with a number of splits `nsplit` $=1$ (and so a single explanatory variable), we must prune with a complexity parameter `CP` $\approx 0.081$. Let's prune it:
+
+```{r}
+pruned = prune(tree, cp=0.081)
+rpart.plot(pruned, extra=2)
+```
+\
+The crabs predicted to have satellites ($y=1$) are the ones with width $\ge 26$ cm.
+
+The proportion of correct prediction is ${44+77 \over 173} = 0.699$, that is lower than the one of the more complex tree in Figure 8.2, which is reported to be $0.751$.
