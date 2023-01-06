@@ -36,6 +36,7 @@ First data:
 ## Build the data
 
 # Randomly sample x observations with uniform distribution in (-4,4)
+set.seed(23)
 x<-runif(30,min=-4,max=4)
 
 # Mean of each resposne variable
@@ -57,6 +58,7 @@ fit0<-glm(formula = y~1, data=df , family=gaussian)
 fit1<-glm(formula = y~x, data=df,family=gaussian)
 fit2<-glm(formula = y~x+I(x^2), data=df,family=gaussian)
 fit3<-glm(formula = y~x+I(x^2)+I(x^3), data=df,family=gaussian)
+fit4<-glm(formula = y~x+I(x^2)+I(x^3)+I(x^4), data=df,family=gaussian)
 
 ## Assess models
 
@@ -65,12 +67,13 @@ model0<-summary(fit0)
 model1<-summary(fit1)
 model2<-summary(fit2)
 model3<-summary(fit3)
+model4<-summary(fit4)
 
 # Extract AIC of each model
-rbind(model0$aic, model1$aic,model2$aic,model3$aic)
+rbind(model0$aic, model1$aic,model2$aic,model3$aic, model4$aic)
 
 ```
-I would suggest the last model. \
+I would suggest the second last model. \
 Because the lower is the AIC, the better is the model.
 
 
@@ -105,6 +108,7 @@ fit0<-glm(formula = y~1, data=df , family=gaussian)
 fit1<-glm(formula = y~x, data=df,family=gaussian)
 fit2<-glm(formula = y~x+I(x^2), data=df,family=gaussian)
 fit3<-glm(formula = y~x+I(x^2)+I(x^3), data=df,family=gaussian)
+fit4<-glm(formula = y~x+I(x^2)+I(x^3)+I(x^4), data=df,family=gaussian)
 
 ## Assess models
 
@@ -113,13 +117,14 @@ model0<-summary(fit0)
 model1<-summary(fit1)
 model2<-summary(fit2)
 model3<-summary(fit3)
+model4<-summary(fit4)
 
 # Extract AIC of each model
-rbind(model0$aic, model1$aic,model2$aic,model3$aic)
+rbind(model0$aic, model1$aic,model2$aic,model3$aic, model4$aic)
 
 ```
-Now AIC says that the better model is the 2nd. \
-I think that the impact of the polynomial term of order 3 has no a big impact. Then AIC suggests the second model that is a good compromise between fit on data and complexity.
+Now AIC says that the better model is the third. \
+I think that the impact of the polynomial term of order 3 has no a big impact. Then AIC suggests the third model that is a good compromise between fit on data and complexity.
 
 ### Ex 7.20
 
@@ -209,7 +214,7 @@ formulas = list(
 #fit models
 models = lapply(formulas, function(formula) glm(
   formula=formula,
-  family='binomial',
+  family="binomial",
   data=data))
 
 #compare models
@@ -254,8 +259,12 @@ students=read.table("http://stat4ds.rwth-aachen.de/data/Students.dat",header=TRU
 fit0<-glm(formula = veg~1, data = students,
             family = binomial(link="logit"))
 
-# Build the logit model (with all the possible explanatory variables)
-fit14<-glm(formula = veg~., data = students,
+# Build the logit model (with all the possible explanatory variables without life, affil and subj)
+# We remove these because affil and life are neither binary nor quantitative
+# We remove subject because it is only an id of each students
+fit14<-glm(formula = veg~gender+age+hsgpa+cogpa+
+             dhome+dres+tv+sport+news+aids+ideol+relig
+           +abor+affirm, data = students,
                 family = binomial(link="logit"))
 
 
@@ -279,10 +288,6 @@ err.rate14
 The complete model fits better then the null model because has less error.
 
 ```{r, echo=TRUE}
-# Build the logit model (with all the possible explanatory variables)
-fit14<-glm(formula = veg~., data = students,
-                family = binomial(link="logit"))
-
 # Significance of variable
 summary(fit14)
 ```
@@ -308,11 +313,9 @@ plot(fit.lasso, "lambda")
 set.seed(1) # a random seed to implement cross-validation
 cv <- cv.glmnet(x, veg, alpha=1, family="binomial"(link = "logit"))
 cv$lambda.min # best lambda by 10-fold cross-validation
-cv$lambda.1se # lambda suggested by one-standard-error rule, a random variable
 
 # Compare the coefficient of the model with the minimum lambda
-coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.0783021))
-coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.09431516))
+coef(glmnet(x, veg, alpha=1, family="binomial"(link = "logit"), lambda=0.07134596))
 ```
 The model with the minimum lambda for the cross validation process reveals that
 there is a dependency between veg (be vegetarian) and affirm (support affirmative causes).
