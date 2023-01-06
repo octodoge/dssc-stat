@@ -19,8 +19,8 @@
 ## F. Spreafichi
 
 * exercises
-  * [ ] FSDS 7.26
-  * [ ] FSDS 7.42
+  * [x] FSDS 7.26
+  * [x] FSDS 7.42
 
 ## M. Polo
 

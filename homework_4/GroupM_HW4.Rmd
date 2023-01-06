@@ -21,10 +21,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Ex 7.4
 
 *Analogously to the previous exercise, randomly sample 30 X observations from a uniform in
-the interval (-4,4) and conditional on X = x, 30 normal observations with E(Y ) = 3.5x3 −
-20x2 + 0.5x + 20 and σ = 30. Fit polynomial normal GLMs of lower and higher order than
+the interval (-4,4) and conditional on $X = x$, 30 normal observations with $E(Y) = 3.5x^3 −$
+$20x^2 + 0.5x + 20$ and σ = 30. Fit polynomial normal GLMs of lower and higher order than
 that of the true relationship. Which model would you suggest? Repeat the same task for
-E(Y ) = 0.5x3 − 20x2 + 0.5x + 20 (same σ) several times. What do you observe? Which model
+$E(Y ) = 0.5x^3 − 20x^2 + 0.5x + 20$ (same σ) several times. What do you observe? Which model
 would you suggest now?*
 
 **Solution**
@@ -225,11 +225,59 @@ The lower the AIC value, the better, so the interaction model seems the most sen
 
 ### Ex 7.26
 
-*Here the text of the exercise.*
+A headline in the Gainesville Sun (Feb. 17, 2014) proclaimed a worrisome spike in shark attacks in the previous two years. The reported total number of shark attacks in Florida per year from 2001 to 2013 were 33, 29, 29, 12, 17, 21, 31, 28, 19, 14, 11, 26, 23. Are these counts consistent with a null Poisson model ? Explain and compare aspects of the Poisson model and negative binomial model fits
 
 **Solution**
 
-Add comments to the solution.
+The poisson loglinear model is used to model counts and assume a Poisson distribution for the response variable. The limitation of this model is that the assumption of $Y$ having mean $\lambda$ equal to the variance is very restrictive and in practice counts often exhibits overdispersion. Overdispersion happens when the variance exceeds that predicted by the Poisson, in this case the estimates $\hat{\beta}_j$ are still valid but the *SE* are too small and not very realistic.
+
+A way to account for overdispersion is to adopt a mixture model that use a distribution for $\lambda$. A common choiche is the negative binomial model for which we have $Var(Y)=\lambda + \dfrac{\lambda^2}{k}$, the parameter $\dfrac{1}{k}$ is a dispersion parameter, the larger the parameter the greater the dispersion.
+
+We will now fit a null Poisson model to the shark attacks data and then look for overdispersion
+
+```{r, warning = FALSE}
+
+set.seed(1234)
+
+#create the data frame
+
+attacks <- c(33, 29, 29, 12, 17, 21, 31, 28, 19, 14, 11, 26, 23)
+year <- 2001:2013
+dat <- data.frame(attacks, year)
+
+#fit the null Poisson model
+
+modelP <- glm(attacks ~1, family="poisson", data = dat)
+summary(modelP)
+
+# test the Poisson model for dispersion
+
+library(DHARMa)
+resP <- simulateResiduals(modelP, refit = T)
+testDispersion(resP, plot = F)
+
+```
+
+In this case the dispersion parameter is $2.4$ and so the model exhibit overdispersion (we have equidispersion when the parameter is close to $1$).
+
+We now try to fit a null negative binomial model and then check if it can solve the overdipersion problem.
+
+```{r, warning = FALSE}
+
+# fit the negative binomial model
+
+library(MASS)
+modelNB <- glm.nb(attacks ~1, data = dat)
+summary(modelNB)
+
+# test for dispersion
+resNB <- simulateResiduals(modelNB, refit = T)
+testDispersion(resNB, plot = F)
+
+```
+The disperion parameter is now $0.94$ much closer to $1$ than in the Poisson model.
+
+We also notice that the AIC of the negative binomial model is smaller making it more suitable for this situation.
 
 ### Ex 7.28
 
@@ -331,11 +379,27 @@ The null model is obtained for $\lambda >\approx 0.0943$.
 
 ### Ex 7.42
 
-*Here the text of the exercise.*
+For modeling the Horseshoe crab satellite counts, the *SE* values for the Poisson model output in Section 7.4.2 are less than half the *SE* values for the negative binomial model output in Section 7.5.3. Does this imply that the Poisson model is preferable? Explain
 
 **Solution**
 
-Add comments to the solution.
+Poisson models often exhibit overdispersion because of the lack of a separate parameter for the variability. When the model has the correct link function and linear predictor, but the true response distribution has more variability than the Poisson, the ML estimates $\hat{\beta}_j$ are still valid but the standard errors are too small. As in the case of the Horseshoe crab in which the *SE* of the negative binomial fit are smaller but more realistic.
+
+We can compare the AIC for the two models:
+
+```{r, warning = FALSE}
+
+crabs <- read.table("http://stat4ds.rwth-aachen.de/data/Crabs.dat", header = TRUE)
+
+AICP <- AIC(glm(sat~., family=poisson, data=crabs))
+print(paste("Poisson AIC:", AICP))
+
+
+AICNB <- AIC(glm.nb(sat~., data=crabs))
+print(paste("Negative Binomial AIC:", AICNB))
+
+```
+the smaller AIC of the negative binomial fit indicates that the latter is preferable.
 
 ### Ex 7.44
 
