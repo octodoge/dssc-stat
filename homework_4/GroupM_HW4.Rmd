@@ -216,7 +216,7 @@ models = lapply(formulas, function(formula) glm(
 lapply(models, AIC)
 ```
 
-The lower the AIC score, the better, so the interaction model seems the most sensible.
+The lower the AIC value, the better, so the interaction model seems the most sensible.
 
 ### Ex 7.26
 
