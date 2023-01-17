@@ -1,1 +1,9 @@
-TBD
+- vedi GAM da lab 8
+
+- vedi dataset per capire quale family usare per GAM/GLM
+
+- serve interpretabilità? Se sì, niente random forest (e boosting) ma tree singolo al posto (a meno che i metodi per interpretare random forest delle slide di machine learning non vengano ritenuti adeguati)
+
+- per modelli si potrebbe fare:
+  - primo giro con random forest (niente tuning) e GLM (abbastanza straightforward imo da tunare, fai salire d'ordine le interaction finché smette di migliorare e poi togli coefficienti inutili, o c'è anche altro da provare?)
+  - secondo giro cerchi di superare random forest con boosting (probabilmente modello migliore in questo caso ma l'abbiamo solo accennato e quindi si potrebbe anche skippare), e GLM con GAM
