@@ -1,0 +1,91 @@
+---
+title: "FinalProjectGroupC"
+author: "me"
+date: "2023-01-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+library(corrplot)
+
+path  = 'C:/Users/Win10/Desktop/winequality-white.csv'
+d = read.csv(path, header = T, sep = ';')
+str(d)
+summary(d)
+  #plot the correlation matrix
+corrplot(cor(d), method = "number")
+#hist(d$quality)
+#d[d$quality == 9,]
+```
+
+
+```{r}
+#We can plot a lot of histograms to better visualize the data
+hist(d$fixed.acidity, breaks = 100)
+hist(d$volatile.acidity, breaks = 100)
+hist(d$citric.acid, breaks = 100)
+hist(d$residual.sugar, breaks = 100)
+hist(d$chlorides, breaks = 100)
+hist(d$free.sulfur.dioxide, breaks = 100)
+hist(d$total.sulfur.dioxide, breaks = 100)
+hist(d$density, breaks = 100)
+hist(d$pH, breaks = 100)
+hist(d$sulphates, breaks = 100)
+hist(d$alcohol, breaks = 100)
+hist(d$quality)
+
+```
+
+From the plots we identify some possible outliers, removing them is not necessarly useful but could improve the results
+```{r}
+d_clean = d
+for (j in c(1, 2, 3, 4, 5, 6, 7, 8)){
+  max = max(d_clean[,j])
+  print(paste("The maximum value for the variable", j, "is", max))
+  previous_dimension = dim(d_clean)[1]
+  
+  d_clean = d_clean[-(which(d_clean[,j]==max)),] #we remove the outliers
+  
+  new_max = max(d_clean[,j])
+  following_dimension = dim(d_clean)[1]
+  print(paste("We removed", previous_dimension-following_dimension, "lines, now the max is", new_max)) #Just to check that we remove only one line at the time
+}
+
+```
+
+```{r}
+
+fit1 = glm(factor(quality) ~ ., family = binomial(link = "logit"), data = d)
+summary(fit1)
+
+
+```
+Using the cleaned data we get more significant results
+```{r}
+
+fit1 = glm(factor(quality) ~ ., family = binomial(link = "logit"), data = d_clean)
+summary(fit1)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
