@@ -2,4 +2,5 @@
 *.html
 .Rhistory
 .DS_Store
-
+*.swp
+*~
