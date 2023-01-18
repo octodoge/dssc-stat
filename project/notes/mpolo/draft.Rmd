@@ -2,6 +2,7 @@
   - spline puoi usarle anche su GLM ma la differenza è che GAM ha una penalizzazione nel fitting che GLM non ha quindi non è la stessa cosa (https://stats.stackexchange.com/a/298831 o lab 8): quando le specifichi su GLM (con `bs()`) specifichi anche il grado dei polinomi (e quindi numero di coefficienti) e fai linear regression sui coefficienti, invece su GAM le specifichi non-parametriche (con `s()`) e ci pensa il fitting a trovare le migliori (smoothin regression): https://stats.stackexchange.com/a/517784
 
 - vedi dataset per capire quale family usare per GAM/GLM (gaussian, poisson, binomial, negative binomial)
+  - y é multiclass ma con classi ordinate, però credo che nessuna delle famiglie che abbiamo visto vada bene. Serve famiglia che modelli ordered categorical data (diverso da count della poisson o negative binomial perché limitate). Per multiclass di solito si usa multinomial (che forse non abbiamo fatto). Ma visto che le nostre sono ordered non trascurerei questo fatto e farei ordinal logistic regression quindi con family ordinal (che non credo abbiamo fatto, e forse è da importare o usare altra API rispetto `glm`). Inoltre neanche l'API `glmnet` per lasso penso abbia ordinal, però ha multinomial
 
 - Per interpretabilità random forest (e boosting) vedi slide alberi, oppure anche slide machine learning di Medved, e vedi se per caso c'è già modo easy in R (in teoria sì, vedi i mean decrease alla fine del lab 8)
 
@@ -14,4 +15,11 @@
 - se dataset imba è un problema? forse per alcuni modelli sì. Vedi slide alberi che ne parlano
 
 - forse serve vedere anche correlazione tra le variabili come in lab 8. Ma dopo che te ne fai? scarti le predictor correlate tra loro?
+  - Correlated variables in a dataset can lead to multicollinearity, which can affect the interpretation of the coefficients. It's generally recommended to address correlated variables when training a GLM. One way to do this is by discarding one of the correlated variables. Another way is to use regularization techniques such as Lasso, which can help to reduce the impact of correlated variables on the model by shrinking the coefficients of correlated variables.
+
+- Lasso dovrebbe essere generalizzazione di GLM quindi basta quello imo (con lambda=0 è GLM normale penso, ma non so se la  sua API `glmnet` permette di fare le stesse cose). Vedi [qui](https://stackoverflow.com/a/38378121) per confronto risultati con glm normale per vedere se si sta facendo bene. IMO usa cv.glmnet per trovare lambda migliore. Fa così anche libro.
+
+---
+
+
 
