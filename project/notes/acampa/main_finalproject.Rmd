@@ -1,0 +1,110 @@
+---
+title: "final_project_stat"
+author: "Agustin Campagnolo"
+date: "2023-01-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Exploration
+
+Load Dataset
+
+```{r}
+path <- '../..' # go up two folders
+filename = '/winequality-white.csv'
+
+data = read.csv(paste(path,filename, sep = ""), sep = ';') # load data
+
+names(data) # view variable names
+dim(data) # view datframe size [rows, columns]
+head(data) # view first lines
+str(data) # structure of dataframe
+summary(data) # descriptive statistics
+```
+Cleaning exploration
+
+```{r}
+colSums(is.na(data)) # count Na values by columns
+```
+
+Visualization
+
+```{r}
+### install.packages("GGally")             # Install GGally package
+library("GGally")
+
+ggpairs(data)  # draw pair plots of dataframe
+```
+
+```{r}
+### install.packages("tidyr")              # Install & load tidyr
+library("tidyr")
+
+cols <- names(data)
+#del_cols <- (, "free.sulfur.dioxide", "alcohol", "quality", "fixed.acidity")
+cols <- cols[cols != "total.sulfur.dioxide"];
+cols <- cols[cols != "free.sulfur.dioxide"];
+cols <- cols[cols != "residual.sugar"];
+cols <- cols[cols != "alcohol"];
+cols <- cols[cols != "quality"];
+cols <- cols[cols != "fixed.acidity"];
+
+data_long1 <- pivot_longer(data,    # Reshape data frame
+                            c("total.sulfur.dioxide", "free.sulfur.dioxide", "residual.sugar"))
+
+ggplot(data_long1,                  # Draw boxplots
+       aes(x = value, fill = name)) + geom_boxplot()
+
+
+data_long2 <- pivot_longer(data,    # Reshape data frame
+                            c("alcohol", "quality", "fixed.acidity"))
+ggplot(data_long2,                  # Draw boxplots
+       aes(x = value, fill = name)) + geom_boxplot()
+
+data_long3 <- pivot_longer(data,    # Reshape data frame
+                            c("volatile.acidity", "sulphates", "citric.acid", "pH"))
+ggplot(data_long3,                  # Draw boxplots
+       aes(x = value, fill = name)) + geom_boxplot()
+
+data_long4 <- pivot_longer(data,    # Reshape data frame
+                            c("density"))
+ggplot(data_long4,                  # Draw boxplots
+       aes(x = value, fill = name)) + geom_boxplot()
+
+data_long5 <- pivot_longer(data,    # Reshape data frame
+                            c("chlorides"))
+ggplot(data_long5,                  # Draw boxplots
+       aes(x = value, fill = name)) + geom_boxplot()
+```
+
+```{r}
+ggplot(data_long1,                    # Draw histograms
+       aes(x = value)) +
+  geom_histogram() + 
+  facet_wrap(name ~ ., scales = "free")
+
+ggplot(data_long2,                    # Draw histograms
+       aes(x = value)) +
+  geom_histogram() + 
+  facet_wrap(name ~ ., scales = "free")
+
+ggplot(data_long3,                    # Draw histograms
+       aes(x = value)) +
+  geom_histogram() + 
+  facet_wrap(name ~ ., scales = "free")
+
+ggplot(data_long4,                    # Draw histograms
+       aes(x = value)) +
+  geom_histogram() + 
+  facet_wrap(name ~ ., scales = "free")
+
+ggplot(data_long5,                    # Draw histograms
+       aes(x = value)) +
+  geom_histogram() + 
+  facet_wrap(name ~ ., scales = "free")
+```
+
