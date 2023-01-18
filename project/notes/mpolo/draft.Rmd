@@ -1,9 +1,17 @@
-- vedi GAM da lab 8
+- vedi GAM da lab 8/ ultime slide
+  - spline puoi usarle anche su GLM ma la differenza è che GAM ha una penalizzazione nel fitting che GLM non ha quindi non è la stessa cosa (https://stats.stackexchange.com/a/298831 o lab 8): quando le specifichi su GLM (con `bs()`) specifichi anche il grado dei polinomi (e quindi numero di coefficienti) e fai linear regression sui coefficienti, invece su GAM le specifichi non-parametriche (con `s()`) e ci pensa il fitting a trovare le migliori (smoothin regression): https://stats.stackexchange.com/a/517784
 
-- vedi dataset per capire quale family usare per GAM/GLM
+- vedi dataset per capire quale family usare per GAM/GLM (gaussian, poisson, binomial, negative binomial)
 
-- serve interpretabilità? Se sì, niente random forest (e boosting) ma tree singolo al posto (a meno che i metodi per interpretare random forest delle slide di machine learning non vengano ritenuti adeguati)
+- Per interpretabilità random forest (e boosting) vedi slide alberi, oppure anche slide machine learning di Medved, e vedi se per caso c'è già modo easy in R (in teoria sì, vedi i mean decrease alla fine del lab 8)
 
 - per modelli si potrebbe fare:
-  - primo giro con random forest (niente tuning) e GLM (abbastanza straightforward imo da tunare, fai salire d'ordine le interaction finché smette di migliorare e poi togli coefficienti inutili, o c'è anche altro da provare?)
-  - secondo giro cerchi di superare random forest con boosting (probabilmente modello migliore in questo caso ma l'abbiamo solo accennato e quindi si potrebbe anche skippare), e GLM con GAM
+  - primo giro con random forest (niente tuning) e GLM (abbastanza straightforward imo da tunare, fai salire d'ordine le interaction finché smette di migliorare e poi togli coefficienti inutili, ma sarebbe da provare anche con altre funzioni oltre a polinomi, tipo log, spline ecc.)
+  - secondo giro cerchi di superare random forest con boosting (probabilmente modello migliore in questo caso ma l'abbiamo solo accennato e quindi si potrebbe anche skippare, ma magari fai se avanza tempo visto che utile), e GLM con GAM
+
+- AIC per confrontare GLM/GAM. Cross validation per random forest e boosting. E imo per confronti incrociati sempre cross validation perché AIC non esiste per alberi
+
+- se dataset imba è un problema? forse per alcuni modelli sì. Vedi slide alberi che ne parlano
+
+- forse serve vedere anche correlazione tra le variabili come in lab 8. Ma dopo che te ne fai? scarti le predictor correlate tra loro?
+
