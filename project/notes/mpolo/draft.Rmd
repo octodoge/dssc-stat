@@ -3,6 +3,7 @@
 
 - vedi dataset per capire quale family usare per GAM/GLM (gaussian, poisson, binomial, negative binomial)
   - y é multiclass ma con classi ordinate, però credo che nessuna delle famiglie che abbiamo visto vada bene. Serve famiglia che modelli ordered categorical data (diverso da count della poisson o negative binomial perché limitate). Per multiclass di solito si usa multinomial (che forse non abbiamo fatto). Ma visto che le nostre sono ordered non trascurerei questo fatto e farei ordinal logistic regression quindi con family ordinal (che non credo abbiamo fatto, e forse è da importare o usare altra API rispetto `glm`). Inoltre neanche l'API `glmnet` per lasso penso abbia ordinal, però ha multinomial
+  - per alberi invece non credo esista ordinal regression. o fai regression o classification. Differenza è tipo che in regression se 2 alberi predicono 5 e 3 predicono 7, viene classificato come 6 (ma devi fare tu qualche trick per arrotondare), mentre in classification come 7.
 
 - Per interpretabilità random forest (e boosting) vedi slide alberi, oppure anche slide machine learning di Medved, e vedi se per caso c'è già modo easy in R (in teoria sì, vedi i mean decrease alla fine del lab 8)
 
