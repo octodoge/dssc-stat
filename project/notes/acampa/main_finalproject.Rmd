@@ -50,6 +50,27 @@ colSums(is.na(data)) # count Na values by columns
 
 - Inspect every variable
 
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+plot_feature_hist <- function(data, col, name, color) {
+  bw <- 2 * IQR(data[,col]) / length(data[,col])^(1/3) # Freedman-Diaconis’s Rule
+  return(
+    p <- data %>%
+      ggplot( aes_string(x=col)) +
+        geom_histogram(binwidth=bw, fill=color, color="#e9ecef", alpha=0.9) +
+        ggtitle(name) +
+        theme_ipsum() +
+        theme(
+          plot.title = element_text(size=15)
+        )
+    )
+}
+  
+```
+
+
 ##### Quality
 
 Quality in white wines can be a complex concept, as it can be affected by various factors such as grape variety, winemaking techniques, climate, soil, and vintage. In general, quality in white wines refers to the overall balance, complexity, and character of the wine.
@@ -65,21 +86,7 @@ However, quality is also a subjective concept that can vary depending on individ
 In the wine industry, wines are often rated by experts and critics, who assign scores and awards to wines based on their quality. These ratings can be a useful tool for consumers to guide their purchasing decisions, but it's important to remember that ultimately quality is a personal preference.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$quality) / length(data$quality)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=quality)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Quality") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "quality","Quality", "#69b3a2"))
 ```
 
 ##### Fixed acidity
@@ -89,21 +96,7 @@ library(hrbrthemes)
 Fixed acidity in white wines refers to the total acidity present in the wine that is not in the form of volatile acidity (acetic acid). The most common acids found in wine are tartaric, malic, and citric acid. The acidity level in white wines is an important factor that contributes to the overall taste and balance of the wine. High acidity can give the wine a crisp and refreshing taste, while low acidity can make the wine taste flabby or dull. The fixed acidity levels are measured in grams per liter (g/L) or in percentage by weight (% w/w).
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$fixed.acidity) / length(data$fixed.acidity)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=fixed.acidity)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Fixed Acidity") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "fixed.acidity","Fixed Acidity", "#69b3a2"))
 ```
 
 ##### Volatile acidity
@@ -113,21 +106,7 @@ library(hrbrthemes)
 Volatile acidity (VA) in white wines refers to the amount of acetic acid present in the wine. Acetic acid is a type of volatile acid that can be produced by the presence of acetic acid bacteria (such as acetobacter) during the wine-making process. High levels of VA can give the wine a vinegary or "off" flavor, while low levels of VA are desirable for most white wines. The volatile acidity levels are measured in grams per liter (g/L) or in parts per million (ppm). VA is typically much lower than fixed acidity in white wines.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$volatile.acidity) / length(data$volatile.acidity)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=volatile.acidity)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Fixed Acidity") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "volatile.acidity","Volatile Acidity", "#69b3a2"))
 ```
 
 ##### Citirc acid
@@ -138,21 +117,7 @@ Citric acid is a type of fixed acid that can be found in white wines. It is one 
 Citric acid is a weak organic acid that is present in many fruits, including grapes, and it is naturally present in grapes at the time of harvest. During the fermentation process, yeast converts the natural sugars present in grapes into alcohol and carbon dioxide, and it also converts a small amount of citric acid into carbon dioxide. Citric acid contributes to the overall acidity of the wine and can give the wine a fresh, bright and tangy flavor. Citric acid levels are measured in grams per liter (g/L) or in percentage by weight (% w/w).
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$citric.acid) / length(data$citric.acid)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=citric.acid)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Fixed Acidity") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "citric.acid","Citric Acid", "#69b3a2"))
 ```
 
 ##### Residual sugar
@@ -164,21 +129,7 @@ Residual sugar (RS) in white wines refers to the amount of natural sugar that re
 Dry white wines typically have low levels of residual sugar, while sweeter white wines will have higher levels. The residual sugar levels are measured in grams per liter (g/L) or in percentage by weight (% w/w). Residual sugar can affect the taste, body, and overall balance of the wine, and it also can affect the perception of acidity and alcohol in the wine.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$residual.sugar) / length(data$residual.sugar)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=residual.sugar)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Residual sugar") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "residual.sugar","Residual Sugar", "#69b3a2"))
 ```
 
 ##### Chlorides
@@ -192,21 +143,7 @@ Chlorides can be added to wine in the form of potassium chloride or sodium chlor
 High levels of chlorides can make the wine taste salty or metallic, while low levels of chlorides are desirable for most white wines. The chloride levels are measured in milligrams per liter (mg/L) or in parts per million (ppm).
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$chlorides) / length(data$chlorides)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=chlorides)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Chlorides") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "chlorides","Chlorides", "#69b3a2"))
 ```
 ##### Free Sulfur dioxides
 
@@ -219,21 +156,7 @@ During the winemaking process, sulfur dioxide is added to the wine in the form o
 The levels of free sulfur dioxide are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of free sulfur dioxide vary depending on the type of wine and the wine-making method used, but generally, it is between 30-50 mg/L for white wines. High levels of free sulfur dioxide can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$free.sulfur.dioxide) / length(data$free.sulfur.dioxide)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=free.sulfur.dioxide)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Free Sulfur Dioxide") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "free.sulfur.dioxide","Free Sulfur Dioxide", "#69b3a2"))
 ```
 
 
@@ -248,21 +171,7 @@ During the winemaking process, sulfur dioxide is added to the wine in the form o
 Total sulfur dioxide levels are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of total sulfur dioxide vary depending on the type of wine and the wine-making method used, but generally, it is between 80-150 mg/L for white wines. High levels of total sulfur dioxide can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$total.sulfur.dioxide) / length(data$total.sulfur.dioxide)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=free.sulfur.dioxide)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Total Sulfur dioxide") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "total.sulfur.dioxide","Total Sulfur Dioxide", "#69b3a2"))
 ```
 
 ##### Density
@@ -276,21 +185,7 @@ In white wines, the density is mainly affected by the sugar content, alcohol con
 Density measurement is used in winemaking as a way to monitor the progress of fermentation, as the density of the wine decreases as the sugar is converted into alcohol. It is also used to measure the alcohol content of the wine. With the density measurement, it is possible to estimate the alcohol content of the wine, which can be useful for labeling, taxation and regulatory purposes.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$density) / length(data$density)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=density)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Density") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "density","Density", "#69b3a2"))
 ```
 
 ##### pH
@@ -306,21 +201,7 @@ Additionally, pH also affects the stability of the wine, as wines with a low pH 
 pH measurement is an important analytical tool in winemaking, and it is used to monitor and control the acidity of the wine, to ensure that the wine has the right balance of acidity and to prevent spoilage.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$pH) / length(data$pH)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=pH)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("pH") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "pH","pH", "#69b3a2"))
 ```
 
 ##### Sulphates
@@ -334,21 +215,7 @@ Sulfates can be added to wine in the form of potassium metabisulfite, or sodium 
 The levels of sulfates in wine are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of sulfates vary depending on the type of wine, but generally, it is between 50-200 mg/L for white wines. High levels of sulfates can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$sulphates) / length(data$sulphates)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=pH)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Sulphates") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "sulphates","Sulphates", "#69b3a2"))
 ```
 
 ##### Alcohol
@@ -362,21 +229,7 @@ Sulfates can be added to wine in the form of potassium metabisulfite, or sodium 
 The levels of sulfates in wine are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of sulfates vary depending on the type of wine, but generally, it is between 50-200 mg/L for white wines. High levels of sulfates can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
 
 ```{r}
-library(tidyverse)
-library(hrbrthemes)
-
-  # Freedman-Diaconis’s Rule
-  bw <- 2 * IQR(data$alcohol) / length(data$alcohol)^(1/3)
-  
-  p <- data %>%
-    ggplot( aes(x=alcohol)) +
-      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
-      ggtitle("Alcohol") +
-      theme_ipsum() +
-      theme(
-        plot.title = element_text(size=15)
-      )
-  print(p)
+print(plot_feature_hist(data, "alcohol","Alcohol", "#69b3a2"))
 ```
 
 ### Correlation Coefficient
