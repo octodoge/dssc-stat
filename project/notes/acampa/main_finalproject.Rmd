@@ -50,20 +50,334 @@ colSums(is.na(data)) # count Na values by columns
 
 - Inspect every variable
 
+##### Quality
+
+Quality in white wines can be a complex concept, as it can be affected by various factors such as grape variety, winemaking techniques, climate, soil, and vintage. In general, quality in white wines refers to the overall balance, complexity, and character of the wine.
+
+Some of the characteristics that are often associated with high-quality white wines include:
+
+Aroma: The wine should have a pleasant aroma that is typical of the grape variety used and should be free of any off odors or defects.
+Taste: The wine should have a well-balanced taste, with a good acidity-alcohol-sweetness balance, and with a long and pleasant finish.
+Appearance: The wine should be clear and bright, with a good color intensity.
+Ageability: The wine should have the potential to age well and develop more complex flavors and aromas over time.
+However, quality is also a subjective concept that can vary depending on individual preferences. Some people may prefer a wine with a high acidity, while others may prefer a wine with a higher alcohol content. Quality can also depend on the occasion and the food pairings, as some wines that may be considered high-quality for one occasion may not be for another.
+
+In the wine industry, wines are often rated by experts and critics, who assign scores and awards to wines based on their quality. These ratings can be a useful tool for consumers to guide their purchasing decisions, but it's important to remember that ultimately quality is a personal preference.
+
 ```{r}
+library(tidyverse)
+library(hrbrthemes)
 
-cols <- names(data)
-
-for (col in cols) {
-  tab <- pivot_longer(data, col)
-  ggplot(data_long1, aes(x = value)) +
-  geom_histogram() + 
-  facet_wrap(name ~ ., scales = "free")
-}
-
-
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$quality) / length(data$quality)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=quality)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Quality") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
 ```
 
+##### Fixed acidity
+
+*from GPT3:*
+
+Fixed acidity in white wines refers to the total acidity present in the wine that is not in the form of volatile acidity (acetic acid). The most common acids found in wine are tartaric, malic, and citric acid. The acidity level in white wines is an important factor that contributes to the overall taste and balance of the wine. High acidity can give the wine a crisp and refreshing taste, while low acidity can make the wine taste flabby or dull. The fixed acidity levels are measured in grams per liter (g/L) or in percentage by weight (% w/w).
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$fixed.acidity) / length(data$fixed.acidity)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=fixed.acidity)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Fixed Acidity") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Volatile acidity
+
+*from GPT3:*
+
+Volatile acidity (VA) in white wines refers to the amount of acetic acid present in the wine. Acetic acid is a type of volatile acid that can be produced by the presence of acetic acid bacteria (such as acetobacter) during the wine-making process. High levels of VA can give the wine a vinegary or "off" flavor, while low levels of VA are desirable for most white wines. The volatile acidity levels are measured in grams per liter (g/L) or in parts per million (ppm). VA is typically much lower than fixed acidity in white wines.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$volatile.acidity) / length(data$volatile.acidity)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=volatile.acidity)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Fixed Acidity") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Citirc acid
+
+*from GPT3:*
+
+Citric acid is a type of fixed acid that can be found in white wines. It is one of the three main acids found in wine, along with tartaric and malic acid.
+Citric acid is a weak organic acid that is present in many fruits, including grapes, and it is naturally present in grapes at the time of harvest. During the fermentation process, yeast converts the natural sugars present in grapes into alcohol and carbon dioxide, and it also converts a small amount of citric acid into carbon dioxide. Citric acid contributes to the overall acidity of the wine and can give the wine a fresh, bright and tangy flavor. Citric acid levels are measured in grams per liter (g/L) or in percentage by weight (% w/w).
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$citric.acid) / length(data$citric.acid)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=citric.acid)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Fixed Acidity") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Residual sugar
+
+*from GPT3:*
+
+Residual sugar (RS) in white wines refers to the amount of natural sugar that remains in the wine after fermentation. During the wine-making process, yeast consumes the natural sugars present in grapes, converting them into alcohol and carbon dioxide. However, not all of the sugars may be fermented, leaving a certain amount of residual sugar in the final product. The residual sugar levels can vary greatly depending on the type of wine and the winemaking method used.
+
+Dry white wines typically have low levels of residual sugar, while sweeter white wines will have higher levels. The residual sugar levels are measured in grams per liter (g/L) or in percentage by weight (% w/w). Residual sugar can affect the taste, body, and overall balance of the wine, and it also can affect the perception of acidity and alcohol in the wine.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$residual.sugar) / length(data$residual.sugar)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=residual.sugar)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Residual sugar") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Chlorides
+
+*from GPT3:*
+
+Chlorides in white wines refer to the chloride ions present in the wine. Chlorides are a type of salt that can be found in small amounts in grapes and can also be added during the winemaking process as a stabilizing agent. Chlorides can affect the perception of acidity, bitterness and sweetness in the wine.
+
+Chlorides can be added to wine in the form of potassium chloride or sodium chloride. Potassium chloride is commonly used in white wines to enhance the perception of sweetness and to reduce the perception of bitterness and acidity. Sodium chloride is used in smaller amounts and it is mainly used to enhance the perception of flavors and aromas in the wine.
+
+High levels of chlorides can make the wine taste salty or metallic, while low levels of chlorides are desirable for most white wines. The chloride levels are measured in milligrams per liter (mg/L) or in parts per million (ppm).
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$chlorides) / length(data$chlorides)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=chlorides)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Chlorides") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+##### Free Sulfur dioxides
+
+*from GPT3:*
+
+Free sulfur dioxide (FSO2) in white wines refers to the amount of sulfur dioxide that is not chemically bound to other compounds in the wine. Sulfur dioxide (SO2) is a naturally occurring compound that is present in grapes, but it is also commonly added to wine as a preservative. Sulfur dioxide can prevent the growth of unwanted microorganisms, such as bacteria and wild yeast, and can also protect the wine from oxidation.
+
+During the winemaking process, sulfur dioxide is added to the wine in the form of sulfur dioxide gas, potassium metabisulfite, or sodium metabisulfite. Some of the sulfur dioxide will bind to other compounds in the wine, forming "bound sulfur dioxide", and some of it will remain as "free sulfur dioxide".
+
+The levels of free sulfur dioxide are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of free sulfur dioxide vary depending on the type of wine and the wine-making method used, but generally, it is between 30-50 mg/L for white wines. High levels of free sulfur dioxide can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$free.sulfur.dioxide) / length(data$free.sulfur.dioxide)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=free.sulfur.dioxide)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Free Sulfur Dioxide") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+
+##### Total Sulfur dioxides
+
+*from GPT3:*
+
+Total sulfur dioxide (TSO2) in white wines refers to the combined amount of free sulfur dioxide (FSO2) and bound sulfur dioxide (BSO2) present in the wine. Sulfur dioxide (SO2) is a naturally occurring compound that is present in grapes, but it is also commonly added to wine as a preservative. Sulfur dioxide can prevent the growth of unwanted microorganisms, such as bacteria and wild yeast, and can also protect the wine from oxidation.
+
+During the winemaking process, sulfur dioxide is added to the wine in the form of sulfur dioxide gas, potassium metabisulfite, or sodium metabisulfite. Some of the sulfur dioxide will bind to other compounds in the wine, forming "bound sulfur dioxide", and some of it will remain as "free sulfur dioxide".
+
+Total sulfur dioxide levels are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of total sulfur dioxide vary depending on the type of wine and the wine-making method used, but generally, it is between 80-150 mg/L for white wines. High levels of total sulfur dioxide can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$total.sulfur.dioxide) / length(data$total.sulfur.dioxide)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=free.sulfur.dioxide)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Total Sulfur dioxide") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Density
+
+*from GPT3:*
+
+Density in white wines refers to the mass per unit volume of the liquid. The density of a liquid is a measure of how heavy it is compared to an equal volume of water. Density is typically measured in grams per milliliter (g/mL) or in kilograms per liter (kg/L).
+
+In white wines, the density is mainly affected by the sugar content, alcohol content and temperature. Generally, the higher the sugar content, the higher the density of the wine, and the higher the alcohol content, the lower the density of the wine. Also, the density of a liquid is affected by temperature, as the density of a liquid decreases as the temperature increases.
+
+Density measurement is used in winemaking as a way to monitor the progress of fermentation, as the density of the wine decreases as the sugar is converted into alcohol. It is also used to measure the alcohol content of the wine. With the density measurement, it is possible to estimate the alcohol content of the wine, which can be useful for labeling, taxation and regulatory purposes.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$density) / length(data$density)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=density)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Density") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### pH
+
+*from GPT3:*
+
+pH in white wines refers to the acidity or basicity of the wine. pH is a measure of the hydrogen ion concentration in a solution, and it ranges from 0 to 14, with 7 being neutral. Lower pH values indicate a more acidic solution, while higher pH values indicate a more basic solution. In white wines, the pH values typically range from about 2.8 to 3.8, making them acidic.
+
+pH plays an important role in the taste and stability of white wines. Lower pH values contribute to a more acidic, crisp and fresh taste, while higher pH values can make the wine taste flabby or dull. It also affects the perception of other wine's components, like the taste of sugar, tannins, and flavors. A low pH can enhance the perception of flavors and aromas, while a high pH can make the wine taste flat.
+
+Additionally, pH also affects the stability of the wine, as wines with a low pH are more resistant to spoilage and oxidation. Microorganisms that can spoil the wine, like bacteria and wild yeast, tend to grow better in wine with a high pH.
+
+pH measurement is an important analytical tool in winemaking, and it is used to monitor and control the acidity of the wine, to ensure that the wine has the right balance of acidity and to prevent spoilage.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$pH) / length(data$pH)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=pH)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("pH") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Sulphates
+
+*from GPT3:*
+
+Sulfates in white wines refer to the sulfate ions present in the wine. Sulfates are a type of salt that can be found in grapes, but they are also commonly added to wine as a stabilizing agent, specifically as sulfur dioxide (SO2) which is a compound that contains sulfate ions. SO2 is naturally present in grapes, but it is also added to wine to prevent spoilage and oxidation by inhibiting the growth of unwanted microorganisms, such as bacteria and wild yeast.
+
+Sulfates can be added to wine in the form of potassium metabisulfite, or sodium metabisulfite. These compounds are used as a preservative and antioxidant, and they help to protect the wine from spoilage and oxidation.
+
+The levels of sulfates in wine are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of sulfates vary depending on the type of wine, but generally, it is between 50-200 mg/L for white wines. High levels of sulfates can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$sulphates) / length(data$sulphates)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=pH)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Sulphates") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
+
+##### Alcohol
+
+*from GPT3:*
+
+Sulfates in white wines refer to the sulfate ions present in the wine. Sulfates are a type of salt that can be found in grapes, but they are also commonly added to wine as a stabilizing agent, specifically as sulfur dioxide (SO2) which is a compound that contains sulfate ions. SO2 is naturally present in grapes, but it is also added to wine to prevent spoilage and oxidation by inhibiting the growth of unwanted microorganisms, such as bacteria and wild yeast.
+
+Sulfates can be added to wine in the form of potassium metabisulfite, or sodium metabisulfite. These compounds are used as a preservative and antioxidant, and they help to protect the wine from spoilage and oxidation.
+
+The levels of sulfates in wine are measured in milligrams per liter (mg/L) or in parts per million (ppm). The acceptable levels of sulfates vary depending on the type of wine, but generally, it is between 50-200 mg/L for white wines. High levels of sulfates can give the wine a "sulfury" or "burnt match" smell, while low levels can make the wine more susceptible to spoilage.
+
+```{r}
+library(tidyverse)
+library(hrbrthemes)
+
+  # Freedman-Diaconis’s Rule
+  bw <- 2 * IQR(data$alcohol) / length(data$alcohol)^(1/3)
+  
+  p <- data %>%
+    ggplot( aes(x=alcohol)) +
+      geom_histogram(binwidth=bw, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+      ggtitle("Alcohol") +
+      theme_ipsum() +
+      theme(
+        plot.title = element_text(size=15)
+      )
+  print(p)
+```
 
 ### Correlation Coefficient
 
@@ -159,12 +473,12 @@ unique(data$quality)
 
 
 ```{r}
-ggpairs(data)  # draw pair plots of dataframe
+#ggpairs(data)  # draw pair plots of dataframe
 
-gplot <- GGally::ggpairs(data)
-gplot$nrow <- 1
-gplot$yAxisLabels <- a$yAxisLabels[1]
-print(gplot)
+#gplot <- GGally::ggpairs(data)
+#gplot$nrow <- 1
+#gplot$yAxisLabels <- a$yAxisLabels[1]
+#print(gplot)
 
 ```
 
