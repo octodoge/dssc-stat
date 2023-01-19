@@ -3,6 +3,7 @@
 
 - vedi dataset per capire quale family usare per GAM/GLM (gaussian, poisson, binomial, negative binomial)
   - y é multiclass ma con classi ordinate, però credo che nessuna delle famiglie che abbiamo visto vada bene. Serve famiglia che modelli ordered categorical data (diverso da count della poisson o negative binomial perché limitate). Per multiclass di solito si usa multinomial (che forse non abbiamo fatto). Ma visto che le nostre sono ordered non trascurerei questo fatto e farei ordinal logistic regression quindi con family ordinal (che non credo abbiamo fatto, e forse è da importare o usare altra API rispetto `glm`). Inoltre neanche l'API `glmnet` per lasso penso abbia ordinal, però ha multinomial
+    - anzi imo vai easy con linear regression (family gaussian, o usa direttamente)
   - per alberi invece non credo esista ordinal regression. o fai regression o classification. Differenza è tipo che in regression se 2 alberi predicono 5 e 3 predicono 7, viene classificato come 6 (ma devi fare tu qualche trick per arrotondare), mentre in classification come 7.
 
 - Per interpretabilità random forest (e boosting) vedi slide alberi, oppure anche slide machine learning di Medved, e vedi se per caso c'è già modo easy in R (in teoria sì, vedi i mean decrease alla fine del lab 8)
@@ -20,7 +21,43 @@
 
 - Lasso dovrebbe essere generalizzazione di GLM quindi basta quello imo (con lambda=0 è GLM normale penso, ma non so se la  sua API `glmnet` permette di fare le stesse cose). Vedi [qui](https://stackoverflow.com/a/38378121) per confronto risultati con glm normale per vedere se si sta facendo bene. IMO usa cv.glmnet per trovare lambda migliore. Fa così anche libro.
 
+- models (fai linear regression):
+  - gaussian glm (or lm but less cool)
+    - poly
+    - interaction
+    - splines?
+    - log?
+    - ...
+  - gaussian gam
+    - splines
+    - ...
+  - random forest
+  - boosting (se c'è tempo)
+
 ---
 
+```{r}
+#load dataset
+df = read.csv("../../winequality-white.csv", sep=";")
+x = subset(df, select=-quality)
+y = subset(df, select=quality)
+```
 
+```{r}
+#fit models
+library(gam)
+library(randomForest) #v 4.6-14 for R 4.0.4
 
+linear = 
+additive = 
+forest = randomForest(quality ~ ., data = df, importance=TRUE)
+#boosting?
+```
+
+```{r}
+importance(forest)
+```
+
+```{r}
+varImpPlot(forest, sort=TRUE)
+```
