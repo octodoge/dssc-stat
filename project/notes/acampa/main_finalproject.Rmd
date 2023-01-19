@@ -9,7 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Data Exploration
+#### REFS
+[1] https://www.analyticsvidhya.com/blog/2020/10/feature-selection-techniques-in-machine-learning/
+
+
+
+
+- dispersion: 
+- n.a.
+- outlier
+- correlation
+  - X -> remove multi-collinearity
+  - Y
+- Normalization/Standardization
+  - coefficients scale (+explainability)
+
+### Feature Selection
+
 
 Load Dataset
 
@@ -30,14 +46,38 @@ Cleaning exploration
 ```{r}
 colSums(is.na(data)) # count Na values by columns
 ```
+## Data Exploration
 
-Visualization
+- Inspect every variable
+
+```{r}
+
+cols <- names(data)
+
+for (col in cols) {
+  tab <- pivot_longer(data, col)
+  ggplot(data_long1, aes(x = value)) +
+  geom_histogram() + 
+  facet_wrap(name ~ ., scales = "free")
+}
+
+
+```
+
+
+### Correlation Coefficient
+
+Correlation is a measure of the linear relationship of 2 or more variables. Through correlation, we can predict one variable from the other. The logic behind using correlation for feature selection is that the good variables are highly correlated with the target. Furthermore, variables should be correlated with the target but should be uncorrelated among themselves.
+
+If two variables are correlated, we can predict one from the other. Therefore, if two features are correlated, the model only really needs one of them, as the second one does not add additional information. We will use the Pearson Correlation here.[1]
+
 
 ```{r}
 ### install.packages("GGally")             # Install GGally package
 library("GGally")
 
-ggpairs(data)  # draw pair plots of dataframe
+ggp = ggpairs(data, progress = ggmatrix_progress())  # draw pair plots of dataframe
+print(ggp)  # no progress bar
 ```
 
 ```{r}
@@ -106,5 +146,25 @@ ggplot(data_long5,                    # Draw histograms
        aes(x = value)) +
   geom_histogram() + 
   facet_wrap(name ~ ., scales = "free")
+
+data_response <- pivot_longer(data,    # Reshape data frame
+                            c("quality"))
+ggplot(data_response,                    # Draw histograms
+       aes(x = value)) +
+  geom_histogram()
+
+unique(data$quality)
+```
+
+
+
+```{r}
+ggpairs(data)  # draw pair plots of dataframe
+
+gplot <- GGally::ggpairs(data)
+gplot$nrow <- 1
+gplot$yAxisLabels <- a$yAxisLabels[1]
+print(gplot)
+
 ```
 
