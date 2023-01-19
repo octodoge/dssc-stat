@@ -23,18 +23,53 @@
 
 - models (fai linear regression):
   - gaussian glm (or lm but less cool)
-    - poly
-    - interaction
-    - splines?
-    - log?
-    - ...
+    - tutte variabili moltiplicate l'un l'altre e basta (a+b+..)*(a+b+..)
   - gaussian gam
     - splines
     - ...
   - random forest
-  - boosting (se c'è tempo)
+  - boosting (se c'è tempo, meglio no)
+
+  
+**TODO**:
+* exploratory data analysis
+  * che roba è? (forse vedi link consigliato da prof, o link agustin)
+  * data cleaning
+    * capisci se numeriche, categoriche (e in caso usa factor in lasso, gam)
+    * vedi se ci sono NA
+    * vedi se ci sono outliers
+    * togli i dati più correlati e testa i modelli con e senza
+      * dovrebbero dare problemi su glm (anche se forse meno con lasso) e gam
+    * vedi se valori alti e serve normalizzare/standardizzare per glm/lasso e gam?
+    * che altro?
+
+* modelli
+  * random forest
+    * quality senza factor per regression
+    * test set (c'è opzione)?
+      * forse usa out-of-bag quindi non serve?
+    * niente tuning?
+      * se ha stessi parametri di default di scikit learn, no
+        * unico tuning da fare è nei dati in questo caso imo
+    * mtry è da cambiare? cosa fa scikit learn?
+    * fai cosa viene fatto in lab8
+* lasso (glmnet)
+  * non fai feature selection manuale con AIC, ma fai fare a lui, semplicemnte prendi migliore lambda in base a CV che fa
+* gam? è ancora incognita, imo feature selection manuale con AIC se non salta fuori metodo meglio.
+
+* conclusioni:
+  * train test split? (no per fine tuning lasso e gam, perché AIC viene fatto su training set e va bene così) (lasso cmq fa CV per trovarsi il lambda ma non splitti comunque tu prima i dati).
+    * confronto tra modelli: devi fare con CV.. vedi se come.. forse esiste cv.glmnet, ecc.
 
 ---
+
+# Description of the project’s aim
+
+TBD
+
+# Exploratory data analysis
+
+TBD (including a possible data-cleaning phase)
 
 ```{r}
 #load dataset
@@ -43,21 +78,28 @@ x = subset(df, select=-quality)
 y = subset(df, select=quality)
 ```
 
+# Selection, description, and comparison of the most suitable statistical models
+
+TBD
+
 ```{r}
 #fit models
 library(gam)
 library(randomForest) #v 4.6-14 for R 4.0.4
 
-linear = 
-additive = 
-forest = randomForest(quality ~ ., data = df, importance=TRUE)
+glmnet_ = #glmnet(x = data.matrix(x), y = data.matrix(y))
+gam_ = 
+rf_ = randomForest(quality ~ ., data = df, importance=TRUE)
 #boosting?
 ```
 
 ```{r}
 importance(forest)
+rf_
 ```
 
 ```{r}
 varImpPlot(forest, sort=TRUE)
 ```
+
+## Comments on results
