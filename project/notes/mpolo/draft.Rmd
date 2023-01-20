@@ -8,14 +8,6 @@
 
 - Per interpretabilità random forest (e boosting) vedi slide alberi, oppure anche slide machine learning di Medved, e vedi se per caso c'è già modo easy in R (in teoria sì, vedi i mean decrease alla fine del lab 8)
 
-- per modelli si potrebbe fare:
-  - primo giro con random forest (niente tuning) e GLM (abbastanza straightforward imo da tunare, fai salire d'ordine le interaction finché smette di migliorare e poi togli coefficienti inutili, ma sarebbe da provare anche con altre funzioni oltre a polinomi, tipo log, spline ecc.)
-  - secondo giro cerchi di superare random forest con boosting (probabilmente modello migliore in questo caso ma l'abbiamo solo accennato e quindi si potrebbe anche skippare, ma magari fai se avanza tempo visto che utile), e GLM con GAM
-
-- AIC per confrontare GLM/GAM. Cross validation per random forest e boosting. E imo per confronti incrociati sempre cross validation perché AIC non esiste per alberi
-
-- se dataset imba è un problema? forse per alcuni modelli sì. Vedi slide alberi che ne parlano
-
 - forse serve vedere anche correlazione tra le variabili come in lab 8. Ma dopo che te ne fai? scarti le predictor correlate tra loro?
   - Correlated variables in a dataset can lead to multicollinearity, which can affect the interpretation of the coefficients. It's generally recommended to address correlated variables when training a GLM. One way to do this is by discarding one of the correlated variables. Another way is to use regularization techniques such as Lasso, which can help to reduce the impact of correlated variables on the model by shrinking the coefficients of correlated variables.
 
@@ -23,10 +15,9 @@
 
 - models (fai linear regression):
   - gaussian glm (or lm but less cool)
-    - tutte variabili moltiplicate l'un l'altre e basta (a+b+..)*(a+b+..)
+    - tutte variabili così come sono più tutte interaction primo grado e basta (niente quadrati)
   - gaussian gam
-    - splines
-    - ...
+    - spline di tutte le variabili così come sono e basta
   - random forest
   - boosting (se c'è tempo, meglio no)
 
@@ -37,7 +28,7 @@
   * data cleaning
     * capisci se numeriche, categoriche (e in caso usa factor in lasso, gam)
     * vedi se ci sono NA
-    * vedi se ci sono outliers
+    * vedi se ci sono outliers (rimuovi con 3sigma rule, log se non normal? o metodo con quantili che dice agustin?)
     * togli i dati più correlati e testa i modelli con e senza
       * dovrebbero dare problemi su glm (anche se forse meno con lasso) e gam
     * vedi se valori alti e serve normalizzare/standardizzare per glm/lasso e gam?
@@ -53,13 +44,21 @@
         * unico tuning da fare è nei dati in questo caso imo
     * mtry è da cambiare? cosa fa scikit learn?
     * fai cosa viene fatto in lab8
+    * assicurati che abbia senso togliere outliers e che non abbia senso fare feature selection
 * lasso (glmnet)
   * non fai feature selection manuale con AIC, ma fai fare a lui, semplicemnte prendi migliore lambda in base a CV che fa
-* gam? è ancora incognita, imo feature selection manuale con AIC se non salta fuori metodo meglio.
+  * interaction va bene per le non categorie? da testare
+* gam fai solo spline per ogni feature e fai grid search come su lab 8, per trovare i lambda ottimali di ogni spline
 
 * conclusioni:
   * train test split? (no per fine tuning lasso e gam, perché AIC viene fatto su training set e va bene così) (lasso cmq fa CV per trovarsi il lambda ma non splitti comunque tu prima i dati).
     * confronto tra modelli: devi fare con CV.. vedi se come.. forse esiste cv.glmnet, ecc.
+    * splitta train test,
+      * test non tocchi
+      * train ci fitti 6 modelli (3 con tutto train e 3 senza i 3 sigma) e li confronti tutti su test set con MSE
+        * a random forest in teoria puoi passarlo il test set
+        * glmnet? TODO
+        * gam? TODO
 
 ---
 
@@ -84,7 +83,7 @@ TBD
 
 ```{r}
 #fit models
-library(gam)
+library(mgcv)
 library(randomForest) #v 4.6-14 for R 4.0.4
 
 glmnet_ = #glmnet(x = data.matrix(x), y = data.matrix(y))
