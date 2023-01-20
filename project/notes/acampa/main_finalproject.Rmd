@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
+require(gridExtra)
 ```
 
 #### REFS
@@ -63,7 +65,7 @@ plot_feature_hist <- function(data, col, name, color) {
         ggtitle(name) +
         theme_ipsum() +
         theme(
-          plot.title = element_text(size=15)
+          plot.title = element_text(size=12)
         )
     )
 }
@@ -86,7 +88,7 @@ However, quality is also a subjective concept that can vary depending on individ
 In the wine industry, wines are often rated by experts and critics, who assign scores and awards to wines based on their quality. These ratings can be a useful tool for consumers to guide their purchasing decisions, but it's important to remember that ultimately quality is a personal preference.
 
 ```{r}
-print(plot_feature_hist(data, "quality","Quality", "#69b3a2"))
+print(plot_feature_hist(data, "quality","Quality", "#ed3a2d"))
 ```
 
 ##### Fixed acidity
@@ -96,7 +98,11 @@ print(plot_feature_hist(data, "quality","Quality", "#69b3a2"))
 Fixed acidity in white wines refers to the total acidity present in the wine that is not in the form of volatile acidity (acetic acid). The most common acids found in wine are tartaric, malic, and citric acid. The acidity level in white wines is an important factor that contributes to the overall taste and balance of the wine. High acidity can give the wine a crisp and refreshing taste, while low acidity can make the wine taste flabby or dull. The fixed acidity levels are measured in grams per liter (g/L) or in percentage by weight (% w/w).
 
 ```{r}
-print(plot_feature_hist(data, "fixed.acidity","Fixed Acidity", "#69b3a2"))
+plot1 <- plot_feature_hist(data, "fixed.acidity","Fixed Acidity", "#69b3a2") + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+plot2 <- plot_feature_hist(data, "volatile.acidity","Volatile Acidity", "#69b3a2") + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+plot3 <- print(plot_feature_hist(data, "citric.acid","Citric Acid", "#69b3a2")) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+
+grid.arrange(plot1, plot2, plot3, ncol=2, nrow=2)
 ```
 
 ##### Volatile acidity
@@ -117,7 +123,7 @@ Citric acid is a type of fixed acid that can be found in white wines. It is one 
 Citric acid is a weak organic acid that is present in many fruits, including grapes, and it is naturally present in grapes at the time of harvest. During the fermentation process, yeast converts the natural sugars present in grapes into alcohol and carbon dioxide, and it also converts a small amount of citric acid into carbon dioxide. Citric acid contributes to the overall acidity of the wine and can give the wine a fresh, bright and tangy flavor. Citric acid levels are measured in grams per liter (g/L) or in percentage by weight (% w/w).
 
 ```{r}
-print(plot_feature_hist(data, "citric.acid","Citric Acid", "#69b3a2"))
+
 ```
 
 ##### Residual sugar
