@@ -89,11 +89,8 @@ plot(fit2)
 
 ```
 
-
-
-
 Since we see a drop in value of the AIC we assume we can remove those outliers.
-We can also see in the leverage graph that we removed the point with greater leverage and that we do not expect to see any more outliers.$Rivedi questa parte$
+We can also see in the leverage graph that we removed the point with greater leverage and that we do not expect to see any more outliers.
 
 
 Now we try to analyze the importance of certain features with the lasso method. A necessary phase before using LASSO is to normalize the dataset so that every variable is on the same scale.
@@ -108,12 +105,9 @@ d_clean.scale = cbind(d_clean.scale, quality)
 rm(quality)
 ```
 
-$$rivedi questa parte perché sto creando un nuovo dataset$$
 
 ```{r warning=FALSE, message=FALSE}
-#now we create a bigger dataset by concatenating the same dataset (because there are not enough  samples with extreme values of the variable "quality")
-d2 = rbind(d_clean.scale,d_clean.scale)
-attach(d2)
+attach(d_clean.scale)
 
 x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol)
 
@@ -137,10 +131,43 @@ plot(fit.lasso)
 From the LASSO method we get that the best performing model is the one that uses all the variables. $rivedi$
 
 
+Now we try to use the GAM model
+```{r}
+library(mgcv)
 
+fit_gam = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_clean, family = gaussian(link = "identity")) 
 
+summary(fit_gam)
 
+plot(fit_gam)
 
+print(fit_gam$aic)
+
+```
+
+Now we consider the different values of the smoothing parameters in the GAM and how we could improve them. We do this by checking if for each feature it would be better to use the already found smoothing parameter or its double.
+```{r}
+sp1 = fit_gam$sp
+
+sp2 = 2 * sp1
+t = rbind(sp1,sp2) #creates a matrix with sp1 and sp2 as rows
+
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9], t[,10], t[,11]) # creates a dataframe whose rows are the different possible combinations of smoothing parameters
+n.tuning = nrow(sp.grid)
+#Now I create the vector of the different AIC for each combination of values
+aic = rep(NA, n.tuning)
+#And now I perform the grid search
+for(i in 1:n.tuning){
+ gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_clean, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
+ 
+ aic[i] = AIC(gamobj)
+ 
+}
+# Find the minimum
+opt.sp = sp.grid[which.min(aic),]
+print(opt.sp) 
+
+```
 
 
 
