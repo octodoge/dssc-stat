@@ -1,4 +1,3 @@
-
 ---
 title: "Final Project Group C"
 author: "G. Alessio, A. Campagnolo, M. Polo, G. Sarnelli"
@@ -10,70 +9,91 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Project aim
 
-# Data Exploration 
+The goal is to model wine quality based on physicochemical tests. 
+
+# Data Exploration
+
+In order to obtain better results with our models we explore the original dataset coming from the following source:
+
+$$\text{codice dove carica il dataset originale}$$
+In order to look at the data we decide to plot 12 histograms for each input features $x^{(i)}_j$ where $j=1,\dots,11$, plus $y^{(i)}=\text{"the wine-quality"}$ that is our response variable.
+
+$$\text{codice dove carica i 12 istogrammi}$$
+Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
+
+Afterwards in order to address intercorrelations among two or more independent features in a multiple regression model (multicollinearity). We plot the Correlation Matrix:
+
+$$\text{codice per la matrice di correlazione}$$
+While a moderate amount of multicollinearity is acceptable in a regression model, a higher multicollinearity can be a cause for concern. We can see that the **density** is highly correlated and it can be removed, as the information provided by these variables is **redundant**. 
 
 # Models
 
-## Data Splitting 
-- $D_{learn} + D_{test} = D$
-- $D_{learn}\to D_{learn}'$ excluding the observations outside the $[-3\sigma_{x_i},+3\sigma_{x_i}]$ where $x_i$ is the observation coming from the i-feature ($i=1,\dots,11$). (or using $D_{light}$ instead of $D_{learn}$)
-- Matrix of correlation $D_{learn}\to D_{light}$ for glm and gam
-- ~~Assessing multicollinearity with VIFs $D_{learn}\to D_{light}$ for glm and gam~~ 
+## Datasets
+
+In order to assess the models we split the total dataset $D_{tot}$ in $D_{learn} + D_{test} = D_{tot}$. We introduce the following datasets $D_{learn}$, $D_{light}$, $D_{clean}$ and $D_{light,clean}$ use to obtain the models.
+
+1.  $D_{learn}$ is the dataset without any modification.
+
+2.  $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
+
+$$\text{codice su come ottenere il dataset}$$
+
+3.  $D_{clean}$ is the dataset obtained by the **Chebyshev's inequality** excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$). (*clean phase*)
+
+$$\text{codice su come ottenere il dataset}$$
+
+4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the **Chebyshev's inequality**. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
+
+$$\text{codice su come ottenere il dataset}$$
+
+Using this 4 datasets we decide to implement the following models: **GLM**, **GAM** and **RF**.
 
 ## General Linear Model (GLM)
 
-## For $D_{learn}$ and $D_{light}$
+- Fit using $D_{learn}$ + LASSO
+- Fit using $D_{light}$ + LASSO
+- Fit using $D_{clean}$ + LASSO
+- Fit using $D_{light,clean}$ + LASSO
+- Assessing of the four different fit using AIC
 
-- Fit using $D_{learn}$ and $D_{learn}'$ + LASSO
-- Fit using $D_{clean}$ and $D_{clean}'$ + LASSO
-- ~~Leverage and cook's distance to determine a $D_{learn} \to D_{learn-out}$, $D_{clean} \to D_{clean-out}$, $D_{learn}' \to D_{learn-out}'$, $D_{clean}' \to D_{clean-out}'$~~
-- ~~Fit using $D_{learn-out},D_{clean-out},D_{learn-out}',D_{clean-out}'$ + LASSO~~
-- Assessing of the four ~~five~~ different fit using AIC (maybe selection for the prediction)
+#### Prediction
 
-#### Prediction 
-- Application of the model using the $D_{test}$
-- Assessing of the four ~~five~~ different fit using MSE
+-   Application of the model using the $D_{test}$
+-   Assessing of the four different fit using MSE
 
 ## General Additive Model (GAM)
-- Fit using $D_{learn}$ and $D_{learn}'$ + LASSO
-- Fit using $D_{clean}$ and $D_{clean}'$ + LASSO
-- Assessing of the four ~~five~~ different fit using AIC (maybe selection for the prediction)
 
-#### Prediction 
+- Fit using $D_{learn}$ + grid search
+- Fit using $D_{light}$ + grid search
+- Fit using $D_{clean}$ + grid search
+- Fit using $D_{light,clean}$ + grid search
+- Assessing of the four different fit using AIC
+
+#### Prediction
+
 - Application of the model using the $D_{test}$
-- Assessing of the four ~~five~~ different fit using MSE
+- Assessing of the four different fit using MSE
 
-## Random Forest 
+## Random Forest
+
 - Fit using $D_{learn}$
-- Fit using $D_{clean}$ 
+- Fit using $D_{clean}$
 
-#### Prediction 
+#### Prediction
+
 - Application of the model using the $D_{test}$
 - Assessing of the two different fit using MSE
 
 # Conclusion
 
 #### Comparison between fit using $D_{learn}$
+
 - 8 AIC comparison
-- other $f_{comp-resps}$
 
 #### Comparison between fit using $D_{test}$
+
 - 10 MSE comparison
-- other $f_{comp-resps}$
 
 #### Improvements and limitations
-
-
-
-
-
-
-
-
-
-
-
-
-
-

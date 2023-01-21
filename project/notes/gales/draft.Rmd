@@ -23,8 +23,6 @@ In order to look at the data we decide to plot 12 histograms for each input feat
 $$\text{codice dove carica i 12 istogrammi}$$
 Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
 
-We look at the **q-q plot** 
-
 Afterwards in order to address intercorrelations among two or more independent features in a multiple regression model (multicollinearity). We plot the Correlation Matrix:
 
 $$\text{codice per la matrice di correlazione}$$
@@ -38,15 +36,15 @@ In order to assess the models we split the total dataset $D_{tot}$ in $D_{learn}
 
 1.  $D_{learn}$ is the dataset without any modification.
 
-2.  $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. 
+2.  $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
 
 $$\text{codice su come ottenere il dataset}$$
 
-3.  $D_{clean}$ is the dataset obtained by the **three-sigma rule of thumb** excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$).
+3.  $D_{clean}$ is the dataset obtained by the **Chebyshev's inequality** excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$). (*clean phase*)
 
 $$\text{codice su come ottenere il dataset}$$
 
-4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the **three-sigma rule of thumb**. We decide to *light* it before because we don't want to remove observations coming from the cleaning process on the **density feature**.
+4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the **Chebyshev's inequality**. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
 
 $$\text{codice su come ottenere il dataset}$$
 
