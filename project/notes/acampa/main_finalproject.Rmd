@@ -341,3 +341,17 @@ unique(data$quality)
 
 ```
 
+
+-----
+Try outlier detection
+
+
+```{r}
+print(data)
+```
+
+
+
+
+
+
