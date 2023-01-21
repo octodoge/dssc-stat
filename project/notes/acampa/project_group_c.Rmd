@@ -27,11 +27,11 @@ library(tidyverse)
 library(hrbrthemes)
 
 plot_feature_hist <- function(data, col, name, color) {
-  bw <- 2 * IQR(data[,col]) / length(data[,col])^(1/3) # Freedman-Diaconis’s Rule
+  #bw <- 2 * IQR(data[,col]) / length(data[,col])^(1/3) # Freedman-Diaconis’s Rule
   return(
     p <- data %>%
       ggplot( aes_string(x=col)) +
-        geom_histogram(binwidth=bw, fill=color, color="#e9ecef", alpha=0.9) +
+        geom_histogram(fill=color, color="#e9ecef", alpha=0.9) +
         ggtitle(name) +
         theme_ipsum() +
         theme(plot.title = element_text(size=12))
@@ -40,14 +40,14 @@ plot_feature_hist <- function(data, col, name, color) {
 
 cols <- names(data)
 hist_colors <- c("#003f5c", "#376a35", "#2f4b7c", "#89b8ba", "#689546", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600", "#ed3a2d")
-for (i in seq(1, 12, by=4)){
-  plot1 <- plot_feature_hist(data, cols[i],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
-  plot2 <- plot_feature_hist(data, cols[i+1],cols[i+1], hist_colors[i+1]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
-  plot3 <- plot_feature_hist(data, cols[i+2],cols[i+2], hist_colors[i+2]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
-  plot4 <- plot_feature_hist(data, cols[i+3],cols[i+3], hist_colors[i+3]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
-  grid.arrange(plot1, plot2, plot3, plot4, ncol=2, nrow=2)
+
+myplot = list()
+for (i in 1:12){
+  myplot[[i]] <- plot_feature_hist(data, cols[i],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
 }
 
+grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2)
+grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]], ncol=4, nrow=2)
 ```
 
 
