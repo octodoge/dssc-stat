@@ -72,9 +72,39 @@ TBD (including a possible data-cleaning phase)
 
 ```{r}
 #load dataset
-df = read.csv("../../winequality-white.csv", sep=";")
-x = subset(df, select=-quality)
-y = subset(df, select=quality)
+d = read.csv("../../winequality-white.csv", sep=";")
+
+#train-test split
+set.seed(101)
+test_indexes = sample(1:nrow(d), size=nrow(d)*0.2) #20%
+d_train = d[-test_indexes,]
+d_test = d[test_indexes,]
+
+#d_train
+x_train = subset(d_train, select=-quality)
+y_train = subset(d_train, select=quality)
+
+#d_light
+d_light = subset(d_train, select=-density)
+x_light = subset(x_train, select=-density)
+y_light = y_train
+
+clean = function(dataset, train_set, k=3) { #3 standard deviations
+  means = colMeans(train_set)
+  sds = apply(train_set, MARGIN=2, FUN=sd)
+  f = function(x) all(x>means-k*sds & x<means+k*sds)
+  return (dataset[apply(train_set, MARGIN=1, FUN=f),])
+}
+
+#d_clean
+d_clean = clean(d_train, train_set=x_train) #3597 rows
+x_clean = subset(d_clean, select=-quality)
+y_clean = subset(d_clean, select=quality)
+
+#d_light_clean
+d_light_clean = clean(d_light, train_set=x_light)
+x_light_clean = subset(d_light_clean, select=-quality)
+y_light_clean = subset(d_light_clean, select=quality)
 ```
 
 # Selection, description, and comparison of the most suitable statistical models
