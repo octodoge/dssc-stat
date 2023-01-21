@@ -82,6 +82,17 @@ y = subset(df, select=quality)
 TBD
 
 ```{r}
+means = colMeans(x)
+sds = apply(x, MARGIN=2, FUN=sd) #standard deviations
+f = function(x) all(x>means-3*sds & x<means+3*sds)
+df[apply(df, MARGIN=1, FUN=f),] #4502 rows
+```
+
+```{r}
+df[,array_di_bool_lungo_quanto_colonna] #tutte righe, alcune colonne
+```
+
+```{r}
 #fit models
 library(glmnet)
 library(mgcv)
@@ -127,3 +138,7 @@ varImpPlot(forest, sort=TRUE)
 ```
 
 ## Comments on results
+
+
+
+
