@@ -109,10 +109,22 @@ d_train_clean = clean(d_train, train_set=x_train)
 x_train_clean = subset(d_train_clean, select=-quality)
 y_train_clean = d_train_clean$quality
 
-#d_train_light_clean (3597 rows) TODO check why same num of rows
+#d_train_light_clean (still 3597 rows but could have been more)
 d_train_light_clean = clean(d_train_light, train_set=x_train_light)
 x_train_light_clean = subset(d_train_light_clean, select=-quality)
 y_train_light_clean = d_train_light_clean$quality
+```
+
+TBD
+```{r}
+k=12
+means = colMeans(x_train)
+sds = apply(x_train, MARGIN=2, FUN=sd)
+f = function(x) x>means-k*sds & x<means+k*sds
+i = x_train[x_train$density == max(x_train$density),] #2240
+f(x_train[2240,]) #con k=12 è outlier solo density e infatti si ha
+                  #nrow(d_train_clean)=3916
+                  #nrow(y_train_light_clean)=3917
 ```
 
 # Selection, description, and comparison of the most suitable statistical models
