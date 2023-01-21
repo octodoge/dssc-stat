@@ -74,20 +74,28 @@ TBD (including a possible data-cleaning phase)
 #load dataset
 d = read.csv("../../winequality-white.csv", sep=";")
 
-#train-test split
+#d_test (979 rows)
 set.seed(101)
 test_indexes = sample(1:nrow(d), size=nrow(d)*0.2) #20%
-d_train = d[-test_indexes,]
 d_test = d[test_indexes,]
+row.names(d_test) <- NULL
+x_test = subset(d_test, select=-quality)
+y_test = d_test$quality
 
-#d_train
+#d_test_light (979 rows)
+x_test_light = subset(x_test, select=-density)
+y_test_light = y_test
+
+#d_train (3919 rows)
+d_train = d[-test_indexes,]
+row.names(d_train) <- NULL
 x_train = subset(d_train, select=-quality)
-y_train = subset(d_train, select=quality)
+y_train = d_train$quality
 
-#d_light
-d_light = subset(d_train, select=-density)
-x_light = subset(x_train, select=-density)
-y_light = y_train
+#d_train_light (3919 rows)
+d_train_light = subset(d_train, select=-density)
+x_train_light = subset(x_train, select=-density)
+y_train_light = y_train
 
 clean = function(dataset, train_set, k=3) { #3 standard deviations
   means = colMeans(train_set)
@@ -96,15 +104,15 @@ clean = function(dataset, train_set, k=3) { #3 standard deviations
   return (dataset[apply(train_set, MARGIN=1, FUN=f),])
 }
 
-#d_clean
-d_clean = clean(d_train, train_set=x_train) #3597 rows
-x_clean = subset(d_clean, select=-quality)
-y_clean = subset(d_clean, select=quality)
+#d_train_clean (3597 rows)
+d_train_clean = clean(d_train, train_set=x_train)
+x_train_clean = subset(d_train_clean, select=-quality)
+y_train_clean = d_train_clean$quality
 
-#d_light_clean
-d_light_clean = clean(d_light, train_set=x_light)
-x_light_clean = subset(d_light_clean, select=-quality)
-y_light_clean = subset(d_light_clean, select=quality)
+#d_train_light_clean (3597 rows) TODO check why same num of rows
+d_train_light_clean = clean(d_train_light, train_set=x_train_light)
+x_train_light_clean = subset(d_train_light_clean, select=-quality)
+y_train_light_clean = d_train_light_clean$quality
 ```
 
 # Selection, description, and comparison of the most suitable statistical models
