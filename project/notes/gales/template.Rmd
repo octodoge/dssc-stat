@@ -1,0 +1,79 @@
+
+---
+title: "Final Project Group C"
+author: "G. Alessio, A. Campagnolo, M. Polo, G. Sarnelli"
+date: "2023-01-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Data Exploration 
+
+# Models
+
+## Data Splitting 
+- $D_{learn} + D_{test} = D$
+- $D_{learn}\to D_{learn}'$ excluding the observations outside the $[-3\sigma_{x_i},+3\sigma_{x_i}]$ where $x_i$ is the observation coming from the i-feature ($i=1,\dots,11$). (or using $D_{light}$ instead of $D_{learn}$)
+- Matrix of correlation $D_{learn}\to D_{light}$ for glm and gam
+- ~~Assessing multicollinearity with VIFs $D_{learn}\to D_{light}$ for glm and gam~~ 
+
+## General Linear Model (GLM)
+
+## For $D_{learn}$ and $D_{light}$
+
+- Fit using $D_{learn}$ and $D_{learn}'$ + LASSO
+- Fit using $D_{clean}$ and $D_{clean}'$ + LASSO
+- ~~Leverage and cook's distance to determine a $D_{learn} \to D_{learn-out}$, $D_{clean} \to D_{clean-out}$, $D_{learn}' \to D_{learn-out}'$, $D_{clean}' \to D_{clean-out}'$~~
+- ~~Fit using $D_{learn-out},D_{clean-out},D_{learn-out}',D_{clean-out}'$ + LASSO~~
+- Assessing of the four ~~five~~ different fit using AIC (maybe selection for the prediction)
+
+#### Prediction 
+- Application of the model using the $D_{test}$
+- Assessing of the four ~~five~~ different fit using MSE
+
+## General Additive Model (GAM)
+- Fit using $D_{learn}$ and $D_{learn}'$ + LASSO
+- Fit using $D_{clean}$ and $D_{clean}'$ + LASSO
+- Assessing of the four ~~five~~ different fit using AIC (maybe selection for the prediction)
+
+#### Prediction 
+- Application of the model using the $D_{test}$
+- Assessing of the four ~~five~~ different fit using MSE
+
+## Random Forest 
+- Fit using $D_{learn}$
+- Fit using $D_{clean}$ 
+
+#### Prediction 
+- Application of the model using the $D_{test}$
+- Assessing of the two different fit using MSE
+
+# Conclusion
+
+#### Comparison between fit using $D_{learn}$
+- 8 AIC comparison
+- other $f_{comp-resps}$
+
+#### Comparison between fit using $D_{test}$
+- 10 MSE comparison
+- other $f_{comp-resps}$
+
+#### Improvements and limitations
+
+
+
+
+
+
+
+
+
+
+
+
+
+
