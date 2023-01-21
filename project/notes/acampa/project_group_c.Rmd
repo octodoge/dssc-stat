@@ -13,6 +13,166 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Data Exploration 
 
+```{r}
+path <- '../..' # go up two folders
+filename = '/winequality-white.csv'
+
+data = read.csv(paste(path,filename, sep = ""), sep = ';') # load data
+print(data)
+```
+```{r}
+# Explore
+
+library(tidyverse)
+library(hrbrthemes)
+
+plot_feature_hist <- function(data, col, name, color) {
+  bw <- 2 * IQR(data[,col]) / length(data[,col])^(1/3) # Freedman-Diaconis’s Rule
+  return(
+    p <- data %>%
+      ggplot( aes_string(x=col)) +
+        geom_histogram(binwidth=bw, fill=color, color="#e9ecef", alpha=0.9) +
+        ggtitle(name) +
+        theme_ipsum() +
+        theme(plot.title = element_text(size=12))
+    )
+}
+
+cols <- names(data)
+hist_colors <- c("#003f5c", "#376a35", "#2f4b7c", "#89b8ba", "#689546", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600", "#ed3a2d")
+for (i in seq(1, 12, by=4)){
+  plot1 <- plot_feature_hist(data, cols[i],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+  plot2 <- plot_feature_hist(data, cols[i+1],cols[i+1], hist_colors[i+1]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+  plot3 <- plot_feature_hist(data, cols[i+2],cols[i+2], hist_colors[i+2]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+  plot4 <- plot_feature_hist(data, cols[i+3],cols[i+3], hist_colors[i+3]) + theme(plot.margin=unit(c(0,0,0,0),"cm"))
+  grid.arrange(plot1, plot2, plot3, plot4, ncol=2, nrow=2)
+}
+
+```
+
+
+
+```{r}
+# Set fixed seed for reproducibility
+set.seed(1);
+
+# plot_qqplot <- function(data, col, name){
+#   # Generate random numbers
+#   y <- col;
+#   mu <- (1 / nrow(data)) * sum(y);
+#   v <- sd(y);
+#   x <- rnorm(nrow(data), mu, v);
+#   
+#   # Sort x values
+#   x <- sort(x);
+#   
+#   # Theoretical distribution
+#   x0 <- qnorm(ppoints(nrow(data)), mu, v)
+#   
+#   # Plot quantile-quantile plot
+#   return(plot(x = x0, y = x, xlab = "Theoretical quantiles", ylab = "Observed quantiles", title=title(name)))
+# }
+# 
+# cols <- names(data)
+# for (cols in cols){
+#   print(plot_qqplot(data, data[,cols], cols))
+# }
+cols <- names(data)
+print(cols)
+for (col in cols){
+  qqnorm(data[,col])
+  qqline(data[,col], col = "red")
+}
+
+```
+```{r}
+# set seed to 0
+set.seed(1)
+
+
+col <- "fixed.acidity"
+zscore <- (abs(data[,col]-mean(data[,col]))/sd(data[,col]))
+
+# Check the data again. It should now have two columns: X and zscore
+
+dim(data)
+head(data)
+
+print(zscore)
+
+# create a new dataframe that contains only those rows 
+# that have a z-score of below 3
+
+new_data <- subset(data, zscore < 3)
+dim(new_data)
+# check the new dataset
+
+data_bak <- data
+```
+
+
+```{r}
+
+data <- data_bak
+
+zscores <- data.frame()
+
+cols <- names(data)
+for (col in cols){
+  zscore <- (abs(data[,col]-mean(data[,col]))/sd(data[,col]))
+  zscores[,col] = zscore < 3
+}
+```
+```{r}
+cols <- names(data)
+for (col in cols){
+  print(col)
+  print(shapiro.test(data[,col]))
+}
+
+```
+
+```{r}
+tab <- data.frame(matrix(NA, nrow = nrow(data), ncol = ncol(data)))
+
+cols <-names(data)
+#normal_cols <- c(TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,TRUE)
+normal_cols <- c(FALSE, FALSE,FALSE, FALSE, FALSE, FALSE,FALSE, FALSE, FALSE, FALSE,FALSE, FALSE)
+
+i=1
+for (col in cols){
+  if(col == "quality"){
+    print("exclude quality")
+    tab[,i] <- replicate(nrow(data), 0)
+  } else if(normal_cols[i]==TRUE){
+    tab[,i] <- (abs(data[,col]-mean(data[,col]))/sd(data[,col]))
+    tab[,i] <- ifelse(tab[,i]>3,1,0)
+  } else {
+    data_mean <- median(data[,col])
+    data_sd <- sd(data[,col])
+    k <- 3
+    prop_outliers <- 1/(k^2)
+    lower_bound <- data_mean - k*data_sd
+    upper_bound <- data_mean + k*data_sd
+    tab[,i] <- ifelse(data[,col] < lower_bound | data[,col] > upper_bound,1,0)
+  }
+  i <- i+1
+}
+
+#summary(tab)
+print(tab)
+tab_rowsum <- rowSums(tab)
+
+sum(tab_rowsum > 0)
+
+idx_clean <- lapply(tab_rowsum, as.logical)
+
+nrow(data)-sum(idx_clean == TRUE)
+# sum rows to get a single vector
+
+```
+
+
 # Models
 
 ## Data Splitting 
@@ -20,6 +180,25 @@ knitr::opts_chunk$set(echo = TRUE)
 - $D_{learn}\to D_{learn}'$ excluding the observations outside the $[-3\sigma_{x_i},+3\sigma_{x_i}]$ where $x_i$ is the observation coming from the i-feature ($i=1,\dots,11$). (or using $D_{light}$ instead of $D_{learn}$)
 - Matrix of correlation $D_{learn}\to D_{light}$ for glm and gam
 - ~~Assessing multicollinearity with VIFs $D_{learn}\to D_{light}$ for glm and gam~~ 
+
+```{r}
+# TRAIN TEST SPLIT
+## 80% of the sample size
+smp_size <- floor(0.80 * nrow(data))
+
+## set the seed to make your partition reproducible
+set.seed(1)
+train_ind <- sample(seq_len(nrow(data)), size = smp_size)
+
+train <- data[train_ind, ]
+test <- data[-train_ind, ]
+
+dim(train)
+dim(test)
+
+# CLEANING
+
+```
 
 ## General Linear Model (GLM)
 
