@@ -265,48 +265,47 @@ print(paste("the AIC is ",AIC(fit1)))
 
 Now we try to use the GAM model to analyze the possibility of non-linear relationships between the features.
 
-$$\text{devi togliere una feature al d_light}$$
 ```{r}
 library(mgcv)
 #we fit the GAM model on the different datasets
-#On d_learn
-fit_gam_learn = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_learn, family = gaussian(link = "identity")) 
+#On d_train
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train, family = gaussian(link = "identity")) 
 
-summary(fit_gam_learn)
-plot(fit_gam_learn)
-print(fit_gam_learn$aic)
-
-
-#On d_clean
-fit_gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_clean, family = gaussian(link = "identity")) 
-
-summary(fit_gam_clean)
-plot(fit_gam_clean)
-print(fit_gam_clean$aic)
+summary(gam_train)
+plot(gam_train)
+print(gam_train$aic)
 
 
-#On d_light
-fit_gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_light, family = gaussian(link = "identity")) 
+#On d_train_clean
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train_clean, family = gaussian(link = "identity")) 
 
-summary(fit_gam_light)
-plot(fit_gam_light)
-print(fit_gam_light$aic)
+summary(gam_clean)
+plot(gam_clean)
+print(gam_clean$aic)
 
 
-#On d_light_clean
-fit_gam_light_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_light_clean, family = gaussian(link = "identity")) 
+#On d_train_light
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light, family = gaussian(link = "identity")) 
 
-summary(fit_gam_light_clean)
-plot(fit_gam_light_clean)
-print(fit_gam_light_clean$aic)
+summary(gam_light)
+plot(gam_light)
+print(gam_light$aic)
+
+
+#On d_train_light_clean
+gam_light_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity")) 
+
+summary(gam_light_clean)
+plot(gam_light_clean)
+print(gam_light_clean$aic)
 ```
 
 Now we consider the different values of the smoothing parameters in the GAM and how we could improve them. We do this by checking if for each feature it would be better to use the already found smoothing parameter or its double.
 ```{r}
-#For d_learn
-sp1_learn = fit_gam_learn$sp
-sp2_learn = 2 * sp1_learn
-t = rbind(sp1_learn,sp2_learn) #creates a matrix with sp1 and sp2 as rows
+#For d_train
+sp1_train = gam_train$sp
+sp2_train = 2 * sp1_train
+t = rbind(sp1_train,sp2_train) #creates a matrix with sp1 and sp2 as rows
 
 sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9], t[,10], t[,11]) # creates a dataframe whose rows are the different possible combinations of smoothing parameters
 n.tuning = nrow(sp.grid)
@@ -314,18 +313,18 @@ n.tuning = nrow(sp.grid)
 aic = rep(NA, n.tuning)
 #And now I perform the grid search
 for(i in 1:n.tuning){
- gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_learn, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
+ gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
  aic[i] = AIC(gamobj)
  
 }
 # Find the minimum
-opt.sp_learn = sp.grid[which.min(aic),]
-print(opt.sp_learn) 
+opt.sp_train = sp.grid[which.min(aic),]
+print(opt.sp_train) 
 ```
 
 ```{r}
-#For d_clean
-sp1_clean = fit_gam_clean$sp
+#For d_train_clean
+sp1_clean = gam_clean$sp
 sp2_clean = 2 * sp1_clean
 t = rbind(sp1_clean,sp2_clean) #creates a matrix with sp1 and sp2 as rows
 
@@ -335,7 +334,7 @@ n.tuning = nrow(sp.grid)
 aic = rep(NA, n.tuning)
 #And now I perform the grid search
 for(i in 1:n.tuning){
- gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_clean, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
+ gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train_clean, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
  aic[i] = AIC(gamobj)
  
 }
@@ -346,7 +345,7 @@ print(opt.sp_clean)
 
 ```{r}
 #For d_light
-sp1_light = fit_gam_light$sp
+sp1_light = gam_light$sp
 sp2_light = 2 * sp1_light
 t = rbind(sp1_light,sp2_light) #creates a matrix with sp1 and sp2 as rows
 
@@ -356,7 +355,7 @@ n.tuning = nrow(sp.grid)
 aic = rep(NA, n.tuning)
 #And now I perform the grid search
 for(i in 1:n.tuning){
- gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_light, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
+ gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
  aic[i] = AIC(gamobj)
  
 }
@@ -367,7 +366,7 @@ print(opt.sp_light)
 
 ```{r}
 #For d_light_clean
-sp1_light_clean = fit_gam_light_clean$sp
+sp1_light_clean = gam_light_clean$sp
 sp2_light_clean = 2 * sp1_light_clean
 t = rbind(sp1_light_clean,sp2_light_clean) #creates a matrix with sp1 and sp2 as rows
 
@@ -377,7 +376,7 @@ n.tuning = nrow(sp.grid)
 aic = rep(NA, n.tuning)
 #And now I perform the grid search
 for(i in 1:n.tuning){
- gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_light_clean, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
+ gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_light_clean, family = gaussian(link = "identity"), sp = sp.grid[i,]) 
  aic[i] = AIC(gamobj)
  
 }
