@@ -147,6 +147,51 @@ $$\text{codice su come ottenere il dataset}$$
 
 $$\text{codice su come ottenere il dataset}$$
 
+```{r}
+#load dataset
+d = read.csv("winequality-white.csv", sep=";")
+
+#d_test (979 rows)
+set.seed(101)
+test_indexes = sample(1:nrow(d), size=nrow(d)*0.2) #20%
+d_test = d[test_indexes,]
+row.names(d_test) <- NULL
+x_test = subset(d_test, select=-quality)
+y_test = d_test$quality
+
+#d_test_light (979 rows)
+x_test_light = subset(x_test, select=-density)
+y_test_light = y_test
+
+#d_train (3919 rows)
+d_train = d[-test_indexes,]
+row.names(d_train) <- NULL
+x_train = subset(d_train, select=-quality)
+y_train = d_train$quality
+
+#d_train_light (3919 rows)
+d_train_light = subset(d_train, select=-density)
+x_train_light = subset(x_train, select=-density)
+y_train_light = y_train
+
+clean = function(dataset, train_set, k=3) { #3 standard deviations
+  means = colMeans(train_set)
+  sds = apply(train_set, MARGIN=2, FUN=sd)
+  f = function(x) all(x>means-k*sds & x<means+k*sds)
+  return (dataset[apply(train_set, MARGIN=1, FUN=f),])
+}
+
+#d_train_clean (3597 rows)
+d_train_clean = clean(d_train, train_set=x_train)
+x_train_clean = subset(d_train_clean, select=-quality)
+y_train_clean = d_train_clean$quality
+
+#d_train_light_clean (still 3597 rows but could have been more)
+d_train_light_clean = clean(d_train_light, train_set=x_train_light)
+x_train_light_clean = subset(d_train_light_clean, select=-quality)
+y_train_light_clean = d_train_light_clean$quality
+```
+
 Using this 4 datasets we decide to implement the following models: **GLM**, **GAM** and **RF**.
 
 ## General Linear Model (GLM)
