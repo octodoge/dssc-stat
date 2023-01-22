@@ -53,19 +53,13 @@ suppressMessages(grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[1
 Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
 
 Afterwards in order to address intercorrelations among two or more features in a multiple regression model (multicollinearity). We plot the Correlation Matrix:
-```{r}
+```{r message=FALSE}
 library(corrplot)
 #plot the correlation matrix
 corrplot(cor(d_tot), method = "shade")
 ```
 
 While a moderate amount of multicollinearity is acceptable in a regression model, a higher multicollinearity can be a cause for concern. We can see that the **density** is highly correlated and it can be removed, as the information provided by these variables is **redundant**. 
-To prove that and to consider the possibility of removing the variable we look at the VIF coefficients:
-```{r message=FALSE}
-library(car)
-model = lm(quality ~ ., data = d_tot)
-vif(model)
-```
 
 # Models
 
@@ -91,7 +85,7 @@ y_test = d_test$quality
 
 1. $D_{train}$ is the dataset without any modification.
 
-2. $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
+2. $D_{train}^{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
 
 ```{r}
 #d_train_light (3918 rows)
@@ -104,7 +98,7 @@ x_test_light = subset(x_test, select=-density)
 y_test_light = y_test
 ```
 
-3. $D_{clean}$ is the dataset obtained by excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$). (*clean phase*)
+3. $D_{train}^{clean}$ is the dataset obtained by excluding the observations outside the $[\overline{x}-4\sigma_{x_j},\overline{x}+4\sigma_{x_j}]$ where $x_j$ is the observation coming from the j-feature ($j=1,\dots,11$). (*clean phase*)
 
 ```{r}
 #function to clean datasets
@@ -122,7 +116,7 @@ y_train_clean = d_train_clean$quality
 
 ```
 
-4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
+4.  $D_{train}^{light,clean}$ is the dataset obtained from $D_{train}^{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
 
 ```{r}
 #d_train_light_clean (still 3791 rows but could have been more)
