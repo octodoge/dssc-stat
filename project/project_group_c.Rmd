@@ -128,66 +128,103 @@ y_train_light_clean = d_train_light_clean$quality
 Using this 4 datasets we decide to implement the following models: **GLM**, **GAM** and **RF**.
 
 ## General Linear Model (GLM)
+Now we analyze the dataset trying to find a linear relationship between the features of the dataset and the response variable $\text{quality}$.
 
-1. Fit using $D_{train}$ + LASSO
+To do this we combine the GLM (Generalized Linear Model) with the LASSO method (Least Absolute Shrinkage and Selection Operator). The LASSO method introduces a penality term that is proportional to the sum of the absolute values of the coefficients, thus it forces the model to decrease or to remove the effect of some less important feature. It is used to reduce overfitting and increasing interpretability of the model.
 
-Using the train data
+To properly use the LASSO method we need to normalize the feature of our data, so that we can avoid an imbalance between coefficients.
 
+1.Rescale for $D_{train}$
+```{r}
+d_train_s = d_train
+d_train_s[,1:11] = apply(d_train_s[,1:11], MARGIN = 2, scale )
+```
+2.Rescale for $D_{train}^{light}$
+```{r}
+d_train_light_s = d_train_light
+d_train_light_s[,1:11] = apply(d_train_light_s[,1:11], MARGIN = 2, scale )
+```
 
-```{r echo=FALSE}
+3.Rescale for $D_{train}^{clean}$
+```{r}
+d_train_clean_s = d_train_clean
+d_train_clean_s[,1:11] = apply(d_train_clean_s[,1:11], MARGIN = 2, scale )
+```
+4.Rescale for $D_{train}^{light,clean}$
+```{r}
+d_train_light_clean_s = d_train_light_clean
+d_train_light_clean_s[,1:11] = apply(d_train_light_clean_s[,1:11], MARGIN = 2, scale )
+```
+
+**Having normalized the datasets we can now fit our models**
+
+1. Fit using $D_{train}$
+
+```{r warning=FALSE, message=FALSE}
 library(glmnet)
+attach(d_train_s)
 
-# glmlasso(data,aic){} for every alla the dataset
-#data=data_train
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-
-#rescaling the data
-data_scale = as.data.frame(scale(d_tot[,1:11]))
-quality = d_tot$quality
-data_scale = cbind(data_scale, quality)
-rm(quality)
-
-attach(data_scale)
 x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol)
-set.seed(4)  #we fix a seed for the random operations of cv
+
 cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
 
-lambda_min = cv$lambda.min#we find the best value of lambda
+lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
 fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
-#fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"))
-print(paste("The AIC of the model is ",AIC(fit1)))
-#print(paste("The AIC of the model with lasso is ",AIC(fit_lasso)))
 
+print("Coefficients of the model trained on d_train_s")
+coef(fit_lasso)  #the results of our model
 ```
 
-2. Fit using $D_{light}$ + LASSO
+2. Fit using $D_{light}$
 
-Using the light data
+```{r warning=FALSE, message=FALSE}
+attach(d_train_light_s)
 
-```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-print(paste("the AIC is ",AIC(fit1)))
-```
+x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, pH, sulphates, alcohol) #dataset without density
 
+cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
 
-3. Fit using $D_{clean}$ + LASSO
+lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
+fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
 
-Using the clean data
-
-```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-print(paste("the AIC is ",AIC(fit1)))
+print("Coefficients of the model trained on d_train_light_s")
+coef(fit_lasso)  #the results of our model
 ```
 
 
-4. Fit using $D_{light,clean}$ + LASSO
+3. Fit using $D_{clean}$
 
-```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-print(paste("the AIC is ",AIC(fit1)))
+```{r warning=FALSE, message=FALSE}
+attach(d_train_clean_s)
+
+x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol)
+
+cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
+
+lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
+fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
+
+print("Coefficients of the model trained on d_train_clean_s")
+coef(fit_lasso)  #the results of our model
 ```
 
-- Assessing of the four different fit using AIC
+
+4. Fit using $D_{light,clean}$ 
+
+```{r warning=FALSE, message=FALSE}
+attach(d_train_light_clean_s)
+
+x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, pH, sulphates, alcohol) #dataset without density
+
+cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
+
+lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
+fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
+
+print("Coefficients of the model trained on d_train_light_clean_s")
+coef(fit_lasso)  #the results of our model
+```
+
 
 #### Prediction
 
