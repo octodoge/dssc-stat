@@ -46,8 +46,8 @@ for (i in 1:12){
   myplot[[i]] <- plot_feature_hist(d_tot[,cols[i]],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
 }
 
-suppressMessages(grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2))
-suppressMessages(grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]], ncol=2, nrow=2))
+suppressMessages(grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], ncol=3, nrow=2))
+suppressMessages(grid.arrange(myplot[[7]], myplot[[8]], myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]],  ncol=3, nrow=2))
 ```
 
 Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
