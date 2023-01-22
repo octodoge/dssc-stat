@@ -28,11 +28,11 @@ In order to look at the data we decide to plot 12 histograms for each input feat
 library(ggplot2)
 library(gridExtra)
 
-plot_feature_hist <- function(d_tot, col, name, color) {
+plot_feature_hist <- function(data, name, color) {
   #bw <- 2 * IQR(d_tot[,col]) / length(d_tot[,col])^(1/3) # Freedman-Diaconis’s Rule
   return(
     p <-
-      ggplot( data=d_tot , aes_string(x=col)) +
+      ggplot(as.data.frame(data) , aes(x=data)) +
         geom_histogram(fill=color, color="#e9ecef", alpha=0.9) +
         ggtitle(name)
     )
@@ -43,11 +43,11 @@ hist_colors <- c("#003f5c", "#376a35", "#2f4b7c", "#89b8ba", "#689546", "#665191
 
 myplot = list()
 for (i in 1:12){
-  myplot[[i]] <- plot_feature_hist(d_tot, cols[i],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
+  myplot[[i]] <- plot_feature_hist(d_tot[,cols[i]],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
 }
 
-grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2)
-grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]], ncol=2, nrow=2)
+suppressMessages(grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2))
+suppressMessages(grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]], ncol=2, nrow=2))
 ```
 
 Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
