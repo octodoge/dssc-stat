@@ -136,24 +136,29 @@ To properly use the LASSO method we need to normalize the feature of our data, s
 
 1.Rescale for $D_{train}$
 ```{r}
-x_train_s = scale(x_train)
+x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))
+
+x_train_s = scale(x_train_int)
 means <- attr(x_train_s, which = "scaled:center")
 sds <- attr(x_train_s, which = "scaled:scale")
 ```
 2.Rescale for $D_{train}^{light}$
 ```{r}
-x_train_light_s <- subset(x_train_s, select = -density) # drop column
+x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))
+x_train_light_s <- scale()
 ```
 
 3.Rescale for $D_{train}^{clean}$
 ```{r}
-d_train_clean_s = d_train_clean
-d_train_clean_s[,1:11] = apply(d_train_clean_s[,1:11], MARGIN = 2, scale )
+x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))
+
+x_train_clean_s = scale(x_train_clean_int)
+means_clean <- attr(x_train_clean_s, which = "scaled:center")
+sds_clean <- attr(x_train_clean_s, which = "scaled:scale")
 ```
 4.Rescale for $D_{train}^{light,clean}$
 ```{r}
-d_train_light_clean_s = d_train_light_clean
-d_train_light_clean_s[,1:11] = apply(d_train_light_clean_s[,1:11], MARGIN = 2, scale )
+x_train_light_clean_s <- subset(x_train_clean_s, select = -density) # drop column
 ```
 
 **Having normalized the datasets we can now fit our models**
@@ -162,17 +167,16 @@ d_train_light_clean_s[,1:11] = apply(d_train_light_clean_s[,1:11], MARGIN = 2, s
 
 ```{r warning=FALSE, message=FALSE}
 library(glmnet)
-attach(d_train_s)
+set.seed(101)
 
-x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol)
+x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))
 
-cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
+cv = cv.glmnet(x_train_int, y_train, family=gaussian, type.measure = "mse") #we lassodo a 10 fold CV with mean squared error loss function
 
-lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
-fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
+lasso = glmnet(x_train_int, y_train, family=gaussian, lambda = cv$lambda.1se) #we find the best value of lambda based on the CV
 
-print("Coefficients of the model trained on d_train_s")
-coef(fit_lasso)  #the results of our model
+print("Coefficients of the model trained on x_train_s")
+coef(lasso)  #the results of our model
 ```
 
 2. Fit using $D_{light}$
@@ -234,6 +238,10 @@ coef(fit_lasso)  #the results of our model
 # Scaling using train mean, sd
 x_test_s <- scale(x_test, center = means, scale = sds)
 x_test_light_s <- subset(x_test_s, select = -density) # drop column
+
+# TODO remember to change names, because they aren't cleaned, just scaled with another thing
+x_test_clean_s <- scale(x_test, center = means_clean, scale = sds_clean)
+x_test_light_clean_s <- subset(x_test_clean_s, select = -density) # drop column
 ```
 
 -   Assessing of the four different fit using MSE
