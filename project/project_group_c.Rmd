@@ -108,25 +108,24 @@ y_test_light = y_test
 
 ```{r}
 #function to clean datasets
-clean = function(dataset, train_set, k=4) { #4 standard deviations
-  means = colMeans(train_set)
-  sds = apply(train_set, MARGIN=2, FUN=sd)
+clean = function(dataset, x, k=4) { #4 standard deviations
+  means = colMeans(x)
+  sds = apply(x, MARGIN=2, FUN=sd)
   f = function(x) all(x>means-k*sds & x<means+k*sds)
-  return (dataset[apply(train_set, MARGIN=1, FUN=f),])
+  return (dataset[apply(x, MARGIN=1, FUN=f),])
 }
 
 #d_train_clean (3791 rows)
-d_train_clean = clean(d_train, train_set=x_train)
+d_train_clean = clean(d_train, x=x_train)
 x_train_clean = subset(d_train_clean, select=-quality)
 y_train_clean = d_train_clean$quality
-
 ```
 
 4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
 
 ```{r}
 #d_train_light_clean (still 3791 rows but could have been more)
-d_train_light_clean = clean(d_train_light, train_set=x_train_light)
+d_train_light_clean = clean(d_train_light, x=x_train_light)
 x_train_light_clean = subset(d_train_light_clean, select=-quality)
 y_train_light_clean = d_train_light_clean$quality
 ```
@@ -205,6 +204,27 @@ print(paste("the AIC is ",AIC(fit1)))
 ## Random Forest
 
 - Fit using $D_{train}$
+
+```{r}
+library(randomForest) #v 4.6-14 for R 4.0.4
+set.seed(101)
+rf_ = randomForest(x_train, y_train, x_test, y_test, importance=TRUE)
+varImpPlot(rf_, sort=TRUE)
+```
+
+```{r}
+#con mtry
+set.seed(101)
+rf2_ = randomForest(x_train, y_train, x_test, y_test, mtry=ncol(x_train), importance=TRUE)
+varImpPlot(rf2_, sort=TRUE)
+```
+```{r}
+#con mtry e senza density
+set.seed(101)
+rf2_ = randomForest(x_train_light, y_train_light, x_test_light, y_test_light, mtry=ncol(x_train_light), importance=TRUE)
+varImpPlot(rf2_, sort=TRUE)
+```
+
 - Fit using $D_{clean}$
 
 #### Prediction
