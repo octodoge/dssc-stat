@@ -46,26 +46,20 @@ for (i in 1:12){
   myplot[[i]] <- plot_feature_hist(d_tot[,cols[i]],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
 }
 
-suppressMessages(grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2))
-suppressMessages(grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]], ncol=2, nrow=2))
+suppressMessages(grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], ncol=3, nrow=2))
+suppressMessages(grid.arrange(myplot[[7]], myplot[[8]], myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]],  ncol=3, nrow=2))
 ```
 
 Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
 
 Afterwards in order to address intercorrelations among two or more features in a multiple regression model (multicollinearity). We plot the Correlation Matrix:
-```{r}
+```{r message=FALSE}
 library(corrplot)
 #plot the correlation matrix
 corrplot(cor(d_tot), method = "shade")
 ```
 
 While a moderate amount of multicollinearity is acceptable in a regression model, a higher multicollinearity can be a cause for concern. We can see that the **density** is highly correlated and it can be removed, as the information provided by these variables is **redundant**. 
-To prove that and to consider the possibility of removing the variable we look at the VIF coefficients:
-```{r message=FALSE}
-library(car)
-model = lm(quality ~ ., data = d_tot)
-vif(model)
-```
 
 # Models
 
@@ -91,7 +85,7 @@ y_test = d_test$quality
 
 1. $D_{train}$ is the dataset without any modification.
 
-2. $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
+2. $D_{train}^{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
 
 ```{r}
 #d_train_light (3918 rows)
@@ -104,7 +98,7 @@ x_test_light = subset(x_test, select=-density)
 y_test_light = y_test
 ```
 
-3. $D_{clean}$ is the dataset obtained by excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$). (*clean phase*)
+3. $D_{train}^{clean}$ is the dataset obtained by excluding the observations outside the $[\overline{x}-4\sigma_{x_j},\overline{x}+4\sigma_{x_j}]$ where $x_j$ is the observation coming from the j-feature ($j=1,\dots,11$). (*clean phase*)
 
 ```{r}
 #function to clean datasets
@@ -121,7 +115,7 @@ x_train_clean = subset(d_train_clean, select=-quality)
 y_train_clean = d_train_clean$quality
 ```
 
-4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
+4.  $D_{train}^{light,clean}$ is the dataset obtained from $D_{train}^{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
 
 ```{r}
 #d_train_light_clean (still 3791 rows but could have been more)
@@ -133,70 +127,107 @@ y_train_light_clean = d_train_light_clean$quality
 Using this 4 datasets we decide to implement the following models: **GLM**, **GAM** and **RF**.
 
 ## General Linear Model (GLM)
+Now we analyze the dataset trying to find a linear relationship between the features of the dataset and the response variable $\text{quality}$.
 
-1. Fit using $D_{train}$ + LASSO
+To do this we combine the GLM (Generalized Linear Model) with the LASSO method (Least Absolute Shrinkage and Selection Operator). The LASSO method introduces a penality term that is proportional to the sum of the absolute values of the coefficients, thus it forces the model to decrease or to remove the effect of some less important feature. It is used to reduce overfitting and increasing interpretability of the model.
 
-Using the train data
+To properly use the LASSO method we need to normalize the feature of our data, so that we can avoid an imbalance between coefficients.
 
+1.Rescale for $D_{train}$
+```{r}
+x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))[,-1]
 
-```{r echo=FALSE}
+x_train_s = scale(x_train_int)
+means <- attr(x_train_s, which = "scaled:center")
+sds <- attr(x_train_s, which = "scaled:scale")
+```
+2.Rescale for $D_{train}^{light}$
+```{r}
+x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))[,-1]
+
+x_train_light_s <- scale(x_train_light_int)
+means_light <- attr(x_train_light_s, which = "scaled:center")
+sds_light <- attr(x_train_light_s, which = "scaled:scale")
+```
+3.Rescale for $D_{train}^{clean}$
+```{r}
+x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))[,-1]
+
+x_train_clean_s = scale(x_train_clean_int)
+means_clean <- attr(x_train_clean_s, which = "scaled:center")
+sds_clean <- attr(x_train_clean_s, which = "scaled:scale")
+```
+4.Rescale for $D_{train}^{light,clean}$
+```{r}
+x_train_light_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light_clean))[,-1]
+
+x_train_light_clean_s = scale(x_train_light_clean_int)
+means_light_clean <- attr(x_train_light_clean_s, which = "scaled:center")
+sds_light_clean <- attr(x_train_light_clean_s, which = "scaled:scale")
+```
+
+**Having normalized the datasets we can now fit our models**
+
+1. Fit using $D_{train}$
+
+```{r}
 library(glmnet)
-
-# glmlasso(data,aic){} for every alla the dataset
-#data=data_train
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-
-#rescaling the data
-data_scale = as.data.frame(scale(d_tot[,1:11]))
-quality = d_tot$quality
-data_scale = cbind(data_scale, quality)
-rm(quality)
-
-attach(data_scale)
-x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol)
-set.seed(4)  #we fix a seed for the random operations of cv
-cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
-
-lambda_min = cv$lambda.min#we find the best value of lambda
-fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
-#fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"))
-print(paste("The AIC of the model is ",AIC(fit1)))
-#print(paste("The AIC of the model with lasso is ",AIC(fit_lasso)))
-
-```
-
-2. Fit using $D_{light}$ + LASSO
-
-Using the light data
-
-```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-print(paste("the AIC is ",AIC(fit1)))
+fit_lasso <- function(x, y){
+  cv <- cv.glmnet(x, y, family=gaussian, type.measure = "mse")
+  lasso <- glmnet(x, y, family=gaussian, lambda = cv$lambda.1se)
+  coef(lasso)
+}
 ```
 
 
-3. Fit using $D_{clean}$ + LASSO
+```{r warning=FALSE, message=FALSE}
+set.seed(101)
+fit_lasso(x_train_s, y_train)
+```
 
-Using the clean data
+2. Fit using $D_{light}$
 
-```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-print(paste("the AIC is ",AIC(fit1)))
+```{r warning=FALSE, message=FALSE}
+set.seed(101)
+fit_lasso(x_train_light_s, y_train)
 ```
 
 
-4. Fit using $D_{light,clean}$ + LASSO
+3. Fit using $D_{clean}$
 
-```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
-print(paste("the AIC is ",AIC(fit1)))
+```{r warning=FALSE, message=FALSE}
+set.seed(101)
+fit_lasso(x_train_clean_s, y_train)
 ```
 
-- Assessing of the four different fit using AIC
+
+4. Fit using $D_{light,clean}$ 
+
+```{r warning=FALSE, message=FALSE}
+set.seed(101)
+fit_lasso(x_train_light_clean_s, y_train)
+```
+
 
 #### Prediction
 
 -   Application of the model using the $D_{test}$
+
+```{r}
+# TODO to be continued..
+
+# Scaling using train mean, sd
+x_test_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test))[,-1]
+x_test_s <- scale(x_test_int, center = means, scale = sds)
+
+x_test_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test_light))[,-1]
+x_test_light_s <- scale(x_test_light_int, center = means_light, scale = sds_light)
+
+x_test_s2 <- scale(x_test_int, center = means_clean, scale = sds_clean)
+
+x_test_light_s2 <- scale(x_test_light_int, center = means_light_clean, scale = sds_light_clean)
+```
+
 -   Assessing of the four different fit using MSE
 
 ## General Additive Model (GAM)
