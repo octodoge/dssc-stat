@@ -67,53 +67,47 @@ model = lm(quality ~ ., data = d_tot)
 vif(model)
 ```
 
-
 # Models
 
 ## Datasets
 
-In order to assess the models we split the total dataset $D_{tot}$ in $D_{train} + D_{test} = D_{tot}$. We introduce the following datasets $D_{train}$, $D_{light}$, $D_{clean}$ and $D_{light,clean}$ used to obtain the models.
-
-$$\text{codice dove caricare il dataset splittato}$$
-
-1.  $D_{train}$ is the dataset without any modification.
-
-2.  $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
-
-$$\text{codice su come ottenere il dataset}$$
-
-3.  $D_{clean}$ is the dataset obtained by excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$). (*clean phase*)
-
-$$\text{codice su come ottenere il dataset}$$
-
-4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
-
-$$\text{codice su come ottenere il dataset}$$
+In order to assess the models we split the total dataset $D_{tot}$ in $D_{train} + D_{test} = D_{tot}$. We introduce the following datasets $D_{train}$, $D_{train}^{light}$, $D_{train}^{clean}$ and $D^{light,clean}_{train}$ used to obtain the models.
 
 ```{r}
-#d_test (979 rows)
+#d_train (3918 rows)
 set.seed(101)
-test_indexes = sample(1:nrow(d_tot), size=nrow(d_tot)*0.2) #20%
-d_test = d_tot[test_indexes,]
-row.names(d_test) = NULL
-x_test = subset(d_test, select=-quality)
-y_test = d_test$quality
-
-#d_test_light (979 rows)
-x_test_light = subset(x_test, select=-density)
-y_test_light = y_test
-
-#d_train (3919 rows)
-d_train = d_tot[-test_indexes,]
+train_indexes = sample(1:nrow(d_tot), size=nrow(d_tot)*0.8) #80%
+d_train = d_tot[train_indexes,]
 row.names(d_train) = NULL
 x_train = subset(d_train, select=-quality)
 y_train = d_train$quality
 
-#d_train_light (3919 rows)
+#d_test (980 rows)
+d_test = d_tot[-train_indexes,]
+row.names(d_test) = NULL
+x_test = subset(d_test, select=-quality)
+y_test = d_test$quality
+```
+
+1. $D_{train}$ is the dataset without any modification.
+
+2. $D_{light}$ is the dataset obtained without the **density feature**, we remove it because the Correlation Matrix arises multicollinearity problem (more insights in the data exploration section) and in order to maintain consistency between the different models we decide to just look at it and remove the most correlated feature, as told the **density**. (*light phase*)
+
+```{r}
+#d_train_light (3918 rows)
 d_train_light = subset(d_train, select=-density)
 x_train_light = subset(x_train, select=-density)
 y_train_light = y_train
 
+#d_test_light (980 rows)
+x_test_light = subset(x_test, select=-density)
+y_test_light = y_test
+```
+
+3. $D_{clean}$ is the dataset obtained by excluding the observations outside the $[\overline{x}-3\sigma_{x_j},\overline{x}+3\sigma_{x_j}]$ where $x_j$ is the observation coming from the i-feature ($j=1,\dots,11$). (*clean phase*)
+
+```{r}
+#function to clean datasets
 clean = function(dataset, train_set, k=4) { #4 standard deviations
   means = colMeans(train_set)
   sds = apply(train_set, MARGIN=2, FUN=sd)
@@ -121,12 +115,17 @@ clean = function(dataset, train_set, k=4) { #4 standard deviations
   return (dataset[apply(train_set, MARGIN=1, FUN=f),])
 }
 
-#d_train_clean (3783 rows)
+#d_train_clean (3791 rows)
 d_train_clean = clean(d_train, train_set=x_train)
 x_train_clean = subset(d_train_clean, select=-quality)
 y_train_clean = d_train_clean$quality
 
-#d_train_light_clean (still 3783 rows but could have been more)
+```
+
+4.  $D_{light,clean}$ is the dataset obtained from $D_{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
+
+```{r}
+#d_train_light_clean (still 3791 rows but could have been more)
 d_train_light_clean = clean(d_train_light, train_set=x_train_light)
 x_train_light_clean = subset(d_train_light_clean, select=-quality)
 y_train_light_clean = d_train_light_clean$quality
