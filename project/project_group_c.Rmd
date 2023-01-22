@@ -141,6 +141,7 @@ x_train_s = scale(x_train_int)
 means <- attr(x_train_s, which = "scaled:center")
 sds <- attr(x_train_s, which = "scaled:scale")
 ```
+
 2.Rescale for $D_{train}^{light}$
 ```{r}
 x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))[,-1]
@@ -149,6 +150,7 @@ x_train_light_s <- scale(x_train_light_int)
 means_light <- attr(x_train_light_s, which = "scaled:center")
 sds_light <- attr(x_train_light_s, which = "scaled:scale")
 ```
+
 3.Rescale for $D_{train}^{clean}$
 ```{r}
 x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))[,-1]
@@ -157,6 +159,7 @@ x_train_clean_s = scale(x_train_clean_int)
 means_clean <- attr(x_train_clean_s, which = "scaled:center")
 sds_clean <- attr(x_train_clean_s, which = "scaled:scale")
 ```
+
 4.Rescale for $D_{train}^{light,clean}$
 ```{r}
 x_train_light_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light_clean))[,-1]
@@ -170,42 +173,45 @@ sds_light_clean <- attr(x_train_light_clean_s, which = "scaled:scale")
 
 1. Fit using $D_{train}$
 
-```{r}
+```{r message=FALSE}
 library(glmnet)
 fit_lasso <- function(x, y){
   cv <- cv.glmnet(x, y, family=gaussian, type.measure = "mse")
-  lasso <- glmnet(x, y, family=gaussian, lambda = cv$lambda.1se)
-  coef(lasso)
+  return (glmnet(x, y, family=gaussian, lambda = cv$lambda.1se))
 }
 ```
 
 
-```{r warning=FALSE, message=FALSE}
+```{r message=FALSE, warning=FALSE}
 set.seed(101)
-fit_lasso(x_train_s, y_train)
+lasso = fit_lasso(x_train_s, y_train)
+#coef(lasso)
 ```
 
 2. Fit using $D_{light}$
 
-```{r warning=FALSE, message=FALSE}
+```{r message=FALSE, warning=FALSE}
 set.seed(101)
-fit_lasso(x_train_light_s, y_train)
+lasso_light = fit_lasso(x_train_light_s, y_train_light)
+#coef(lasso_light)
 ```
 
 
 3. Fit using $D_{clean}$
 
-```{r warning=FALSE, message=FALSE}
+```{r message=FALSE, warning=FALSE}
 set.seed(101)
-fit_lasso(x_train_clean_s, y_train)
+lasso_clean = fit_lasso(x_train_clean_s, y_train_clean)
+#coef(lasso_clean)
 ```
 
 
 4. Fit using $D_{light,clean}$ 
 
-```{r warning=FALSE, message=FALSE}
+```{r message=FALSE, warning=FALSE}
 set.seed(101)
-fit_lasso(x_train_light_clean_s, y_train)
+lasso_light_clean = fit_lasso(x_train_light_clean_s, y_train_light_clean)
+#coef(lasso_light_clean)
 ```
 
 
@@ -214,23 +220,26 @@ fit_lasso(x_train_light_clean_s, y_train)
 -   Application of the model using the $D_{test}$
 
 ```{r}
-# TODO to be continued..
-
-# Scaling using train mean, sd
-x_test_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test))[,-1]
+x_test_int <- model.matrix(as.formula( ~ .*.), x_test)[,-1]
 x_test_s <- scale(x_test_int, center = means, scale = sds)
+assess.glmnet(lasso, newx=x_test_s, newy=y_test)$mse
 
-x_test_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test_light))[,-1]
+x_test_light_int <- model.matrix(as.formula( ~ .*.), x_test_light)[,-1]
 x_test_light_s <- scale(x_test_light_int, center = means_light, scale = sds_light)
+assess.glmnet(lasso_light, newx=x_test_light_s, newy=y_test_light)$mse
 
 x_test_s2 <- scale(x_test_int, center = means_clean, scale = sds_clean)
+assess.glmnet(lasso_clean, newx=x_test_s2, newy=y_test)$mse
 
 x_test_light_s2 <- scale(x_test_light_int, center = means_light_clean, scale = sds_light_clean)
+assess.glmnet(lasso_light_clean, newx=x_test_light_s2, newy=y_test_light)$mse
 ```
 
 -   Assessing of the four different fit using MSE
 
 ## General Additive Model (GAM)
+
+#### Prediction
 
 ## Random Forest
 
