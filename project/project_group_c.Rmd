@@ -31,10 +31,10 @@ library(gridExtra)
 
 data = d_tot #TODO use d_tot everywhere
 
-plot_feature_hist <- function(data, col, name, color) {
-  #bw <- 2 * IQR(data[,col]) / length(data[,col])^(1/3) # Freedman-Diaconis’s Rule
+plot_feature_hist <- function(d_tot, col, name, color) {
+  #bw <- 2 * IQR(d_tot[,col]) / length(d_tot[,col])^(1/3) # Freedman-Diaconis’s Rule
   return(
-    p <- data %>%
+    p <- d_tot %>%
       ggplot( aes_string(x=col)) +
         geom_histogram(fill=color, color="#e9ecef", alpha=0.9) +
         ggtitle(name) +
@@ -43,12 +43,12 @@ plot_feature_hist <- function(data, col, name, color) {
     )
 }
 
-cols <- names(data)
+cols <- names(d_tot)
 hist_colors <- c("#003f5c", "#376a35", "#2f4b7c", "#89b8ba", "#689546", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600", "#ed3a2d")
 
 myplot = list()
 for (i in 1:12){
-  myplot[[i]] <- plot_feature_hist(data, cols[i],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
+  myplot[[i]] <- plot_feature_hist(d_tot, cols[i],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
 }
 
 grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2)
@@ -61,70 +61,17 @@ Afterwards in order to address intercorrelations among two or more features in a
 ```{r}
 library(corrplot)
 #plot the correlation matrix
-corrplot(cor(data), method = "shade")
+corrplot(cor(d_tot), method = "shade")
 ```
 
 While a moderate amount of multicollinearity is acceptable in a regression model, a higher multicollinearity can be a cause for concern. We can see that the **density** is highly correlated and it can be removed, as the information provided by these variables is **redundant**. 
 To prove that and to consider the possibility of removing the variable we look at the VIF coefficients:
 ```{r message=FALSE}
 library(car)
-model = lm(quality ~ ., data = data)
+model = lm(quality ~ ., data = d_tot)
 vif(model)
 ```
-```{r}
-hist(data$fixed.acidity, breaks = 100)
-hist(data$volatile.acidity, breaks = 100)
-hist(data$citric.acid, breaks = 100)
-hist(data$residual.sugar, breaks = 100)
-hist(data$chlorides, breaks = 100)
-hist(data$free.sulfur.dioxide, breaks = 100)
-hist(data$total.sulfur.dioxide, breaks = 100)
-hist(data$density, breaks = 100)
-hist(data$pH, breaks = 100)
-hist(data$sulphates, breaks = 100)
-hist(data$alcohol, breaks = 100)
-hist(data$quality)
-```
 
-```{r}
-#we obtain the sigmas and the mean of each column of features
-sigmas = rep(NA,11)
-means = rep(NA,11)
-for (j in 1:11){
-  sigmas[j] = sd(data[,j])
-  means[j] = mean(data[,j])
-}
-
-#now we exclude the samples whose feature are outside the 4sigma intervals
-lower = means - 3*sigmas
-higher = means + 3*sigmas
-print(cbind(lower,higher))
-#we create the list "delete" that finds which rows are to delete in the dataframe
-delete = rep(F, nrow(data))
-#print(cbind(d[,1],higher[1], d[,1]>higher[1]))
-for (j in 1:11){
-  delete = (delete | data[,j]<lower[j] | data[,j]>higher[j])
-}
-print(paste("We removed:",sum(delete),"samples from our data"))  #how many observations are deleted
-#now we delete the the suspected samples from the dataframe
-d_clean = data[-(which(delete)),]
-```
-
-```{r}
-#We can plot a lot of histograms to better visualize the data
-hist(d_clean$fixed.acidity, breaks = 100)
-hist(d_clean$volatile.acidity, breaks = 100)
-hist(d_clean$citric.acid, breaks = 100)
-hist(d_clean$residual.sugar, breaks = 100)
-hist(d_clean$chlorides, breaks = 100)
-hist(d_clean$free.sulfur.dioxide, breaks = 100)
-hist(d_clean$total.sulfur.dioxide, breaks = 100)
-hist(d_clean$density, breaks = 100)
-hist(d_clean$pH, breaks = 100)
-hist(d_clean$sulphates, breaks = 100)
-hist(d_clean$alcohol, breaks = 100)
-hist(d_clean$quality)
-```
 
 # Models
 
