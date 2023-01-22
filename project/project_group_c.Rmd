@@ -25,21 +25,16 @@ d_tot = read.csv("winequality-white.csv", sep=";")
 In order to look at the data we decide to plot 12 histograms for each input features $x^{(i)}_j$ where $j=1,\dots,11$, plus $y^{(i)}=\text{"the wine-quality"}$ that is our response variable.
 
 ```{r echo=FALSE}
-library(tidyverse)
-library(hrbrthemes)
+library(ggplot2)
 library(gridExtra)
-
-data = d_tot #TODO use d_tot everywhere
 
 plot_feature_hist <- function(d_tot, col, name, color) {
   #bw <- 2 * IQR(d_tot[,col]) / length(d_tot[,col])^(1/3) # Freedman-Diaconis’s Rule
   return(
-    p <- d_tot %>%
-      ggplot( aes_string(x=col)) +
+    p <-
+      ggplot( data=d_tot , aes_string(x=col)) +
         geom_histogram(fill=color, color="#e9ecef", alpha=0.9) +
-        ggtitle(name) +
-        theme_ipsum() +
-        theme(plot.title = element_text(size=12))
+        ggtitle(name)
     )
 }
 
@@ -151,11 +146,11 @@ library(glmnet)
 
 # glmlasso(data,aic){} for every alla the dataset
 #data=data_train
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = data)
+fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
 
 #rescaling the data
-data_scale = as.data.frame(scale(data[,1:11]))
-quality = data$quality
+data_scale = as.data.frame(scale(d_tot[,1:11]))
+quality = d_tot$quality
 data_scale = cbind(data_scale, quality)
 rm(quality)
 
@@ -177,7 +172,7 @@ print(paste("The AIC of the model is ",AIC(fit1)))
 Using the light data
 
 ```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = data)
+fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
 print(paste("the AIC is ",AIC(fit1)))
 ```
 
@@ -187,7 +182,7 @@ print(paste("the AIC is ",AIC(fit1)))
 Using the clean data
 
 ```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = data)
+fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
 print(paste("the AIC is ",AIC(fit1)))
 ```
 
@@ -195,7 +190,7 @@ print(paste("the AIC is ",AIC(fit1)))
 4. Fit using $D_{light,clean}$ + LASSO
 
 ```{r echo=FALSE}
-fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = data)
+fit1 = glm(quality ~ ., family = gaussian(link = "identity"), data = d_tot)
 print(paste("the AIC is ",AIC(fit1)))
 ```
 
