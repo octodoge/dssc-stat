@@ -249,8 +249,11 @@ If two variables are correlated, we can predict one from the other. Therefore, i
 ### install.packages("GGally")             # Install GGally package
 library("GGally")
 
-ggp = ggpairs(data, progress = ggmatrix_progress())  # draw pair plots of dataframe
+ggp <- ggpairs(data, progress = ggmatrix_progress(), axisLabels='show')  # draw pair plots of dataframe
+getwd()
+png(file="myFile.png", width=2560, height=1600)
 print(ggp)  # no progress bar
+dev.off()
 ```
 
 ```{r}
