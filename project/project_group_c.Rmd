@@ -136,7 +136,7 @@ To properly use the LASSO method we need to normalize the feature of our data, s
 
 1.Rescale for $D_{train}$
 ```{r}
-x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))
+x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))[,-1]
 
 x_train_s = scale(x_train_int)
 means <- attr(x_train_s, which = "scaled:center")
@@ -144,24 +144,23 @@ sds <- attr(x_train_s, which = "scaled:scale")
 ```
 2.Rescale for $D_{train}^{light}$
 ```{r}
-x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))
+x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))[,-1]
+
 x_train_light_s <- scale(x_train_light_int)
 means_light <- attr(x_train_light_s, which = "scaled:center")
 sds_light <- attr(x_train_light_s, which = "scaled:scale")
 ```
-
 3.Rescale for $D_{train}^{clean}$
 ```{r}
-x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))
+x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))[,-1]
 
 x_train_clean_s = scale(x_train_clean_int)
 means_clean <- attr(x_train_clean_s, which = "scaled:center")
 sds_clean <- attr(x_train_clean_s, which = "scaled:scale")
-###
 ```
 4.Rescale for $D_{train}^{light,clean}$
 ```{r}
-x_train_light_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light_clean))
+x_train_light_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light_clean))[,-1]
 
 x_train_light_clean_s = scale(x_train_light_clean_int)
 means_light_clean <- attr(x_train_light_clean_s, which = "scaled:center")
@@ -172,68 +171,42 @@ sds_light_clean <- attr(x_train_light_clean_s, which = "scaled:scale")
 
 1. Fit using $D_{train}$
 
-```{r warning=FALSE, message=FALSE}
+```{r}
 library(glmnet)
+fit_lasso <- function(x, y){
+  cv <- cv.glmnet(x, y, family=gaussian, type.measure = "mse")
+  lasso <- glmnet(x, y, family=gaussian, lambda = cv$lambda.1se)
+  coef(lasso)
+}
+```
+
+
+```{r warning=FALSE, message=FALSE}
 set.seed(101)
-
-x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))
-
-cv = cv.glmnet(x_train_int, y_train, family=gaussian, type.measure = "mse") #we lassodo a 10 fold CV with mean squared error loss function
-
-lasso = glmnet(x_train_int, y_train, family=gaussian, lambda = cv$lambda.1se) #we find the best value of lambda based on the CV
-
-print("Coefficients of the model trained on x_train_s")
-coef(lasso)  #the results of our model
+fit_lasso(x_train_s, y_train)
 ```
 
 2. Fit using $D_{light}$
 
 ```{r warning=FALSE, message=FALSE}
-attach(d_train_light_s)
-
-x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, pH, sulphates, alcohol) #dataset without density
-
-cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
-
-lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
-fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
-
-print("Coefficients of the model trained on d_train_light_s")
-coef(fit_lasso)  #the results of our model
+set.seed(101)
+fit_lasso(x_train_light_s, y_train)
 ```
 
 
 3. Fit using $D_{clean}$
 
 ```{r warning=FALSE, message=FALSE}
-attach(d_train_clean_s)
-
-x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol)
-
-cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
-
-lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
-fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
-
-print("Coefficients of the model trained on d_train_clean_s")
-coef(fit_lasso)  #the results of our model
+set.seed(101)
+fit_lasso(x_train_clean_s, y_train)
 ```
 
 
 4. Fit using $D_{light,clean}$ 
 
 ```{r warning=FALSE, message=FALSE}
-attach(d_train_light_clean_s)
-
-x = cbind(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, pH, sulphates, alcohol) #dataset without density
-
-cv = cv.glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), type.measure="mse", nfolds = 10) #we do a 10 fold CV with mean squared error loss function
-
-lambda_min = cv$lambda.min  #we find the best value of lambda based on the CV
-fit_lasso = glmnet(x, quality, alpha=1, family=gaussian(link = "identity"), lambda = lambda_min)
-
-print("Coefficients of the model trained on d_train_light_clean_s")
-coef(fit_lasso)  #the results of our model
+set.seed(101)
+fit_lasso(x_train_light_clean_s, y_train)
 ```
 
 
@@ -242,11 +215,13 @@ coef(fit_lasso)  #the results of our model
 -   Application of the model using the $D_{test}$
 
 ```{r}
+# TODO to be continued..
+
 # Scaling using train mean, sd
-x_test_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test))
+x_test_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test))[,-1]
 x_test_s <- scale(x_test_int, center = means, scale = sds)
 
-x_test_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test_light))
+x_test_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test_light))[,-1]
 x_test_light_s <- scale(x_test_light_int, center = means_light, scale = sds_light)
 
 x_test_s2 <- scale(x_test_int, center = means_clean, scale = sds_clean)
