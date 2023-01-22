@@ -135,56 +135,49 @@ To properly use the LASSO method we need to normalize the feature of our data, s
 
 1.Rescale for $D_{train}$
 ```{r}
-x_train_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train))[,-1]
+#function to scale train sets
+scale_train = function(x_train) {
+  x_train_int = model.matrix(as.formula( ~ .*.), x_train)[,-1]
+  values = scale(x_train_int)
+  return (list(
+    values=values,
+    means=attr(values, which="scaled:center"),
+    sds=attr(values, which="scaled:scale")))
+}
 
-x_train_s = scale(x_train_int)
-means <- attr(x_train_s, which = "scaled:center")
-sds <- attr(x_train_s, which = "scaled:scale")
+x_train_s = scale_train(x_train)
 ```
 
 2.Rescale for $D_{train}^{light}$
 ```{r}
-x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))[,-1]
-
-x_train_light_s <- scale(x_train_light_int)
-means_light <- attr(x_train_light_s, which = "scaled:center")
-sds_light <- attr(x_train_light_s, which = "scaled:scale")
+x_train_light_s <- scale_train(x_train_light)
 ```
 
 3.Rescale for $D_{train}^{clean}$
 ```{r}
-x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))[,-1]
-
-x_train_clean_s = scale(x_train_clean_int)
-means_clean <- attr(x_train_clean_s, which = "scaled:center")
-sds_clean <- attr(x_train_clean_s, which = "scaled:scale")
+x_train_clean_s = scale_train(x_train_clean)
 ```
 
 4.Rescale for $D_{train}^{light,clean}$
 ```{r}
-x_train_light_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light_clean))[,-1]
-
-x_train_light_clean_s = scale(x_train_light_clean_int)
-means_light_clean <- attr(x_train_light_clean_s, which = "scaled:center")
-sds_light_clean <- attr(x_train_light_clean_s, which = "scaled:scale")
+x_train_light_clean_s = scale_train(x_train_light_clean)
 ```
 
 **Having normalized the datasets we can now fit our models**
 
 1. Fit using $D_{train}$
 
-```{r message=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(glmnet)
+
+#function to fit glm with lasso
 fit_lasso <- function(x, y){
   cv <- cv.glmnet(x, y, family=gaussian, type.measure = "mse")
   return (glmnet(x, y, family=gaussian, lambda = cv$lambda.1se))
 }
-```
 
-
-```{r message=FALSE, warning=FALSE}
 set.seed(101)
-lasso = fit_lasso(x_train_s, y_train)
+lasso = fit_lasso(x_train_s$values, y_train)
 #coef(lasso)
 ```
 
@@ -192,16 +185,15 @@ lasso = fit_lasso(x_train_s, y_train)
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(101)
-lasso_light = fit_lasso(x_train_light_s, y_train_light)
+lasso_light = fit_lasso(x_train_light_s$values, y_train_light)
 #coef(lasso_light)
 ```
-
 
 3. Fit using $D_{clean}$
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(101)
-lasso_clean = fit_lasso(x_train_clean_s, y_train_clean)
+lasso_clean = fit_lasso(x_train_clean_s$values, y_train_clean)
 #coef(lasso_clean)
 ```
 
@@ -210,7 +202,7 @@ lasso_clean = fit_lasso(x_train_clean_s, y_train_clean)
 
 ```{r message=FALSE, warning=FALSE}
 set.seed(101)
-lasso_light_clean = fit_lasso(x_train_light_clean_s, y_train_light_clean)
+lasso_light_clean = fit_lasso(x_train_light_clean_s$values, y_train_light_clean)
 #coef(lasso_light_clean)
 ```
 
@@ -221,17 +213,17 @@ lasso_light_clean = fit_lasso(x_train_light_clean_s, y_train_light_clean)
 
 ```{r}
 x_test_int <- model.matrix(as.formula( ~ .*.), x_test)[,-1]
-x_test_s <- scale(x_test_int, center = means, scale = sds)
+x_test_s <- scale(x_test_int, center=x_train_s$means, scale=x_train_s$sds)
 assess.glmnet(lasso, newx=x_test_s, newy=y_test)$mse
 
 x_test_light_int <- model.matrix(as.formula( ~ .*.), x_test_light)[,-1]
-x_test_light_s <- scale(x_test_light_int, center = means_light, scale = sds_light)
+x_test_light_s <- scale(x_test_light_int, center=x_train_light_s$means, scale=x_train_light_s$sds)
 assess.glmnet(lasso_light, newx=x_test_light_s, newy=y_test_light)$mse
 
-x_test_s2 <- scale(x_test_int, center = means_clean, scale = sds_clean)
+x_test_s2 <- scale(x_test_int, center=x_train_clean_s$means, scale=x_train_clean_s$sds)
 assess.glmnet(lasso_clean, newx=x_test_s2, newy=y_test)$mse
 
-x_test_light_s2 <- scale(x_test_light_int, center = means_light_clean, scale = sds_light_clean)
+x_test_light_s2 <- scale(x_test_light_int, center=x_train_light_clean_s$means, scale=x_train_light_clean_s$sds)
 assess.glmnet(lasso_light_clean, newx=x_test_light_s2, newy=y_test_light)$mse
 ```
 
