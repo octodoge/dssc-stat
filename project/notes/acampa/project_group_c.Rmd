@@ -48,6 +48,7 @@ for (i in 1:12){
 
 grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], myplot[[7]], myplot[[8]], ncol=4, nrow=2)
 grid.arrange(myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]], ncol=4, nrow=2)
+
 ```
 
 
