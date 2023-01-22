@@ -145,7 +145,9 @@ sds <- attr(x_train_s, which = "scaled:scale")
 2.Rescale for $D_{train}^{light}$
 ```{r}
 x_train_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light))
-x_train_light_s <- scale()
+x_train_light_s <- scale(x_train_light_int)
+means_light <- attr(x_train_light_s, which = "scaled:center")
+sds_light <- attr(x_train_light_s, which = "scaled:scale")
 ```
 
 3.Rescale for $D_{train}^{clean}$
@@ -155,10 +157,15 @@ x_train_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_clean))
 x_train_clean_s = scale(x_train_clean_int)
 means_clean <- attr(x_train_clean_s, which = "scaled:center")
 sds_clean <- attr(x_train_clean_s, which = "scaled:scale")
+###
 ```
 4.Rescale for $D_{train}^{light,clean}$
 ```{r}
-x_train_light_clean_s <- subset(x_train_clean_s, select = -density) # drop column
+x_train_light_clean_int <- model.matrix(as.formula( ~ .*.), data.frame(x_train_light_clean))
+
+x_train_light_clean_s = scale(x_train_light_clean_int)
+means_light_clean <- attr(x_train_light_clean_s, which = "scaled:center")
+sds_light_clean <- attr(x_train_light_clean_s, which = "scaled:scale")
 ```
 
 **Having normalized the datasets we can now fit our models**
@@ -236,12 +243,15 @@ coef(fit_lasso)  #the results of our model
 
 ```{r}
 # Scaling using train mean, sd
-x_test_s <- scale(x_test, center = means, scale = sds)
-x_test_light_s <- subset(x_test_s, select = -density) # drop column
+x_test_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test))
+x_test_s <- scale(x_test_int, center = means, scale = sds)
 
-# TODO remember to change names, because they aren't cleaned, just scaled with another thing
-x_test_clean_s <- scale(x_test, center = means_clean, scale = sds_clean)
-x_test_light_clean_s <- subset(x_test_clean_s, select = -density) # drop column
+x_test_light_int <- model.matrix(as.formula( ~ .*.), data.frame(x_test_light))
+x_test_light_s <- scale(x_test_light_int, center = means_light, scale = sds_light)
+
+x_test_s2 <- scale(x_test_int, center = means_clean, scale = sds_clean)
+
+x_test_light_s2 <- scale(x_test_light_int, center = means_light_clean, scale = sds_light_clean)
 ```
 
 -   Assessing of the four different fit using MSE
