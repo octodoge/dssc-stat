@@ -28,29 +28,32 @@ In order to look at the data we decide to plot 12 histograms for each input feat
 library(ggplot2)
 library(gridExtra)
 
-plot_feature_hist <- function(data, name, color) {
-  #bw <- 2 * IQR(d_tot[,col]) / length(d_tot[,col])^(1/3) # Freedman-Diaconis’s Rule
-  return(
-    p <-
-      ggplot(as.data.frame(data) , aes(x=data)) +
-        geom_histogram(fill=color, color="#e9ecef", alpha=0.9) +
-        ggtitle(name)
-    )
+plot_hist <- function(x, name, color) {
+  return(ggplot(data = data.frame(x), aes(x=x)) + geom_histogram(fill=color, color="#e9ecef", alpha=0.9) + ggtitle(name))
 }
 
-cols <- names(d_tot)
 hist_colors <- c("#003f5c", "#376a35", "#2f4b7c", "#89b8ba", "#689546", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600", "#ed3a2d")
 
-myplot = list()
-for (i in 1:12){
-  myplot[[i]] <- plot_feature_hist(d_tot[,cols[i]],cols[i], hist_colors[i]) + theme(plot.margin=unit(c(1,0,0,0),"cm"))
-}
+hist_list <- Map(plot_hist, data.frame(d_tot), names(d_tot), hist_colors)
 
-suppressMessages(grid.arrange(myplot[[1]], myplot[[2]], myplot[[3]], myplot[[4]], myplot[[5]], myplot[[6]], ncol=3, nrow=2))
-suppressMessages(grid.arrange(myplot[[7]], myplot[[8]], myplot[[9]], myplot[[10]], myplot[[11]], myplot[[12]],  ncol=3, nrow=2))
+suppressMessages(grid.arrange(hist_list[[1]], hist_list[[2]], hist_list[[3]], hist_list[[4]], hist_list[[5]], hist_list[[6]], ncol=3, nrow=2))
+suppressMessages(grid.arrange(hist_list[[7]], hist_list[[8]], hist_list[[9]], hist_list[[10]], hist_list[[11]], hist_list[[12]],  ncol=3, nrow=2))
 ```
 
-Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution. 
+Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution.
+
+Using boxplots we can visualize summary statistics such as mean, median and identify precence of outliers or unusual values.
+
+```{r}
+plotboxplot <- function(x, name) {
+  return(ggplot(data = data.frame(x), aes(x=x)) + geom_boxplot(outlier.size=1, outlier.alpha = 0.3) + ggtitle(name))
+}
+
+box_list <- Map(plotboxplot, data.frame(d_tot), names(d_tot))
+
+grid.arrange(box_list[[1]], box_list[[2]], box_list[[3]], box_list[[4]], box_list[[5]], box_list[[6]], ncol=2, nrow=3)
+grid.arrange(box_list[[7]], box_list[[8]], box_list[[9]], box_list[[10]], box_list[[11]], box_list[[12]], ncol=2, nrow=3)
+```
 
 Afterwards in order to address intercorrelations among two or more features in a multiple regression model (multicollinearity). We plot the Correlation Matrix:
 ```{r message=FALSE}
