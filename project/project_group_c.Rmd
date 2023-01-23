@@ -240,24 +240,53 @@ assess.glmnet(lasso_light_clean, newx=x_test_light_s2, newy=y_test_light)$mse
 ```{r}
 library(randomForest) #v 4.6-14 for R 4.0.4
 set.seed(101)
-rf_ = randomForest(x_train, y_train, x_test, y_test, importance=TRUE)
-varImpPlot(rf_, sort=TRUE)
+
+rf = randomForest(x_train, y_train, importance=TRUE)
+mean((predict(rf, x_test) - y_test)^2) #mse
 ```
 
 ```{r}
-#con mtry
-set.seed(101)
-rf2_ = randomForest(x_train, y_train, x_test, y_test, mtry=ncol(x_train), importance=TRUE)
-varImpPlot(rf2_, sort=TRUE)
-```
-```{r}
-#con mtry e senza density
-set.seed(101)
-rf2_ = randomForest(x_train_light, y_train_light, x_test_light, y_test_light, mtry=ncol(x_train_light), importance=TRUE)
-varImpPlot(rf2_, sort=TRUE)
+varImpPlot(rf)
 ```
 
-- Fit using $D_{clean}$
+- Fit using $D_{train}^{light}$
+
+```{r}
+set.seed(101)
+
+rf_light = randomForest(x_train_light, y_train_light, importance=TRUE)
+mean((predict(rf_light, x_test_light) - y_test_light)^2) #mse
+```
+
+```{r}
+varImpPlot(rf_light)
+```
+
+- Fit using $D_{train}^{clean}$
+
+```{r}
+set.seed(101)
+
+rf_clean = randomForest(x_train_clean, y_train_clean, importance=TRUE)
+mean((predict(rf_clean, x_test) - y_test)^2) #mse
+```
+
+```{r}
+varImpPlot(rf_clean)
+```
+
+- Fit using $D_{train}^{light,clean}$
+
+```{r}
+set.seed(101)
+
+rf_light_clean = randomForest(x_train_light_clean, y_train_light_clean, importance=TRUE)
+mean((predict(rf_light_clean, x_test_light) - y_test_light)^2) #mse
+```
+
+```{r}
+varImpPlot(rf_light_clean)
+```
 
 #### Prediction
 
