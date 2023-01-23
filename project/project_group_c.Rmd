@@ -165,7 +165,7 @@ fit_lasso <- function(x, y){
 # fitting
 set.seed(101)
 lasso = fit_lasso(x_train_s$values, y_train)
-#coef(lasso)
+paste("The number of coefficients different from zero are",length(coef(lasso)[coef(lasso)!=0]))
 ```
 
 
@@ -187,7 +187,7 @@ x_train_light_s <- scale_train(x_train_light)
 # fitting
 set.seed(101)
 lasso_light = fit_lasso(x_train_light_s$values, y_train_light)
-#coef(lasso_light)
+paste("The number of coefficients different from zero are",length(coef(lasso_light)[coef(lasso_light)!=0]))
 
 # Prediction
 x_test_light_int <- model.matrix(as.formula( ~ .*.), x_test_light)[,-1]
@@ -204,7 +204,7 @@ x_train_clean_s = scale_train(x_train_clean)
 # fitting
 set.seed(101)
 lasso_clean = fit_lasso(x_train_clean_s$values, y_train_clean)
-#coef(lasso_clean)
+paste("The number of coefficients different from zero are",length(coef(lasso_clean)[coef(lasso_clean)!=0]))
 
 # Prediction
 x_test_s2 <- scale(x_test_int, center=x_train_clean_s$means, scale=x_train_clean_s$sds)
@@ -219,7 +219,7 @@ x_train_light_clean_s = scale_train(x_train_light_clean)
 # fitting
 set.seed(101)
 lasso_light_clean = fit_lasso(x_train_light_clean_s$values, y_train_light_clean)
-#coef(lasso_light_clean)
+paste("The number of coefficients different from zero are",length(coef(lasso_light_clean)[coef(lasso_light_clean)!=0]))
 
 # prediction
 x_test_light_s2 <- scale(x_test_light_int, center=x_train_light_clean_s$means, scale=x_train_light_clean_s$sds)
