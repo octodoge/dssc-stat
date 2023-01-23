@@ -1,0 +1,678 @@
+---
+title: "Final Project Group C"
+author: "G. Alessio, A. Campagnolo, M. Polo, G. Sarnelli"
+date: "2023-01-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Project aim
+
+The goal is to model white wine quality based on physicochemical tests. 
+
+# Data Exploration
+
+In order to obtain better results with our models we explore the original dataset coming from the following source:
+$\text{http://www3.dsi.uminho.pt/pcortez/wine/}$
+
+
+```{r}
+#load dataset
+d_tot = read.csv("winequality-white.csv", sep=";")
+```
+
+
+In order to look at the data we decide to plot 12 histograms for each input features $x^{(i)}_j$ where $j=1,\dots,11$, plus $y^{(i)}=\text{ "the wine-quality"}$ that is our response variable.
+
+
+```{r echo=FALSE}
+library(ggplot2)
+library(gridExtra)
+
+plot_hist <- function(x, name, color) {
+  return(ggplot(data = data.frame(x), aes(x=x)) + geom_histogram(fill=color, color="#e9ecef", alpha=0.9) + ggtitle(name))
+}
+
+hist_colors <- c("#003f5c", "#376a35", "#2f4b7c", "#89b8ba", "#689546", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600", "#ed3a2d")
+
+hist_list <- Map(plot_hist, data.frame(d_tot), names(d_tot), hist_colors)
+
+suppressMessages(grid.arrange(hist_list[[1]], hist_list[[2]], hist_list[[3]], hist_list[[4]], hist_list[[5]], hist_list[[6]], ncol=3, nrow=2))
+suppressMessages(grid.arrange(hist_list[[7]], hist_list[[8]], hist_list[[9]], hist_list[[10]], hist_list[[11]], hist_list[[12]],  ncol=3, nrow=2))
+```
+
+
+Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution.
+
+Using boxplots we can identify presence of possible outliers or unusual values.
+
+
+```{r}
+plotboxplot <- function(x, name) {
+  return(ggplot(data = data.frame(x), aes(x=x)) + geom_boxplot(width=1.4, outlier.size=1, outlier.alpha = 0.3) + ggtitle(name) + ylim(-1,1))
+}
+
+box_list <- Map(plotboxplot, data.frame(d_tot), names(d_tot))
+
+grid.arrange(box_list[[1]], box_list[[2]], box_list[[3]], box_list[[4]], box_list[[5]], box_list[[6]], ncol=2, nrow=3)
+grid.arrange(box_list[[7]], box_list[[8]], box_list[[9]], box_list[[10]], box_list[[11]], box_list[[12]], ncol=2, nrow=3)
+```
+
+
+Afterwards we plot the Correlation Matrix in order to address intercorrelations among two or more features in a multiple regression model (multicollinearity):
+
+
+```{r message=FALSE}
+library(corrplot)
+#plot the correlation matrix
+corrplot(cor(d_tot), method = "shade")
+```
+
+
+While a moderate amount of multicollinearity is acceptable in a regression model, a higher multicollinearity can be a cause for concern. We can see that the **density** is highly correlated and so we can consider to remove it.
+
+# Models
+
+## Datasets
+
+In order to assess the models we split the total dataset $D_{tot}$ in $D_{train} + D_{test}$. We introduce the following datasets $D_{train}$, $D_{train}^{light}$, $D_{train}^{clean}$ and $D^{light,clean}_{train}$ used to obtain the models.
+
+
+```{r}
+#d_train (3918 rows)
+set.seed(101)
+train_indexes = sample(1:nrow(d_tot), size=nrow(d_tot)*0.8) #80%
+d_train = d_tot[train_indexes,]
+row.names(d_train) = NULL
+x_train = subset(d_train, select=-quality)
+y_train = d_train$quality
+
+#d_test (980 rows)
+d_test = d_tot[-train_indexes,]
+row.names(d_test) = NULL
+x_test = subset(d_test, select=-quality)
+y_test = d_test$quality
+```
+
+1. $D_{train}$ is the test dataset without any modification.
+
+
+2. $D_{train}^{light}$ is the test dataset obtained without the **density feature**, we remove it because the correlation matrix shows that there is a multicollinearity problem (more insights in the data exploration section). (*light phase*)
+
+
+```{r}
+#d_train_light (3918 rows)
+d_train_light = subset(d_train, select=-density)
+x_train_light = subset(x_train, select=-density)
+y_train_light = y_train
+
+#d_test_light (980 rows)
+x_test_light = subset(x_test, select=-density)
+y_test_light = y_test
+```
+
+
+3. $D_{train}^{clean}$ is the dataset obtained by excluding the observations $x^{(i)}$ outside the interval $[\overline{x}-4\sigma_j,\overline{x}+4\sigm_j]$ where $\sigma_j$ is the standard deviation coming from the j-feature ($j=1,\dots,11$). (*clean phase*)
+
+
+```{r}
+#function to clean datasets
+clean = function(dataset, x, k=4) { #4 standard deviations
+  means = colMeans(x)
+  sds = apply(x, MARGIN=2, FUN=sd)
+  f = function(x) all(x>means-k*sds & x<means+k*sds)
+  return (dataset[apply(x, MARGIN=1, FUN=f),])
+}
+
+#d_train_clean (3791 rows)
+d_train_clean = clean(d_train, x=x_train)
+x_train_clean = subset(d_train_clean, select=-quality)
+y_train_clean = d_train_clean$quality
+```
+
+
+4.  $D_{train}^{light,clean}$ is the dataset obtained from $D_{train}^{light}$ by applying the *clean phase*. We decide to do the *light phase* before the *clean phase* because we don't want to remove observations coming from removing the **density feature**.
+
+
+```{r}
+#d_train_light_clean (still 3791 rows but could have been more)
+d_train_light_clean = clean(d_train_light, x=x_train_light)
+x_train_light_clean = subset(d_train_light_clean, select=-quality)
+y_train_light_clean = d_train_light_clean$quality
+```
+
+
+Using this 4 datasets we decide to implement the following models: **GLM**, **GAM** and **RF**.
+
+
+## General Linear Model (GLM)
+Now we analyze the 4 different datasets in order to find a linear relationship between the features of the selected dataset and the response variable **quality**.
+
+We combine the GLM (Generalized Linear Model) with the **LASSO method** (Least Absolute Shrinkage and Selection Operator). The LASSO method introduces a penalty term that is proportional to the sum of the absolute values of the coefficients, thus it forces the model to decrease or to remove the effect of some less important feature.
+
+We also consider to use (other than just the starting features of the dataset) the interactions between each feature. This is done to better expolit the potentiality of the LASSO method and to find possible significative relationships with the response variable. This way we will get $\binom{11}{2} + 1 = 56$ total coefficients for our model.
+Before doing that, to properly use the LASSO method we need to rescale the features of our data, so that we can avoid an imbalance between coefficients. 
+
+Re-scaling of the $D_{train}$
+```{r}
+#function to scale train sets
+scale_train = function(x_train) {
+  x_train_int = model.matrix(as.formula( ~ .*.), x_train)[,-1]
+  values = scale(x_train_int)
+  return (list(
+    values=values,
+    means=attr(values, which="scaled:center"),
+    sds=attr(values, which="scaled:scale")))
+}
+
+# scaling
+x_train_s = scale_train(x_train)
+```
+
+
+In order to choose the smoothing parameter $\lambda$ we use **10-fold cross validation**. For each $\lambda$ value we will calculate the **Mean Squared Error (MSE)** of the associated model. We do this 10 times, then we use the approach called **one-standard-error rule** to select the $\lambda$ that has a MSE (it's a random variable) one standard error above the minimum. This way we overfiting the model and make it more interpretable. 
+
+Fit using $D_{train}$ scaled
+```{r message=FALSE, warning=FALSE}
+library(glmnet)
+
+#function to fit glm with lasso
+fit_lasso <- function(x, y){
+  cv <- cv.glmnet(x, y, family=gaussian, type.measure = "mse")
+  return (glmnet(x, y, family=gaussian, lambda = cv$lambda.1se))
+}
+
+# fitting
+set.seed(101)
+lasso = fit_lasso(x_train_s$values, y_train)
+paste("The number of coefficients different from zero are",length(coef(lasso)[coef(lasso)!=0]))
+coef(lasso)
+```
+
+
+We apply the glm trained to the test set and compute the final **MSE**. 
+
+
+```{r}
+# prediction
+x_test_int <- model.matrix(as.formula( ~ .*.), x_test)[,-1]
+x_test_s <- scale(x_test_int, center=x_train_s$means, scale=x_train_s$sds)
+paste('the MSE with d_train is',assess.glmnet(lasso, newx=x_test_s, newy=y_test)$mse[1])
+```
+
+
+We apply successively the same procedures for the remaining 3 dataset: $D_{train}^{light}$, $D_{train}^{clean}$ and $D^{light,clean}_{train}$. Therefore:
+
+
+For $D_{train}^{light}$ we have the following results:
+
+
+```{r message=FALSE, warning=FALSE}
+# scaling
+x_train_light_s <- scale_train(x_train_light)
+
+# fitting
+set.seed(101)
+lasso_light = fit_lasso(x_train_light_s$values, y_train_light)
+paste("The number of coefficients different from zero are",length(coef(lasso_light)[coef(lasso_light)!=0]))
+
+# Prediction
+x_test_light_int <- model.matrix(as.formula( ~ .*.), x_test_light)[,-1]
+x_test_light_s <- scale(x_test_light_int, center=x_train_light_s$means, scale=x_train_light_s$sds)
+paste('the MSE with d_train_light is',assess.glmnet(lasso_light, newx=x_test_light_s, newy=y_test_light)$mse[1])
+
+```
+
+
+For $D_{train}^{clean}$ we have the following results:
+
+
+```{r message=FALSE, warning=FALSE}
+# scaling
+x_train_clean_s = scale_train(x_train_clean)
+
+# fitting
+set.seed(101)
+lasso_clean = fit_lasso(x_train_clean_s$values, y_train_clean)
+paste("The number of coefficients different from zero are",length(coef(lasso_clean)[coef(lasso_clean)!=0]))
+
+# Prediction
+x_test_s2 <- scale(x_test_int, center=x_train_clean_s$means, scale=x_train_clean_s$sds)
+paste('the MSE with d_train_clean is',assess.glmnet(lasso_clean, newx=x_test_s2, newy=y_test)$mse[1])
+```
+
+
+For $D_{train}^{light,clean}$ we have the following results:
+
+
+```{r message=FALSE, warning=FALSE}
+# scaling
+x_train_light_clean_s = scale_train(x_train_light_clean)
+
+# fitting
+set.seed(101)
+lasso_light_clean = fit_lasso(x_train_light_clean_s$values, y_train_light_clean)
+paste("The number of coefficients different from zero are",length(coef(lasso_light_clean)[coef(lasso_light_clean)!=0]))
+
+# prediction
+x_test_light_s2 <- scale(x_test_light_int, center=x_train_light_clean_s$means, scale=x_train_light_clean_s$sds)
+paste('the MSE with d_train_light_clean is',assess.glmnet(lasso_light_clean, newx=x_test_light_s2, newy=y_test_light)$mse[1])
+
+```
+
+
+Based on the results we have, we can conclude that the GLM fitted on the cleaned dataset performs better than the others. This seems to suggest that removing **the density feature** ($D_{train}^{light}$) cause the model to slightly under-perform. Also, removing observations that seems to be "outliers" can slightly improve the results ($D_{train}^{clean}$).
+On the other hand these results might not be significant due to the fact that these MSE are quite close to eachother.
+
+
+
+
+## General Additive Model (GAM)
+
+
+Now we try to use the GAM model to analyze the possibility of non-linear relationships between the features and the response variable.
+
+A **Generalized Additive Model** (GAM) is a model in which the mean of the response variable depends linearly on unknown smooth functions (called *splines*)of some predictor variable. The distribution of this response variable (like in the GLM case) is a random variable of the exponential family.
+
+Each GAM model will also consider a **roughness penality** for each spline function. These terms try to penalize the use of an over complex model.
+
+
+```{r message=FALSE}
+library(mgcv)
+#we fit the GAM model on the different datasets
+#On d_train
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train, family = gaussian(link = "identity")) 
+
+summary(gam_train)
+print(paste("AIC:" ,gam_train$aic))
+
+#On d_train_clean
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train_clean, family = gaussian(link = "identity")) 
+
+summary(gam_clean)
+print(paste("AIC:", gam_clean$aic))
+
+#On d_train_light
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light, family = gaussian(link = "identity")) 
+
+summary(gam_light)
+print(paste("AIC:", gam_light$aic))
+
+#On d_train_light_clean
+gam_light_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity")) 
+
+summary(gam_light_clean)
+print(paste("AIC:", gam_light_clean$aic))
+```
+
+Based on the analysis of the $R^2$ coefficient, we can see that the model trained on $D_{train}^{clean}$ is slightly better than the others. So we decide to visualize the function applied by this model to our features.
+```{r}
+plot(gam_clean)
+```
+
+
+These graphs help us discover the non linear effect that each variable has, this is something that was not explained in the others linear model.
+
+From this graphs we can also see that the variable $\text{sulphates}$ is basically linear, so we can consider not applying a spline function to it and see whether this changes the results:
+
+```{r}
+#On d_train
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train, family = gaussian(link = "identity")) 
+
+summary(gam_train)
+
+
+#On d_train_clean
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train_clean, family = gaussian(link = "identity")) 
+
+summary(gam_clean)
+
+
+#On d_train_light
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light, family = gaussian(link = "identity")) 
+
+summary(gam_light)
+
+
+#On d_train_light_clean
+gam_light_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity")) 
+
+summary(gam_light_clean)
+```
+
+
+We can see that removing this single spline increases the simplicity and doesn't have any significant effect on the final model (the added benefit of having less splines is that we have less smoothness parameters to work with).
+
+Now we consider the **different values of the smoothing parameters** in the GAM and how we could improve them. In particular we want to improve the AIC of the model fitted on those parameters.We do this by checking if for each feature it would be better to use the already found smoothing parameter or its double.
+
+
+1. For $D_{train}$
+```{r message=FALSE}
+library(parallel)
+library(iterators)
+library(foreach)
+library(doParallel)
+
+sp1_train = gam_train$sp
+sp2_train = 2 * sp1_train
+t = rbind(sp1_train,sp2_train)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9], t[,10])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_train = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+2. For $D_{train}^{light}$
+```{r}
+sp1_light = gam_light$sp
+sp2_light = 2 * sp1_light
+t = rbind(sp1_light,sp2_light)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train_light")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_light = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+
+3. For $D_{train}^{clean}$
+```{r}
+sp1_clean = gam_clean$sp
+sp2_clean = 2 * sp1_clean
+t = rbind(sp1_clean,sp2_clean)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9], t[,10])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train_clean, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train_clean")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_clean = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+
+4. For $D_{train}^{light,clean}$
+```{r}
+sp1_light_clean = gam_light_clean$sp
+sp2_light_clean = 2 * sp1_light_clean
+t = rbind(sp1_light_clean,sp2_light_clean)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train_light_clean")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_light_clean = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+
+Now we test our models with this new parameters on the test sets.
+Like before we do not remove the possible outliers from our testset, so we just use the sets $D_{test}$ and $D_{test}^{light}$.
+
+
+```{r}
+#For the "train" model
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train, family = gaussian(link = "identity"), sp = opt.sp_train)
+MSE_train = mean((y_test - predict(gam_train, x_test))^2)
+
+#For the "clean" model
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train_clean, family = gaussian(link = "identity"), sp = opt.sp_clean) 
+MSE_clean  = mean((y_test - predict(gam_clean, x_test))^2)
+
+#For the "light" model
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light, family = gaussian(link = "identity"), sp = opt.sp_light) 
+MSE_light  = mean((y_test_light - predict(gam_light, x_test_light))^2)
+
+#For the "light,clean" model
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity"), sp = opt.sp_light_clean) 
+MSE_light_clean  = mean((y_test_light - predict(gam_light_clean, x_test_light))^2)
+
+print(c("MSE_train"=MSE_train, "MSE_clean"=MSE_clean, "MSE_light"=MSE_light, "MSE_light_c"=MSE_light_clean))
+
+```
+
+
+Based on these result we can conclude that **the GAM fitted on the non-cleaned dataset performs better than the others**, and that removing the elements that seem to be "outliers" causes the model to underperform.
+This seems to suggest that even the supposed "outlier" data brings useful informations for the model, but that **these informations are not well captured by linear techniques**.
+
+
+
+## Random Forest
+
+* Two way of analyzing data:
+  * **Statistical models** (eg. GLM, GAM)
+    * Focus on interpretation
+    * Describe relationship between variables in functional form
+  * **Algorithms** (eg. decision tree)
+    * Focus on prediction
+
+\
+
+* Decision tree (**regression tree** in our case):
+  * Built by recursively splitting the data
+    * Each node of the tree corresponds to a split
+    * Each split is based on values of a feature
+      * The one that allows the best split is selected
+    * Splitting continue until a stopping criteria is met
+      * Eg. min number of data in a node or max tree depth
+  * Prediction made by traversing the tree until a leaf node
+    * Predicted value is the mean of y of observations falling in that node
+
+\
+
+* **Random forest**:
+  * Ensemble of decision trees (500 in our case)
+  * The predictions are averaged
+  * Each tree is different because:
+    * built in different datasets obtained with bootstrap
+    * built with some of the feature randomly dropped
+  * Less interpretable than single tree but better results
+
+\
+
+- Fit random forest using $D_{train}$
+
+```{r message=FALSE}
+library(randomForest)
+set.seed(101)
+
+rf = randomForest(x_train, y_train, importance=TRUE)
+mean((predict(rf, x_test) - y_test)^2) #mse
+```
+
+- Importance of the features
+
+`%IncMSE`: this shows how much our model MSE increase (in percentage) if we leave out that feature
+
+`IncNodePurity`: this is a measure of importance of a feature in determining good splits in the trees
+
+```{r}
+varImpPlot(rf)
+```
+
+- Fit using $D_{train}^{light}$
+
+```{r}
+set.seed(101)
+
+rf_light = randomForest(x_train_light, y_train_light, importance=TRUE)
+mean((predict(rf_light, x_test_light) - y_test_light)^2) #mse
+```
+
+MSE doesn't change too much
+
+- Importance of the features
+
+```{r}
+varImpPlot(rf_light)
+```
+
+We note that the importance of `alcohol` greatly increase removing `density` (they were correlated)
+
+- Fit using $D_{train}^{clean}$
+
+```{r}
+set.seed(101)
+
+rf_clean = randomForest(x_train_clean, y_train_clean, importance=TRUE)
+mean((predict(rf_clean, x_test) - y_test)^2) #mse
+```
+
+We note that the MSE gets slightly worse removing extreme values, meaning that probably they weren't outliers
+
+- Importance of the features
+
+```{r}
+varImpPlot(rf_clean)
+```
+
+Same feature importance as with $D_{train}$ (we don't expect it to change since the features are the same)
+
+- Fit using $D_{train}^{light,clean}$
+
+```{r}
+set.seed(101)
+
+rf_light_clean = randomForest(x_train_light_clean, y_train_light_clean, importance=TRUE)
+mean((predict(rf_light_clean, x_test_light) - y_test_light)^2) #mse
+```
+
+Still slightly worse results than with all the data
+
+- Importance of the features
+
+```{r}
+varImpPlot(rf_light_clean)
+```
+
+Same feature importance as with $D_{train}^{light}$ (we don't expect it to change since the features are the same)
+
+# Conclusions
+
+```{r comment=Na}
+library(knitr)
+
+data = data.frame(
+  GML = c(0.549, 0.544, 0.534, 0.543),
+  GAM = c(0.498, 0.509, 0.830, 0.872),
+  RF = c(0.383, 0.389, 0.393, 0.399),
+  row.names = c("d_train", "d_train_ligh", "d_train_clean", "d_train_light_clean")
+  
+  
+)
+
+kable(data)
+```
+
+In our project we tried three models: GLM, GAM and Random Forest.
+These three models have different limitations and strong points:
+* GLM
+  * highly interpretable
+  * used to show the interactions between our features
+* GAM
+  * shows an improvement on the previous model
+  * can capture the non linear effects of the features
+  * It shows that all the observations carry informations relevant to the effectiveness of the models
+* Random Forest
+  * shows the best results among our models
+  * It proved to be flexible and to be able to capture complex interactions among the features
+
+There seems to be possible ways to improve our results.
+Having more data (more samples of wine) could obviously be beneficial. We also do not exclude the possibility that there could be a greater number of significant features that could better explain the quality of the wine.
+At the end we must admit that human preferences could always create a stochastic component in our model because we cannot predict subjective tastes.
+
