@@ -46,7 +46,7 @@ Using boxplots we can  identify presence of outliers or unusual values.
 
 ```{r}
 plotboxplot <- function(x, name) {
-  return(ggplot(data = data.frame(x), aes(x=x)) + geom_boxplot(outlier.size=1, outlier.alpha = 0.3) + ggtitle(name))
+  return(ggplot(data = data.frame(x), aes(x=x)) + geom_boxplot(width=1.4, outlier.size=1, outlier.alpha = 0.3) + ggtitle(name) + ylim(-1,1))
 }
 
 box_list <- Map(plotboxplot, data.frame(d_tot), names(d_tot))
