@@ -300,11 +300,15 @@ rf_light = randomForest(x_train_light, y_train_light, importance=TRUE)
 mean((predict(rf_light, x_test_light) - y_test_light)^2) #mse
 ```
 
+MSE doesn't change too much
+
 - Importance of the features
 
 ```{r}
 varImpPlot(rf_light)
 ```
+
+We note that the importance of `alcohol` greatly increase removing `density` (they were correlated)
 
 - Fit using $D_{train}^{clean}$
 
@@ -315,11 +319,15 @@ rf_clean = randomForest(x_train_clean, y_train_clean, importance=TRUE)
 mean((predict(rf_clean, x_test) - y_test)^2) #mse
 ```
 
+We note that the MSE gets slightly worse removing extreme values, meaning that probably they weren't outliers
+
 - Importance of the features
 
 ```{r}
 varImpPlot(rf_clean)
 ```
+
+Same feature importance as with $D_{train}$ (we don't expect it to change since the features are the same)
 
 - Fit using $D_{train}^{light,clean}$
 
@@ -330,11 +338,15 @@ rf_light_clean = randomForest(x_train_light_clean, y_train_light_clean, importan
 mean((predict(rf_light_clean, x_test_light) - y_test_light)^2) #mse
 ```
 
+Still slightly worse results than with all the data
+
 - Importance of the features
 
 ```{r}
 varImpPlot(rf_light_clean)
 ```
+
+Same feature importance as with $D_{train}^{light}$ (we don't expect it to change since the features are the same)
 
 # Conclusions
 
