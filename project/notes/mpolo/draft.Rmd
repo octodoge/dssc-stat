@@ -21,137 +21,11 @@
   - random forest
   - boosting (se c'è tempo, meglio no)
 
-  
-**TODO**:
-* exploratory data analysis
-  * che roba è? (forse vedi link consigliato da prof, o link agustin)
-  * data cleaning
-    * capisci se numeriche, categoriche (e in caso usa factor in lasso, gam)
-    * vedi se ci sono NA
-    * vedi se ci sono outliers (rimuovi con 3sigma rule, log se non normal? o metodo con quantili che dice agustin?)
-    * togli i dati più correlati e testa i modelli con e senza
-      * dovrebbero dare problemi su glm (anche se forse meno con lasso) e gam
-    * vedi se valori alti e serve normalizzare/standardizzare per glm/lasso e gam?
-    * che altro?
-
-* modelli
-  * random forest
-    * quality senza factor per regression
-    * test set (c'è opzione)?
-      * forse usa out-of-bag quindi non serve?
-    * niente tuning?
-      * se ha stessi parametri di default di scikit learn, no
-        * unico tuning da fare è nei dati in questo caso imo
-    * mtry è da cambiare? cosa fa scikit learn?
-    * fai cosa viene fatto in lab8
-    * assicurati che abbia senso togliere outliers e che non abbia senso fare feature selection
-* lasso (glmnet)
-  * non fai feature selection manuale con AIC, ma fai fare a lui, semplicemnte prendi migliore lambda in base a CV che fa
-  * interaction va bene per le non categorie? da testare
-* gam fai solo spline per ogni feature e fai grid search come su lab 8, per trovare i lambda ottimali di ogni spline
-
-* conclusioni:
-  * train test split? (no per fine tuning lasso e gam, perché AIC viene fatto su training set e va bene così) (lasso cmq fa CV per trovarsi il lambda ma non splitti comunque tu prima i dati).
-    * confronto tra modelli: devi fare con CV.. vedi se come.. forse esiste cv.glmnet, ecc.
-    * splitta train test,
-      * test non tocchi
-      * train ci fitti 6 modelli (3 con tutto train e 3 senza i 3 sigma) e li confronti tutti su test set con MSE
-        * a random forest in teoria puoi passarlo il test set
-        * glmnet? TODO
-        * gam? TODO
-
 ---
-
-# Description of the project’s aim
-
-TBD
-
-# Exploratory data analysis
-
-TBD (including a possible data-cleaning phase)
-
-```{r}
-#load dataset
-d = read.csv("../../winequality-white.csv", sep=";")
-
-#d_test (979 rows)
-set.seed(101)
-test_indexes = sample(1:nrow(d), size=nrow(d)*0.2) #20%
-d_test = d[test_indexes,]
-row.names(d_test) <- NULL
-x_test = subset(d_test, select=-quality)
-y_test = d_test$quality
-
-#d_test_light (979 rows)
-x_test_light = subset(x_test, select=-density)
-y_test_light = y_test
-
-#d_train (3919 rows)
-d_train = d[-test_indexes,]
-row.names(d_train) <- NULL
-x_train = subset(d_train, select=-quality)
-y_train = d_train$quality
-
-#d_train_light (3919 rows)
-d_train_light = subset(d_train, select=-density)
-x_train_light = subset(x_train, select=-density)
-y_train_light = y_train
-
-clean = function(dataset, train_set, k=3) { #3 standard deviations
-  means = colMeans(train_set)
-  sds = apply(train_set, MARGIN=2, FUN=sd)
-  f = function(x) all(x>means-k*sds & x<means+k*sds)
-  return (dataset[apply(train_set, MARGIN=1, FUN=f),])
-}
-
-#d_train_clean (3597 rows)
-d_train_clean = clean(d_train, train_set=x_train)
-x_train_clean = subset(d_train_clean, select=-quality)
-y_train_clean = d_train_clean$quality
-
-#d_train_light_clean (still 3597 rows but could have been more)
-d_train_light_clean = clean(d_train_light, train_set=x_train_light)
-x_train_light_clean = subset(d_train_light_clean, select=-quality)
-y_train_light_clean = d_train_light_clean$quality
-```
 
 # Selection, description, and comparison of the most suitable statistical models
 
-TBD
-
 ```{r}
-means = colMeans(x)
-sds = apply(x, MARGIN=2, FUN=sd) #standard deviations
-f = function(x) all(x>means-3*sds & x<means+3*sds)
-df[apply(df, MARGIN=1, FUN=f),] #4502 rows
-```
-
-```{r}
-df[,array_di_bool_lungo_quanto_colonna] #tutte righe, alcune colonne
-```
-
-```{r}
-#fit models
-library(glmnet)
-library(mgcv)
-library(randomForest) #v 4.6-14 for R 4.0.4
-
-glmnet_ = #glmnet(x = data.matrix(x), y = data.matrix(y))
-gam_ = 
-rf_ = randomForest(quality ~ ., data = df, importance=TRUE)
-#boosting?
-```
-
-```{r}
-#mse comparison (test set)
-
-#lasso
-assess.glmnet(glmnet(x = data.matrix(x), y = data.matrix(y), lambda=0.6), newx=data.matrix(x), newy=data.matrix(y))
-
-#random forest ha opzione per passare test set mentre fitti
-rf_ = randomForest(quality ~ ., data = df, importance=TRUE, xtest=x, ytest=data.matrix(y))
-rf_$test #ma forse meglio prendere mse che ti danno gli out of bag (fatti apposta)
-
 #gam (esempio)
 n<-200
 sig <- 2
@@ -166,17 +40,30 @@ mse = mean((pred - actual)^2) #actual non definito in questo esempio
 mse
 ```
 
-```{r}
-importance(forest)
-rf_
-```
+## Random Forest
 
-```{r}
-varImpPlot(forest, sort=TRUE)
-```
+* Two way of analyzing data:
+  * **Statistical models** (eg. GLM, GAM)
+    * Focus on interpretation
+    * Describe relationship between variables in functional form
+  * **Algorithms** (eg. decision tree)
+    * Focus on prediction
 
-## Comments on results
+* Decision tree (**regression tree** for our case):
+  * Built by recursively splitting the data
+    * Each node of the tree corresponds to a split
+    * Each split is based on values of a feature
+      * The one that allows the best split is selected
+    * Splitting continue until a stopping criteria is met
+      * Eg. min number of data in a node or max tree depth
+  * Prediction made by traversing the tree until a leaf node
+    * Predicted value is the mean of values in that node
+
+* **Random forest**:
+  * 
+
+MA IN TEORIA NO MEAN GINI DECREASE FOR REGRESSION: studia doc random forest
+vedi anche [qui](https://stats.stackexchange.com/a/162590)
 
 
-
-
+# Comments on results
