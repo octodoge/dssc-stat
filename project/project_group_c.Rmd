@@ -273,7 +273,7 @@ In the other hand these results might not be significantly different.
 
 - Fit using $D_{train}$
 
-```{r}
+```{r message=FALSE}
 library(randomForest)
 set.seed(101)
 
@@ -336,17 +336,33 @@ mean((predict(rf_light_clean, x_test_light) - y_test_light)^2) #mse
 varImpPlot(rf_light_clean)
 ```
 
-# Conclusion
+# Conclusions
 
 ```{r comment=Na}
-# Tabella
 library(knitr)
 
-data <- data.frame(Name = c("John", "Mary", "Bob"), 
-                   Age = c(25, 30, 35), 
-                   Gender = c("Male", "Female", "Male"))
+data = data.frame(
+  GML = c(0.549, 0.544, 0.534, 0.543),
+  GAM = c(0.498, 0.509, 0.830, 0.872),
+  RF = c(0.383, 0.389, 0.393, 0.399),
+  row.names = c("d_train", "d_train_ligh", "d_train_clean", "d_train_light_clean")
+  
+  
+)
 
 kable(data)
 ```
+
+In our project we tried three models: GLM, GAM and Random Forest.
+These three models have different limitations and strong points:
+- GLM can be highly interpretable and is used to show the interactions between our features.
+- GAM shows an improvement on the previous model and can capture the non linear effects of the features. It shows that all the observations carry informations relevant to the effectiveness of the models.
+- Random Forest shows the best results among our models. It proved to be flexible enough and showed to be able to capture complex interactions among the features.
+
+There seems to be possible ways to improve our results.
+Having more data (more samples of wine) could obviously be beneficial. We also do not exclude the possibility that there could be a greater number of significant features that could better explain the quality of the wine.
+At the end we must admit that human preferences could always create a stochastic component in our model because we cannot predict subjective tastes. 
+
+
 
 
