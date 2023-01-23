@@ -257,7 +257,7 @@ In the other hand these results might not be significantly different.
     * Splitting continue until a stopping criteria is met
       * Eg. min number of data in a node or max tree depth
   * Prediction made by traversing the tree until a leaf node
-    * Predicted value is the mean of values in that node
+    * Predicted value is the mean of y of observations falling in that node
 
 \
 
@@ -271,7 +271,7 @@ In the other hand these results might not be significantly different.
 
 \
 
-- Fit using $D_{train}$
+- Fit random forest using $D_{train}$
 
 ```{r message=FALSE}
 library(randomForest)
