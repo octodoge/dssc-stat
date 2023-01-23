@@ -1,0 +1,335 @@
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load dataset
+d_tot = read.csv("winequality-white.csv", sep=";")
+```
+
+```{r}
+#d_train (3918 rows)
+set.seed(101)
+train_indexes = sample(1:nrow(d_tot), size=nrow(d_tot)*0.8) #80%
+d_train = d_tot[train_indexes,]
+row.names(d_train) = NULL
+x_train = subset(d_train, select=-quality)
+y_train = d_train$quality
+
+#d_test (980 rows)
+d_test = d_tot[-train_indexes,]
+row.names(d_test) = NULL
+x_test = subset(d_test, select=-quality)
+y_test = d_test$quality
+```
+
+```{r}
+#d_train_light (3918 rows)
+d_train_light = subset(d_train, select=-density)
+x_train_light = subset(x_train, select=-density)
+y_train_light = y_train
+
+#d_test_light (980 rows)
+x_test_light = subset(x_test, select=-density)
+y_test_light = y_test
+```
+
+```{r}
+#function to clean datasets
+clean = function(dataset, train_set, k=4) { #4 standard deviations
+  means = colMeans(train_set)
+  sds = apply(train_set, MARGIN=2, FUN=sd)
+  f = function(x) all(x>means-k*sds & x<means+k*sds)
+  return (dataset[apply(train_set, MARGIN=1, FUN=f),])
+}
+
+#d_train_clean (3791 rows)
+d_train_clean = clean(d_train, train_set=x_train)
+x_train_clean = subset(d_train_clean, select=-quality)
+y_train_clean = d_train_clean$quality
+
+```
+
+```{r}
+#d_train_light_clean (still 3791 rows but could have been more)
+d_train_light_clean = clean(d_train_light, train_set=x_train_light)
+x_train_light_clean = subset(d_train_light_clean, select=-quality)
+y_train_light_clean = d_train_light_clean$quality
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+## General Additive Model (GAM)
+
+
+
+Now we try to use the GAM model to analyze the possibility of non-linear relationships between the features and the response variable.
+
+A **Generalized Additive Model** (GAM) is a model in which the mean of the response variable depends linearly on unknown smooth functions (called *splines*)of some predictor variable. The distribution of this response variable (like in the GLM case) is a random variable of the exponential family.
+
+Each GAM model will also consider a **roughness penality** for each spline function. These terms try to penalize the use of an over complex model.
+
+
+```{r message=FALSE}
+library(mgcv)
+#we fit the GAM model on the different datasets
+#On d_train
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train, family = gaussian(link = "identity")) 
+
+summary(gam_train)
+print(paste("AIC:" ,gam_train$aic))
+
+#On d_train_clean
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + s(sulphates) + s(alcohol), data = d_train_clean, family = gaussian(link = "identity")) 
+
+summary(gam_clean)
+print(paste("AIC:", gam_clean$aic))
+
+#On d_train_light
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light, family = gaussian(link = "identity")) 
+
+summary(gam_light)
+print(paste("AIC:", gam_light$aic))
+
+#On d_train_light_clean
+gam_light_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + s(sulphates) + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity")) 
+
+summary(gam_light_clean)
+print(paste("AIC:", gam_light_clean$aic))
+```
+
+Based on the analysis of the $R^2$ coefficient, we can see that the model trained on $D_{train}^{clean}$ is slightly better than the others. So we decide to visualize the function applied by this model to our features.
+```{r}
+plot(gam_clean)
+```
+
+
+These graphs help us discover the non linear effect that each variable has, this is something that was not explained in the others linear model.
+
+From this graphs we can also see that the variable $\text{sulphates}$ is basically linear, so we can consider not applying a spline function to it and see whether this changes the results:
+
+```{r}
+#On d_train
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train, family = gaussian(link = "identity")) 
+
+summary(gam_train)
+
+
+#On d_train_clean
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train_clean, family = gaussian(link = "identity")) 
+
+summary(gam_clean)
+
+
+#On d_train_light
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light, family = gaussian(link = "identity")) 
+
+summary(gam_light)
+
+
+#On d_train_light_clean
+gam_light_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity")) 
+
+summary(gam_light_clean)
+```
+
+
+We can see that removing this single spline increases the simplicity and doesn't have any significant effect on the final model (the added benefit of having less splines is that we have less smoothness parameters to work with).
+
+Now we consider the **different values of the smoothing parameters** in the GAM and how we could improve them. In particular we want to improve the AIC of the model fitted on those parameters.We do this by checking if for each feature it would be better to use the already found smoothing parameter or its double.
+
+
+1. For $D_{train}$
+```{r message=FALSE}
+library(parallel)
+library(iterators)
+library(foreach)
+library(doParallel)
+
+sp1_train = gam_train$sp
+sp2_train = 2 * sp1_train
+t = rbind(sp1_train,sp2_train)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9], t[,10])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_train = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+2. For $D_{train}^{light}$
+```{r}
+sp1_light = gam_light$sp
+sp2_light = 2 * sp1_light
+t = rbind(sp1_light,sp2_light)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train_light")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_light = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+
+3. For $D_{train}^{clean}$
+```{r}
+sp1_clean = gam_clean$sp
+sp2_clean = 2 * sp1_clean
+t = rbind(sp1_clean,sp2_clean)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9], t[,10])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train_clean, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train_clean")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_clean = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+
+4. For $D_{train}^{light,clean}$
+```{r}
+sp1_light_clean = gam_light_clean$sp
+sp2_light_clean = 2 * sp1_light_clean
+t = rbind(sp1_light_clean,sp2_light_clean)
+
+#we create the dataframe sp.grid whose rows are the different possible combinations of smoothing parameters
+sp.grid = expand.grid(t[,1], t[,2], t[,3], t[,4], t[,5], t[,6], t[,7], t[,8], t[,9])
+n.tuning = nrow(sp.grid)
+
+#We create a list of the rows of sp.grid 
+sp.list = split(sp.grid, seq(n.tuning))
+
+#Now we create the function that for each vector of parameters returns the corresponding AIC of the model.
+fun  = function(parameters){
+  gamobj = gam(quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity"), sp = parameters)
+  AIC(gamobj)
+}
+  
+#And now we perform the grid search in parallel
+split = detectCores() - 1  #detects the number of cores
+cl = makeCluster(split) #creates the parallel environment
+init = clusterEvalQ(cl, { library(mgcv); NULL }) #sets up the environment
+clusterExport(cl, "d_train_light_clean")  #exports the dataset to the other clusters
+
+AICs = parLapplyLB(
+  cl,   #The cluster element
+  sp.list,    #The list where we apply the function
+  fun  #The function applied to the list
+)
+# Find the minimum
+opt.sp_light_clean = sp.grid[which.min(AICs),]
+print(min(unlist(AICs)))
+stopCluster(cl)
+```
+
+
+Now we test our models with this new parameters on the test sets.
+Like before we do not remove the possible outliers from our testset, so we just use the sets $D_{test}$ and $D_{test}^{light}$.
+
+
+```{r}
+#For the "train" model
+gam_train = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train, family = gaussian(link = "identity"), sp = opt.sp_train)
+MSE_train = mean((y_test - predict(gam_train, x_test))^2)
+
+#For the "clean" model
+gam_clean = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(density) + s(pH) + sulphates + s(alcohol), data = d_train_clean, family = gaussian(link = "identity"), sp = opt.sp_clean) 
+MSE_clean  = mean((y_test - predict(gam_clean, x_test))^2)
+
+#For the "light" model
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light, family = gaussian(link = "identity"), sp = opt.sp_light) 
+MSE_light  = mean((y_test_light - predict(gam_light, x_test_light))^2)
+
+#For the "light,clean" model
+gam_light = gam( quality ~ s(fixed.acidity) + s(volatile.acidity) + s(citric.acid) + s(residual.sugar) + s(chlorides) + s(total.sulfur.dioxide) + s(free.sulfur.dioxide) + s(pH) + sulphates + s(alcohol), data = d_train_light_clean, family = gaussian(link = "identity"), sp = opt.sp_light_clean) 
+MSE_light_clean  = mean((y_test_light - predict(gam_light_clean, x_test_light))^2)
+
+print(c("MSE_train"=MSE_train, "MSE_clean"=MSE_clean, "MSE_light"=MSE_light, "MSE_light_c"=MSE_light_clean))
+
+```
+
+
+Based on these result we can conclude that **the GAM fitted on the non-cleaned dataset performs better than the others**, and that removing the elements that seem to be "outliers" causes the model to underperform.
+This seems to suggest that even the supposed "outlier" data brings useful informations for the model, but that **these informations are not well captured by linear techniques**.
+
+
+
+
