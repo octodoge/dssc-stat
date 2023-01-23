@@ -367,9 +367,16 @@ kable(data)
 
 In our project we tried three models: GLM, GAM and Random Forest.
 These three models have different limitations and strong points:
-- GLM can be highly interpretable and is used to show the interactions between our features.
-- GAM shows an improvement on the previous model and can capture the non linear effects of the features. It shows that all the observations carry informations relevant to the effectiveness of the models.
-- Random Forest shows the best results among our models. It proved to be flexible enough and showed to be able to capture complex interactions among the features.
+* GLM
+  * highly interpretable
+  * used to show the interactions between our features
+* GAM
+  * shows an improvement on the previous model
+  * can capture the non linear effects of the features
+  * It shows that all the observations carry informations relevant to the effectiveness of the models
+* Random Forest
+  * shows the best results among our models
+  * It proved to be flexible and to be able to capture complex interactions among the features
 
 There seems to be possible ways to improve our results.
 Having more data (more samples of wine) could obviously be beneficial. We also do not exclude the possibility that there could be a greater number of significant features that could better explain the quality of the wine.
