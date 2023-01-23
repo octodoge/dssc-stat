@@ -127,13 +127,14 @@ y_train_light_clean = d_train_light_clean$quality
 Using this 4 datasets we decide to implement the following models: **GLM**, **GAM** and **RF**.
 
 ## General Linear Model (GLM)
-Now we analyze the dataset trying to find a linear relationship between the features of the dataset and the response variable $\text{quality}$.
+Now we analyze the 4 different datasets in order to find a linear relationship between the features of the selected dataset and the response variable **quality**.
 
-To do this we combine the GLM (Generalized Linear Model) with the LASSO method (Least Absolute Shrinkage and Selection Operator). The LASSO method introduces a penality term that is proportional to the sum of the absolute values of the coefficients, thus it forces the model to decrease or to remove the effect of some less important feature. It is used to reduce overfitting and increasing interpretability of the model.
+We combine the GLM (Generalized Linear Model) with the **LASSO method** (Least Absolute Shrinkage and Selection Operator). The LASSO method introduces a penalty term that is proportional to the sum of the absolute values of the coefficients, thus it forces the model to decrease or to remove the effect of some less important feature.
 
-To properly use the LASSO method we need to normalize the feature of our data, so that we can avoid an imbalance between coefficients.
+In order to avoid a too simple model considering only the main effects (11 features) we consider in addition their interactions $\binom{11}{2} = 55$.
+Afterwards to properly use the LASSO method we need to rescale the features of our data, so that we can avoid an imbalance between coefficients. 
 
-1.Rescale for $D_{train}$
+Re-scaling of the $D_{train}$
 ```{r}
 #function to scale train sets
 scale_train = function(x_train) {
@@ -145,28 +146,13 @@ scale_train = function(x_train) {
     sds=attr(values, which="scaled:scale")))
 }
 
+# scaling
 x_train_s = scale_train(x_train)
 ```
 
-2.Rescale for $D_{train}^{light}$
-```{r}
-x_train_light_s <- scale_train(x_train_light)
-```
+In order to choose the smoothing parameter $\lambda$ we use **10-fold cross validation**. For each $\lambda$ value in a grid, software fits the model to a part of the data and then checks the goodness of the predictions for the **quality** in the remaining data, using the **Mean Squared Error (MSE)**. We do this 10 times, then we using the approach called **one-standard-error rule** that is select a larger $\lambda$ that has a MSE (it's a random variable) one standard error above the minimum, which moves the estimates in the direction of a greater regularization (less likely to overfit the model and more interpretability). 
 
-3.Rescale for $D_{train}^{clean}$
-```{r}
-x_train_clean_s = scale_train(x_train_clean)
-```
-
-4.Rescale for $D_{train}^{light,clean}$
-```{r}
-x_train_light_clean_s = scale_train(x_train_light_clean)
-```
-
-**Having normalized the datasets we can now fit our models**
-
-1. Fit using $D_{train}$
-
+Fit using $D_{train}$ scaled
 ```{r message=FALSE, warning=FALSE}
 library(glmnet)
 
@@ -176,58 +162,70 @@ fit_lasso <- function(x, y){
   return (glmnet(x, y, family=gaussian, lambda = cv$lambda.1se))
 }
 
+# fitting
 set.seed(101)
 lasso = fit_lasso(x_train_s$values, y_train)
 #coef(lasso)
 ```
 
-2. Fit using $D_{light}$
 
+We apply the glm trained to the test set and compute the final **MSE**. 
+```{r}
+# prediction
+x_test_int <- model.matrix(as.formula( ~ .*.), x_test)[,-1]
+x_test_s <- scale(x_test_int, center=x_train_s$means, scale=x_train_s$sds)
+paste('the MSE with d_train is',assess.glmnet(lasso, newx=x_test_s, newy=y_test)$mse[1])
+```
+
+We apply successively the same procedures for the remaining 3 dataset: $D_{train}^{light}$, $D_{train}^{clean}$ and $D^{light,clean}_{train}$. Therefore:
+
+For $D_{train}^{light}$ we have the following results:
 ```{r message=FALSE, warning=FALSE}
+# scaling
+x_train_light_s <- scale_train(x_train_light)
+
+# fitting
 set.seed(101)
 lasso_light = fit_lasso(x_train_light_s$values, y_train_light)
 #coef(lasso_light)
+
+# Prediction
+x_test_light_int <- model.matrix(as.formula( ~ .*.), x_test_light)[,-1]
+x_test_light_s <- scale(x_test_light_int, center=x_train_light_s$means, scale=x_train_light_s$sds)
+paste('the MSE with d_train_light is',assess.glmnet(lasso_light, newx=x_test_light_s, newy=y_test_light)$mse[1])
+
 ```
 
-3. Fit using $D_{clean}$
-
+For $D_{train}^{clean}$ we have the following results:
 ```{r message=FALSE, warning=FALSE}
+# scaling
+x_train_clean_s = scale_train(x_train_clean)
+
+# fitting
 set.seed(101)
 lasso_clean = fit_lasso(x_train_clean_s$values, y_train_clean)
 #coef(lasso_clean)
+
+# Prediction
+x_test_s2 <- scale(x_test_int, center=x_train_clean_s$means, scale=x_train_clean_s$sds)
+paste('the MSE with d_train_clean is',assess.glmnet(lasso_clean, newx=x_test_s2, newy=y_test)$mse[1])
 ```
 
-
-4. Fit using $D_{light,clean}$ 
-
+For $D_{train}^{light,clean}$ we have the following results:
 ```{r message=FALSE, warning=FALSE}
+# scaling
+x_train_light_clean_s = scale_train(x_train_light_clean)
+
+# fitting
 set.seed(101)
 lasso_light_clean = fit_lasso(x_train_light_clean_s$values, y_train_light_clean)
 #coef(lasso_light_clean)
-```
 
-
-#### Prediction
-
--   Application of the model using the $D_{test}$
-
-```{r}
-x_test_int <- model.matrix(as.formula( ~ .*.), x_test)[,-1]
-x_test_s <- scale(x_test_int, center=x_train_s$means, scale=x_train_s$sds)
-assess.glmnet(lasso, newx=x_test_s, newy=y_test)$mse
-
-x_test_light_int <- model.matrix(as.formula( ~ .*.), x_test_light)[,-1]
-x_test_light_s <- scale(x_test_light_int, center=x_train_light_s$means, scale=x_train_light_s$sds)
-assess.glmnet(lasso_light, newx=x_test_light_s, newy=y_test_light)$mse
-
-x_test_s2 <- scale(x_test_int, center=x_train_clean_s$means, scale=x_train_clean_s$sds)
-assess.glmnet(lasso_clean, newx=x_test_s2, newy=y_test)$mse
-
+# prediction
 x_test_light_s2 <- scale(x_test_light_int, center=x_train_light_clean_s$means, scale=x_train_light_clean_s$sds)
-assess.glmnet(lasso_light_clean, newx=x_test_light_s2, newy=y_test_light)$mse
-```
+paste('the MSE with d_train_light_clean is',assess.glmnet(lasso_light_clean, newx=x_test_light_s2, newy=y_test_light)$mse[1])
 
--   Assessing of the four different fit using MSE
+```
 
 ## General Additive Model (GAM)
 
@@ -304,3 +302,6 @@ varImpPlot(rf_light_clean)
 - 10 MSE comparison
 
 #### Improvements and limitations
+
+- The models without the density gives quite the same MSE, as a demostration of its correlation with the features. Removing it can give a better interpretability. 
+- 
