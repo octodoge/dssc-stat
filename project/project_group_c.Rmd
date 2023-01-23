@@ -169,6 +169,7 @@ fit_lasso <- function(x, y){
 set.seed(101)
 lasso = fit_lasso(x_train_s$values, y_train)
 paste("The number of coefficients different from zero are",length(coef(lasso)[coef(lasso)!=0]))
+coef(lasso)
 ```
 
 
