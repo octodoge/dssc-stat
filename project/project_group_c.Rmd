@@ -42,7 +42,7 @@ suppressMessages(grid.arrange(hist_list[[7]], hist_list[[8]], hist_list[[9]], hi
 
 Coming from this preliminary look a the data most of features presents **long tail** of occurrences far from the "head" or central part of the distribution.
 
-Using boxplots we can visualize summary statistics such as mean, median and identify precence of outliers or unusual values.
+Using boxplots we can  identify presence of outliers or unusual values.
 
 ```{r}
 plotboxplot <- function(x, name) {
