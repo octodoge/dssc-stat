@@ -230,6 +230,9 @@ paste('the MSE with d_train_light_clean is',assess.glmnet(lasso_light_clean, new
 
 ```
 
+Based on the results we have, we can conclude that the GLM fitted on the cleaned dataset performs better than the others. This seems to suggest that removing **the density feature** ($D_{train}^{light}$) cause the model to quietly under-perform and remove observations that seems to be "outliers" can slightly improve the results ($D_{train}^{clean}$).
+In the other hand these results might not be significantly different. 
+
 ## General Additive Model (GAM)
 
 #### Prediction
@@ -296,15 +299,7 @@ varImpPlot(rf_light_clean)
 
 # Conclusion
 
-#### Comparison between fit using $D_{train}$
-
-- 8 AIC comparison
-
-#### Comparison between fit using $D_{test}$
-
-- 10 MSE comparison
-
 #### Improvements and limitations
 
-- The models without the density gives quite the same MSE, as a demostration of its correlation with the features. Removing it can give a better interpretability. 
-- 
+
+
