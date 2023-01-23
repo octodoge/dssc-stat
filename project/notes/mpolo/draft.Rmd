@@ -25,21 +25,6 @@
 
 # Selection, description, and comparison of the most suitable statistical models
 
-```{r}
-#gam (esempio)
-n<-200
-sig <- 2
-dat <- gamSim(1,n=n,scale=sig)
-
-b<-gam(y~s(x0)+s(I(x1^2))+s(x2)+offset(x3),data=dat)
-
-newd <- data.frame(x0=(0:30)/30,x1=(0:30)/30,x2=(0:30)/30,x3=(0:30)/30)
-actual = rep(5, 31)
-pred <- predict.gam(b,newd)
-mse = mean((pred - actual)^2) #actual non definito in questo esempio
-mse
-```
-
 ## Random Forest
 
 * Two way of analyzing data:
@@ -49,7 +34,9 @@ mse
   * **Algorithms** (eg. decision tree)
     * Focus on prediction
 
-* Decision tree (**regression tree** for our case):
+<br>
+
+* Decision tree (**regression tree** in our case):
   * Built by recursively splitting the data
     * Each node of the tree corresponds to a split
     * Each split is based on values of a feature
@@ -59,11 +46,21 @@ mse
   * Prediction made by traversing the tree until a leaf node
     * Predicted value is the mean of values in that node
 
+<br>
+
 * **Random forest**:
-  * 
+  * Ensemble of decision trees (500 in our case)
+  * The predictions are averaged
+  * Each tree is different because:
+    * built in different datasets obtained with bootstrap
+    * built with some of the feature randomly dropped
+  * Less interpretable than single tree
+  
+- Importance of the variables
 
-MA IN TEORIA NO MEAN GINI DECREASE FOR REGRESSION: studia doc random forest
-vedi anche [qui](https://stats.stackexchange.com/a/162590)
+`%IncMSE`: this shows how much our model MSE increase (in percentage) if we leave out that feature
 
+`IncNodePurity`: this is a measure of importance of a feature in determining good splits in the trees
 
 # Comments on results
+

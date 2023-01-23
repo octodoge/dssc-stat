@@ -236,15 +236,52 @@ paste('the MSE with d_train_light_clean is',assess.glmnet(lasso_light_clean, new
 
 ## Random Forest
 
+* Two way of analyzing data:
+  * **Statistical models** (eg. GLM, GAM)
+    * Focus on interpretation
+    * Describe relationship between variables in functional form
+  * **Algorithms** (eg. decision tree)
+    * Focus on prediction
+
+\
+
+* Decision tree (**regression tree** in our case):
+  * Built by recursively splitting the data
+    * Each node of the tree corresponds to a split
+    * Each split is based on values of a feature
+      * The one that allows the best split is selected
+    * Splitting continue until a stopping criteria is met
+      * Eg. min number of data in a node or max tree depth
+  * Prediction made by traversing the tree until a leaf node
+    * Predicted value is the mean of values in that node
+
+\
+
+* **Random forest**:
+  * Ensemble of decision trees (500 in our case)
+  * The predictions are averaged
+  * Each tree is different because:
+    * built in different datasets obtained with bootstrap
+    * built with some of the feature randomly dropped
+  * Less interpretable than single tree but better results
+
+\
+
 - Fit using $D_{train}$
 
 ```{r}
-library(randomForest) #v 4.6-14 for R 4.0.4
+library(randomForest)
 set.seed(101)
 
 rf = randomForest(x_train, y_train, importance=TRUE)
 mean((predict(rf, x_test) - y_test)^2) #mse
 ```
+
+- Importance of the features
+
+`%IncMSE`: this shows how much our model MSE increase (in percentage) if we leave out that feature
+
+`IncNodePurity`: this is a measure of importance of a feature in determining good splits in the trees
 
 ```{r}
 varImpPlot(rf)
@@ -259,6 +296,8 @@ rf_light = randomForest(x_train_light, y_train_light, importance=TRUE)
 mean((predict(rf_light, x_test_light) - y_test_light)^2) #mse
 ```
 
+- Importance of the features
+
 ```{r}
 varImpPlot(rf_light)
 ```
@@ -271,6 +310,8 @@ set.seed(101)
 rf_clean = randomForest(x_train_clean, y_train_clean, importance=TRUE)
 mean((predict(rf_clean, x_test) - y_test)^2) #mse
 ```
+
+- Importance of the features
 
 ```{r}
 varImpPlot(rf_clean)
@@ -285,14 +326,11 @@ rf_light_clean = randomForest(x_train_light_clean, y_train_light_clean, importan
 mean((predict(rf_light_clean, x_test_light) - y_test_light)^2) #mse
 ```
 
+- Importance of the features
+
 ```{r}
 varImpPlot(rf_light_clean)
 ```
-
-#### Prediction
-
-- Application of the model using the $D_{test}$
-- Assessing of the two different fit using MSE
 
 # Conclusion
 
