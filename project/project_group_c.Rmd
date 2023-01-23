@@ -338,7 +338,15 @@ varImpPlot(rf_light_clean)
 
 # Conclusion
 
-#### Improvements and limitations
+```{r comment=Na}
+# Tabella
+library(knitr)
 
+data <- data.frame(Name = c("John", "Mary", "Bob"), 
+                   Age = c(25, 30, 35), 
+                   Gender = c("Male", "Female", "Male"))
+
+kable(data)
+```
 
 
