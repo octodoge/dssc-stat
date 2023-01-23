@@ -50,7 +50,7 @@ Coming from this preliminary look a the data most of features presents **long ta
 Using boxplots we can identify presence of possible outliers or unusual values.
 
 
-```{r}
+```{r echo=FALSE}
 plotboxplot <- function(x, name) {
   return(ggplot(data = data.frame(x), aes(x=x)) + geom_boxplot(width=1.4, outlier.size=1, outlier.alpha = 0.3) + ggtitle(name) + ylim(-1,1))
 }
@@ -115,7 +115,7 @@ y_test_light = y_test
 ```
 
 
-3. $D_{train}^{clean}$ is the dataset obtained by excluding the observations $x^{(i)}$ outside the interval $[\overline{x}-4\sigma_j,\overline{x}+4\sigm_j]$ where $\sigma_j$ is the standard deviation coming from the j-feature ($j=1,\dots,11$). (*clean phase*)
+3. $D_{train}^{clean}$ is the dataset obtained by excluding the observations $x^{(i)}$ outside the interval $[\overline{x}-4\sigma_j,\overline{x}+4\sigma_j]$ where $\sigma_j$ is the standard deviation coming from the j-feature ($j=1,\dots,11$). (*clean phase*)
 
 
 ```{r}
@@ -644,14 +644,14 @@ Same feature importance as with $D_{train}^{light}$ (we don't expect it to chang
 
 # Conclusions
 
-```{r comment=Na}
+```{r comment=FALSE, echo=FALSE}
 library(knitr)
 
 data = data.frame(
   GML = c(0.549, 0.544, 0.534, 0.543),
   GAM = c(0.498, 0.509, 0.830, 0.872),
   RF = c(0.383, 0.389, 0.393, 0.399),
-  row.names = c("d_train", "d_train_ligh", "d_train_clean", "d_train_light_clean")
+  row.names = c("d_train", "d_train_light", "d_train_clean", "d_train_light_clean")
   
   
 )
